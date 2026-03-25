@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Tools Universe</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Cabinet+Grotesk:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --surface: #111118;
+  --surface2: #18181f;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #f0f0f5;
+  --muted: #8a8a9a;
+  --dim: #44445a;
+  --accent: #7c6fff;
+  --accent2: #ff6b6b;
+  --accent3: #00d4a0;
+  --accent4: #ffd166;
+  --accent5: #ff9f43;
+  --free-bg: rgba(0,212,160,0.1);
+  --free-text: #00d4a0;
+  --free-border: rgba(0,212,160,0.25);
+  --freemium-bg: rgba(255,209,102,0.1);
+  --freemium-text: #ffd166;
+  --freemium-border: rgba(255,209,102,0.25);
+  --paid-bg: rgba(255,107,107,0.1);
+  --paid-text: #ff6b6b;
+  --paid-border: rgba(255,107,107,0.25);
+  --china-bg: rgba(124,111,255,0.1);
+  --china-text: #a89fff;
+  --china-border: rgba(124,111,255,0.25);
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Cabinet Grotesk', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* NOISE OVERLAY */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+/* GLOW BLOBS */
+.blob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.12;
+  pointer-events: none;
+  z-index: 0;
+}
+.blob-1 { width: 600px; height: 600px; background: var(--accent); top: -200px; left: -200px; }
+.blob-2 { width: 500px; height: 500px; background: var(--accent2); bottom: 0; right: -100px; }
+.blob-3 { width: 400px; height: 400px; background: var(--accent3); top: 40%; left: 30%; }
+
+/* HEADER */
+header {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding: 80px 20px 60px;
+  border-bottom: 1px solid var(--border);
+}
+
+.header-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.header-eyebrow::before, .header-eyebrow::after {
+  content: '';
+  width: 30px;
+  height: 1px;
+  background: var(--accent);
+  opacity: 0.5;
+}
+
+h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(48px, 8vw, 96px);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  margin-bottom: 24px;
+}
+h1 span.grad {
+  background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header-sub {
+  font-size: 18px;
+  color: var(--muted);
+  max-width: 500px;
+  margin: 0 auto 40px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.stats-row {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+.stat { text-align: center; }
+.stat-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1;
+}
+.stat-label {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.05em;
+}
+
+/* CONTROLS */
+.controls {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10,10,15,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 24px;
+}
+
+.controls-inner {
+  max-width: 1600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.search-wrap {
+  position: relative;
+  max-width: 400px;
+}
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--dim);
+  font-size: 15px;
+  pointer-events: none;
+}
+#search {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: 14px;
+  padding: 10px 16px 10px 40px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+#search:focus { border-color: var(--accent); }
+#search::placeholder { color: var(--dim); }
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.filters-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--dim);
+  text-transform: uppercase;
+  margin-right: 4px;
+}
+.pill {
+  padding: 5px 14px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--muted);
+  transition: all 0.15s;
+  white-space: nowrap;
+  font-family: 'Cabinet Grotesk', sans-serif;
+}
+.pill:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+.pill.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.pill.free-pill.active { background: var(--free-text); border-color: var(--free-text); color: #000; }
+.pill.china-pill.active { background: var(--china-text); border-color: var(--china-text); color: #0a0a0f; }
+
+.count-bar {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--dim);
+  padding: 0 2px;
+}
+#visible-count { color: var(--accent); font-weight: 500; }
+
+/* MAIN CONTENT */
+main {
+  position: relative;
+  z-index: 1;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+/* SECTION */
+.section {
+  margin-bottom: 56px;
+}
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+}
+.section-count {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--dim);
+}
+.section-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* GRID */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+}
+
+/* CARD */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.2s;
+  border-radius: var(--radius);
+  pointer-events: none;
+}
+.card:hover {
+  border-color: var(--border2);
+  background: var(--surface2);
+  transform: translateY(-2px);
+}
+.card:hover::before { opacity: 1; }
+.card.cat-chat::before { background: linear-gradient(135deg, rgba(124,111,255,0.04), transparent); }
+.card.cat-code::before { background: linear-gradient(135deg, rgba(0,212,160,0.04), transparent); }
+.card.cat-image::before { background: linear-gradient(135deg, rgba(255,107,107,0.04), transparent); }
+.card.cat-design::before { background: linear-gradient(135deg, rgba(255,159,67,0.04), transparent); }
+.card.cat-automation::before { background: linear-gradient(135deg, rgba(255,209,102,0.04), transparent); }
+.card.cat-agent::before { background: linear-gradient(135deg, rgba(0,212,160,0.04), transparent); }
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+.card-name-wrap { flex: 1; min-width: 0; }
+.card-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card-origin {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--dim);
+  margin-top: 2px;
+}
+.badges {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+.badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 100px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.badge-free { background: var(--free-bg); color: var(--free-text); border: 1px solid var(--free-border); }
+.badge-freemium { background: var(--freemium-bg); color: var(--freemium-text); border: 1px solid var(--freemium-border); }
+.badge-paid { background: var(--paid-bg); color: var(--paid-text); border: 1px solid var(--paid-border); }
+.badge-china { background: var(--china-bg); color: var(--china-text); border: 1px solid var(--china-border); }
+
+.card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.55;
+  flex: 1;
+}
+
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  color: var(--dim);
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  margin-top: auto;
+}
+.card-link {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--accent);
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: opacity 0.15s;
+  cursor: pointer;
+}
+.card-link:hover { opacity: 0.7; }
+.card-when {
+  font-size: 11px;
+  color: var(--dim);
+  font-style: italic;
+  text-align: right;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hidden { display: none !important; }
+
+/* MODAL */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  padding: 32px;
+  max-width: 560px;
+  width: 100%;
+  transform: translateY(20px);
+  transition: transform 0.25s;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.modal-close:hover { background: var(--border2); color: var(--text); }
+.modal-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+.modal-badges { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+.modal-section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 6px;
+  margin-top: 16px;
+}
+.modal-desc {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.modal-when {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+  padding: 12px 16px;
+  background: rgba(124,111,255,0.08);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+.modal-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.modal-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  padding: 4px 12px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border2);
+  color: var(--muted);
+}
+.modal-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  padding: 12px 24px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: opacity 0.15s;
+}
+.modal-link:hover { opacity: 0.85; }
+
+/* LEGEND */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  padding: 20px 24px;
+  border-top: 1px solid var(--border);
+  margin-top: 40px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* BACK TO TOP */
+#back-top {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 44px;
+  height: 44px;
+  background: var(--accent);
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+  transform: translateY(10px);
+}
+#back-top.visible { opacity: 1; transform: translateY(0); }
+#back-top:hover { opacity: 0.85; }
+
+/* SECTION COLORS */
+.section[data-cat="chat"] .section-title { color: #a89fff; }
+.section[data-cat="code"] .section-title { color: var(--accent3); }
+.section[data-cat="editor"] .section-title { color: #5bc8ff; }
+.section[data-cat="app"] .section-title { color: var(--accent5); }
+.section[data-cat="automation"] .section-title { color: var(--accent4); }
+.section[data-cat="design"] .section-title { color: #ff9ff3; }
+.section[data-cat="image"] .section-title { color: var(--accent2); }
+.section[data-cat="search"] .section-title { color: var(--accent3); }
+.section[data-cat="agent"] .section-title { color: #a89fff; }
+.section[data-cat="audio"] .section-title { color: var(--accent5); }
+.section[data-cat="data"] .section-title { color: #5bc8ff; }
+.section[data-cat="chinese"] .section-title { color: var(--china-text); }
+
+/* EMPTY STATE */
+.empty {
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--dim);
+  font-size: 16px;
+  display: none;
+}
+.empty.show { display: block; }
+.empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.3; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 3px; }
+
+.section[data-cat="cloud"] .section-title { color: #5bc8ff; }
+
+footer {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 48px 24px 64px;
+  border-top: 1px solid var(--border);
+}
+.footer-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.footer-made {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--dim);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.footer-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--accent), var(--accent3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.footer-year {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--dim);
+}
+</style>
+</head>
+<body>
+
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+
+<header>
+  <div class="header-eyebrow">The complete map</div>
+  <h1>AI Tools<br><span class="grad">Universe</span></h1>
+  <p class="header-sub">Every powerful AI tool you need — categorized, compared, and linked. Updated 2025.</p>
+  <div class="stats-row">
+    <div class="stat"><div class="stat-num" id="total-count">80+</div><div class="stat-label">tools</div></div>
+    <div class="stat"><div class="stat-num">13</div><div class="stat-label">categories</div></div>
+    <div class="stat"><div class="stat-num" id="free-count">—</div><div class="stat-label">free / freemium</div></div>
+    <div class="stat"><div class="stat-num">15+</div><div class="stat-label">Chinese AI</div></div>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="controls-inner">
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input type="text" id="search" placeholder="Search any tool, tag, use case…" oninput="filterAll()">
+      </div>
+      <div class="count-bar"><span id="visible-count">—</span> tools shown</div>
+    </div>
+    <div class="filters">
+      <span class="filters-label">Filter:</span>
+      <span class="pill active" onclick="setFilter('all',this)">All</span>
+      <span class="pill" onclick="setFilter('chat',this)">💬 Chat AI</span>
+      <span class="pill" onclick="setFilter('code',this)">⌨ Code</span>
+      <span class="pill" onclick="setFilter('editor',this)">🗒 Editors</span>
+      <span class="pill" onclick="setFilter('app',this)">🚀 App builders</span>
+      <span class="pill" onclick="setFilter('automation',this)">⚡ Automation</span>
+      <span class="pill" onclick="setFilter('design',this)">✦ Design / 3D</span>
+      <span class="pill" onclick="setFilter('image',this)">🎨 Image / Video</span>
+      <span class="pill" onclick="setFilter('search',this)">🔍 Search</span>
+      <span class="pill" onclick="setFilter('agent',this)">🤖 Agents</span>
+      <span class="pill" onclick="setFilter('audio',this)">🎵 Audio</span>
+      <span class="pill" onclick="setFilter('data',this)">🗄 Data / Platforms</span>
+      <span class="pill china-pill" onclick="setFilter('chinese',this)">🇨🇳 Chinese AI</span>
+      <span class="pill" onclick="setFilter('cloud',this)">☁ Cloud / Data</span>
+      <span class="pill free-pill" onclick="setFilter('freeflag',this)">✓ Free only</span>
+    </div>
+  </div>
+</div>
+
+<main id="main"></main>
+
+<div class="legend">
+  <div class="legend-item"><span class="badge badge-free">free</span> Free forever</div>
+  <div class="legend-item"><span class="badge badge-freemium">freemium</span> Free tier + paid plans</div>
+  <div class="legend-item"><span class="badge badge-paid">paid</span> Paid only</div>
+  <div class="legend-item"><span class="badge badge-china">chinese</span> Chinese origin</div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModalBtn()">✕</button>
+    <div class="modal-name" id="m-name"></div>
+    <div class="modal-badges" id="m-badges"></div>
+    <div class="modal-section-label">What it does</div>
+    <div class="modal-desc" id="m-desc"></div>
+    <div class="modal-section-label">Best used when</div>
+    <div class="modal-when" id="m-when"></div>
+    <div class="modal-section-label">Tags</div>
+    <div class="modal-tags" id="m-tags"></div>
+    <a id="m-link" class="modal-link" href="#" target="_blank" rel="noopener">Visit website ↗</a>
+  </div>
+</div>
+
+<button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-made">crafted by</div>
+    <div class="footer-name">Omar Bouzganda</div>
+    <div class="footer-year">AI Tools Universe · 2025</div>
+  </div>
+</footer>
+
+<script>
+const TOOLS = [
+  // ── CHAT AI ──
+  {name:"Claude",cat:"chat",price:"freemium",url:"https://claude.ai",origin:"Anthropic · USA",tags:["reasoning","writing","code","analysis","long docs"],desc:"Anthropic's flagship AI. One of the best for complex reasoning, coding, writing, and document analysis. Supports 200K context window. Constitutional AI training makes it safer and more honest.",when:"Use for almost anything — especially when you need careful thinking, nuanced writing, or code review."},
+  {name:"ChatGPT",cat:"chat",price:"freemium",url:"https://chatgpt.com",origin:"OpenAI · USA",tags:["GPT-4o","plugins","vision","voice","memory"],desc:"OpenAI's flagship chatbot. GPT-4o supports vision, real-time voice, custom GPTs, code interpreter, image generation (DALL-E), and a massive plugin ecosystem. Memory across conversations.",when:"Use for the widest ecosystem, plugin access, and when you need voice or vision features built in."},
+  {name:"Gemini",cat:"chat",price:"freemium",url:"https://gemini.google.com",origin:"Google · USA",tags:["1M context","multimodal","Google Workspace"],desc:"Google's most powerful AI. Gemini 1.5 Pro holds the world-record for context window (1M tokens). Deep integration with Gmail, Docs, Drive. Ultra model rivals GPT-4 in many benchmarks.",when:"Use when working with very long documents, or when you need tight Google Workspace integration."},
+  {name:"Grok",cat:"chat",price:"freemium",url:"https://grok.x.ai",origin:"xAI · USA",tags:["real-time X","unfiltered","fun","reasoning"],desc:"Elon Musk's xAI chatbot. Real-time access to X (Twitter) data. Has a unique unfiltered personality mode. Grok-3 competes strongly with GPT-4 on reasoning benchmarks.",when:"Use for real-time social media analysis, trending news, or when you want a less filtered AI personality."},
+  {name:"Copilot",cat:"chat",price:"freemium",url:"https://copilot.microsoft.com",origin:"Microsoft · USA",tags:["Microsoft","Office 365","Bing","Windows"],desc:"Microsoft's AI built on GPT-4, integrated into Windows, Edge browser, Teams, and Office 365. Free for all Windows users. Business version unlocks enterprise features.",when:"Use if you're already in the Microsoft ecosystem — it's the best AI for Office, Edge, and Windows."},
+  {name:"Mistral",cat:"chat",price:"freemium",url:"https://chat.mistral.ai",origin:"Mistral AI · France",tags:["open source","efficient","European","fast"],desc:"Fast, high-quality French LLM. Open-weight models (Mistral, Mixtral, Mistral Large) have excellent quality-to-cost ratio. European alternative with strong privacy credentials.",when:"Use when you want an open, European alternative to OpenAI — especially for API access at lower cost."},
+  {name:"LLaMA 3.3",cat:"chat",price:"free",url:"https://llama.meta.com",origin:"Meta · USA",tags:["open source","self-host","Ollama","Groq","free"],desc:"Meta's open-source model family. LLaMA 3.3 70B rivals GPT-4 on many benchmarks. Can be run locally via Ollama, or free via Groq/Together.ai. The backbone of most open-source AI.",when:"Use when you want a powerful free model to run locally, fine-tune, or self-host without API costs."},
+  {name:"Phi-4",cat:"chat",price:"free",url:"https://azure.microsoft.com/en-us/products/phi",origin:"Microsoft · USA",tags:["small model","efficient","open source","local"],desc:"Microsoft's small but surprisingly powerful model. Phi-4 (14B) punches way above its size class. Can run on a laptop. Excellent for local deployment.",when:"Use when you need a capable model that runs efficiently on consumer hardware."},
+  {name:"Command R+",cat:"chat",price:"freemium",url:"https://cohere.com",origin:"Cohere · Canada",tags:["RAG","enterprise","long context","retrieval"],desc:"Cohere's enterprise-focused model. Built for RAG (Retrieval-Augmented Generation), tool use, and large-scale deployment. Strong multilingual performance.",when:"Use for enterprise RAG pipelines, document search, and production deployments needing multilingual support."},
+  {name:"Perplexity AI",cat:"chat",price:"freemium",url:"https://perplexity.ai",origin:"Perplexity · USA",tags:["sourced","real-time","research","citations"],desc:"AI that answers with real-time web search and cites every source inline. The best AI for research questions where you need verifiable information.",when:"Use when you need fast, sourced answers you can actually verify — not just plausible-sounding text."},
+  {name:"Pi",cat:"chat",price:"free",url:"https://pi.ai",origin:"Inflection · USA",tags:["emotional","conversational","personal","supportive"],desc:"Inflection's AI focused on emotional intelligence and supportive conversation. Warm, patient, great memory. Designed for personal use and mental wellbeing.",when:"Use for journaling, emotional support, personal conversations, or when you want an AI that truly listens."},
+  {name:"HuggingChat",cat:"chat",price:"free",url:"https://huggingface.co/chat",origin:"Hugging Face · USA/France",tags:["open source","free","multiple models","no signup"],desc:"Hugging Face's free chat interface. Access Mixtral, LLaMA, Command R+, and other open models for free with no subscription. Web search built in.",when:"Use for completely free access to multiple frontier open-source models without any cost."},
+
+  // ── CHINESE AI ──
+  {name:"DeepSeek V3",cat:"chat",price:"free",url:"https://chat.deepseek.com",origin:"DeepSeek · China",tags:["open source","strong","free","math","code"],desc:"Top-tier Chinese open-source LLM. Rivals GPT-4o in benchmarks especially math and code. Free to use via chat or API. Caused major shock in AI industry on release.",when:"Use when you need a powerful free model — exceptional at math, coding, and reasoning.",chinese:true},
+  {name:"DeepSeek R1",cat:"chat",price:"free",url:"https://chat.deepseek.com",origin:"DeepSeek · China",tags:["reasoning","chain-of-thought","RL","open source"],desc:"DeepSeek's reasoning-focused model trained with reinforcement learning — similar approach to OpenAI o1. Shows full thinking chain. Rivals o1 at a fraction of the cost.",when:"Use when you need deep multi-step reasoning and want to see every step of the thought process.",chinese:true},
+  {name:"Qwen 2.5",cat:"chat",price:"free",url:"https://qwen.aliyun.com",origin:"Alibaba · China",tags:["multilingual","open source","Arabic","large family"],desc:"Alibaba's open-source model family. QwQ-32B is a strong reasoning model. Qwen 2.5 has excellent multilingual support including Arabic, and various sizes from 0.5B to 72B.",when:"Use for multilingual tasks, Arabic language processing, or as a free self-hostable model.",chinese:true},
+  {name:"Kimi (Moonshot)",cat:"chat",price:"freemium",url:"https://kimi.moonshot.cn",origin:"Moonshot AI · China",tags:["128K context","long docs","Chinese","files"],desc:"Chinese AI with a 128K context window. Excels at document analysis, long-form reading, and multi-file processing. Strong at Chinese-language tasks.",when:"Use when you have very long documents to analyze, or for Chinese-language tasks.",chinese:true},
+  {name:"Doubao",cat:"chat",price:"free",url:"https://www.doubao.com",origin:"ByteDance · China",tags:["free","multimodal","fast","daily use"],desc:"ByteDance (TikTok parent company) AI assistant. Free, fast, multimodal. Popular daily assistant in China. Clean interface, good at conversation.",when:"Use for Chinese-language daily assistance or as a fast free multimodal AI.",chinese:true},
+  {name:"Ernie Bot",cat:"chat",price:"freemium",url:"https://yiyan.baidu.com",origin:"Baidu · China",tags:["Chinese search","Baidu","knowledge","enterprise"],desc:"Baidu's flagship AI, built on their ERNIE model family. Deeply integrated with Baidu search and Chinese knowledge bases. Enterprise-grade Chinese AI.",when:"Use for Chinese search integration, knowledge queries from Chinese web, and Baidu ecosystem.",chinese:true},
+  {name:"Hunyuan",cat:"chat",price:"freemium",url:"https://hunyuan.tencent.com",origin:"Tencent · China",tags:["WeChat","Chinese NLP","multimodal","enterprise"],desc:"Tencent's LLM, integrated into WeChat ecosystem and enterprise products. Strong at Chinese NLP and now multimodal. Has open-source variants.",when:"Use when you need WeChat integration or Tencent ecosystem AI features.",chinese:true},
+  {name:"Yi",cat:"chat",price:"free",url:"https://www.01.ai",origin:"01.AI · China",tags:["bilingual","open source","34B","reasoning"],desc:"01.AI's bilingual (EN/ZH) open model. Yi-34B and Yi-1.5 family are strong at coding and reasoning. Available on Hugging Face and Ollama.",when:"Use as a strong free open-source model with excellent bilingual Chinese/English capability.",chinese:true},
+  {name:"Spark (Xinghuo)",cat:"chat",price:"freemium",url:"https://xinghuo.xfyun.cn",origin:"iFlytek · China",tags:["Chinese voice","education","speech","NLP"],desc:"iFlytek's AI platform, world-leading in Chinese voice recognition and NLP. Strong in education, enterprise, and voice applications.",when:"Use for Chinese voice AI, speech-to-text, or educational applications in Chinese.",chinese:true},
+  {name:"Minimax",cat:"chat",price:"freemium",url:"https://www.minimaxi.com",origin:"MiniMax · China",tags:["multimodal","video","music","fast"],desc:"Chinese AI lab with strong multimodal models. Powers Hailuo AI video generation and Suno-like music generation. Growing fast.",when:"Use for multimodal Chinese AI and as infrastructure for video/music generation.",chinese:true},
+  {name:"Baichuan",cat:"chat",price:"free",url:"https://www.baichuan-ai.com",origin:"Baichuan AI · China",tags:["open source","medical","knowledge","Chinese"],desc:"Strong Chinese open-source LLM with excellent Chinese language understanding. Particularly good at medical and domain-specific knowledge in Chinese.",when:"Use for Chinese domain-specific tasks, medical knowledge, or as a free open-source Chinese LLM.",chinese:true},
+  {name:"InternLM",cat:"chat",price:"free",url:"https://github.com/InternLM/InternLM",origin:"Shanghai AI Lab · China",tags:["open source","long context","research","code"],desc:"Shanghai AI Lab's powerful open-source model. InternLM 2.5 has 1M token context. Excellent for research and technical tasks.",when:"Use when you need a free open-source model with very long context window.",chinese:true},
+
+  // ── CODE ──
+  {name:"Claude Code",cat:"code",price:"freemium",url:"https://claude.ai/code",origin:"Anthropic · USA",tags:["terminal","full codebase","agentic","git"],desc:"AI agent running in your terminal. Reads, edits, runs your entire codebase. Can execute shell commands, write tests, commit to git, and handle multi-file refactors. Extremely powerful.",when:"Use when you want AI to work autonomously across your entire project — not just individual snippets."},
+  {name:"GitHub Copilot",cat:"code",price:"freemium",url:"https://github.com/features/copilot",origin:"GitHub / OpenAI · USA",tags:["inline","autocomplete","VS Code","JetBrains"],desc:"The most widely used AI code tool. Inline suggestions as you type across VS Code, JetBrains, Neovim. Copilot Chat explains code, writes tests, and fixes bugs.",when:"Use for the best inline autocomplete experience, especially if you want seamless IDE integration."},
+  {name:"OpenAI Codex",cat:"code",price:"freemium",url:"https://platform.openai.com/codex",origin:"OpenAI · USA",tags:["sandbox","agentic","natural language","files"],desc:"OpenAI's latest code agent. Runs in a sandboxed cloud environment. Interprets natural language tasks and modifies files. Agent can use the internet and run code.",when:"Use when you prefer the OpenAI ecosystem for agentic coding that spans multiple files and tools."},
+  {name:"Aider",cat:"code",price:"free",url:"https://aider.chat",origin:"Paul Gauthier · USA",tags:["open source","terminal","git","multi-model"],desc:"Open-source AI coding assistant for the terminal. Works with any model (GPT-4, Claude, Gemini, local). Smart git integration, auto-commits changes with messages.",when:"Use when you want a free, open-source Claude Code alternative that works with any LLM."},
+  {name:"Tabnine",cat:"code",price:"freemium",url:"https://tabnine.com",origin:"Tabnine · Israel",tags:["private","enterprise","local model","team"],desc:"AI code completion focused on privacy. Can run model fully locally. Team learning — learns your team's codebase. Enterprise-grade security and compliance.",when:"Use when code privacy is critical, or for enterprise teams needing on-premise AI coding."},
+  {name:"Codeium",cat:"code",price:"free",url:"https://codeium.com",origin:"Exafunction · USA",tags:["free forever","fast","70+ languages","VS Code"],desc:"One of the best free GitHub Copilot alternatives. 70+ language support, VS Code and JetBrains extensions, fast autocomplete. Forever free for individuals.",when:"Use as the best completely free Copilot alternative with no usage limits."},
+  {name:"Continue",cat:"code",price:"free",url:"https://continue.dev",origin:"Continue · USA",tags:["open source","local models","VS Code","custom"],desc:"Open-source AI coding assistant that connects to ANY model — local Ollama, Claude, GPT-4, or custom. Full VS Code and JetBrains integration.",when:"Use when you want open-source AI coding that runs with your own local models."},
+
+  // ── EDITORS ──
+  {name:"Cursor",cat:"editor",price:"freemium",url:"https://cursor.sh",origin:"Anysphere · USA",tags:["VS Code fork","multi-file","chat","tab complete"],desc:"VS Code fork with AI baked in. Industry-leading multi-file context. Tab autocomplete that understands your whole codebase. Composer for multi-file edits. Best-in-class AI editor.",when:"Use when you want the best all-around AI coding experience with strong multi-file awareness."},
+  {name:"VS Code",cat:"editor",price:"free",url:"https://code.visualstudio.com",origin:"Microsoft · USA",tags:["free","extensions","open source","universal"],desc:"The world's most popular code editor. Free, extensible, open-source. AI via GitHub Copilot, Continue, Codeium, or any other extension. Millions of users.",when:"Use as your base editor — add AI extensions of your choice. The standard choice for most developers."},
+  {name:"Windsurf",cat:"editor",price:"freemium",url:"https://codeium.com/windsurf",origin:"Codeium · USA",tags:["Cascade","agentic","VS Code alt","free tier"],desc:"AI-native editor by Codeium. Features Cascade — an AI agent that plans and executes tasks. Strong free tier. Some say it rivals Cursor.",when:"Use as a free Cursor alternative with its own powerful agentic AI model."},
+  {name:"Zed",cat:"editor",price:"free",url:"https://zed.dev",origin:"Zed Industries · USA",tags:["Rust","fast","collaborative","open source"],desc:"Ultra-fast code editor written in Rust. Built-in AI (Claude) and real-time multiplayer collaboration. Much faster than VS Code. Open source.",when:"Use when performance is top priority and you want a blazing fast editor with clean AI integration."},
+  {name:"JetBrains AI",cat:"editor",price:"paid",url:"https://jetbrains.com/ai",origin:"JetBrains · Czech Republic",tags:["IntelliJ","PyCharm","enterprise","deep IDE"],desc:"AI Assistant deeply integrated into the JetBrains IDEs (IntelliJ, PyCharm, WebStorm, etc). Context from your entire project. Generates docs, tests, code.",when:"Use if you're already a JetBrains user and want deep IDE-native AI."},
+  {name:"Neovim + AI",cat:"editor",price:"free",url:"https://neovim.io",origin:"Open Source",tags:["terminal","fast","plugins","power users"],desc:"Ultra-powerful terminal editor. Add AI via plugins like Avante.nvim, CodeCompanion, or CopilotChat.nvim. For experienced developers who live in the terminal.",when:"Use if you're a Neovim power user — AI plugins bring full Copilot/Claude functionality."},
+
+  // ── APP BUILDERS ──
+  {name:"Lovable",cat:"app",price:"freemium",url:"https://lovable.dev",origin:"Lovable · Sweden",tags:["React","Supabase","full-stack","deploy","auth"],desc:"Describe your app and get a full React + Supabase backend. Auth, databases, storage, and edge functions included. One-click deploy. Considered one of the best vibe coding tools.",when:"Use when you want a production-ready web app fast with real backend infrastructure — not just a static prototype."},
+  {name:"Bolt.new",cat:"app",price:"freemium",url:"https://bolt.new",origin:"StackBlitz · USA",tags:["browser","full-stack","instant","no install"],desc:"AI app builder that runs entirely in the browser using WebContainers. Generates full-stack apps with instant preview. No local setup needed. Uses Claude Sonnet.",when:"Use for the fastest prototyping experience without installing anything locally."},
+  {name:"v0 by Vercel",cat:"app",price:"freemium",url:"https://v0.dev",origin:"Vercel · USA",tags:["React","shadcn","Tailwind","UI components"],desc:"Vercel's AI UI generator. Produces polished React components with shadcn/ui and Tailwind. Ideal for front-end scaffolding and design systems.",when:"Use when you need beautiful, production-quality React UI components generated from a text description."},
+  {name:"Replit",cat:"app",price:"freemium",url:"https://replit.com",origin:"Replit · USA",tags:["cloud IDE","deploy","collaborative","beginners"],desc:"Online IDE + AI agent (Replit Agent). Build, run, and deploy apps in the browser. Best for beginners and learning. Great for rapid prototyping and sharing.",when:"Use when you want to build, share, and deploy from one tab — great for demos, learning, and collaboration."},
+  {name:"Firebase Studio",cat:"app",price:"freemium",url:"https://firebase.google.com/products/studio",origin:"Google · USA",tags:["Gemini","Google Cloud","full-stack","Firebase"],desc:"Google's new AI-powered app builder integrated with Firebase and Gemini. Builds full-stack apps that deploy directly to Google Cloud.",when:"Use when you want to build production apps on Google Cloud infrastructure with Gemini as the AI backbone."},
+  {name:"Webflow",cat:"app",price:"freemium",url:"https://webflow.com",origin:"Webflow · USA",tags:["no-code","website","CMS","design","visual"],desc:"Professional no-code website builder with CMS, animations, and now AI features. Used by serious designers and agencies. Full responsive control.",when:"Use for professional marketing sites, portfolios, and content-heavy websites without writing code."},
+  {name:"Framer",cat:"app",price:"freemium",url:"https://framer.com",origin:"Framer · Netherlands",tags:["no-code","web","CMS","AI pages","design"],desc:"Design and publish websites with no code. AI generates entire pages and sections from prompts. CMS for dynamic content. Beautiful animations out of the box.",when:"Use when you want to design AND publish a polished website in one tool, especially for startups and portfolios."},
+  {name:"Bubble",cat:"app",price:"freemium",url:"https://bubble.io",origin:"Bubble · USA",tags:["no-code","database","workflows","SaaS"],desc:"The most powerful no-code platform. Build full SaaS applications with complex databases, user authentication, and business logic. No limits.",when:"Use when you need a complete no-code SaaS application with complex data models and user logic."},
+
+  // ── AUTOMATION ──
+  {name:"n8n",cat:"automation",price:"free",url:"https://n8n.io",origin:"n8n GmbH · Germany",tags:["open source","self-host","code nodes","AI agents","400+ integrations"],desc:"Open-source automation platform. 400+ integrations, code nodes for custom logic, AI agent nodes. Self-hostable for full privacy and control. Free forever.",when:"Use when you need powerful automations with custom code, AI steps, and want full control over your data."},
+  {name:"Zapier",cat:"automation",price:"freemium",url:"https://zapier.com",origin:"Zapier · USA",tags:["easiest","5000+ apps","no-code","non-technical"],desc:"The easiest automation tool for non-developers. Trigger-action flows connecting 5000+ apps. No setup required. AI features with AI by Zapier.",when:"Use for simple, reliable automations without any technical effort. Best for non-developers."},
+  {name:"Make",cat:"automation",price:"freemium",url:"https://make.com",origin:"Make · Czech Republic",tags:["visual canvas","complex flows","middle ground","no-code"],desc:"Visual automation builder with flowchart-style canvas. More powerful and flexible than Zapier, easier than n8n. Excellent for complex multi-step workflows.",when:"Use when you want visual automations with real logic and branching — the sweet spot between Zapier and n8n."},
+  {name:"Gumloop",cat:"automation",price:"freemium",url:"https://gumloop.com",origin:"Gumloop · USA",tags:["AI-native","web scraping","summarize","classify","visual"],desc:"AI-native no-code automation. Web scraping, AI summarization, data classification, and email flows built in natively. Clean visual canvas.",when:"Use when you want AI baked directly into your automations — no need to wire external AI APIs."},
+  {name:"Activepieces",cat:"automation",price:"free",url:"https://activepieces.com",origin:"Activepieces · USA",tags:["open source","n8n alternative","self-host","clean UI"],desc:"Open-source Zapier/n8n alternative. Self-hostable, clean and intuitive UI, 100+ integrations. Growing fast. Great free tier.",when:"Use as a free open-source automation tool that's more approachable than n8n."},
+  {name:"Pipedream",cat:"automation",price:"freemium",url:"https://pipedream.com",origin:"Pipedream · USA",tags:["developer-first","Node.js","serverless","APIs"],desc:"Developer-focused automation platform. Write Node.js code in workflows. 1000+ API integrations. Run serverless functions. Best for developers who want automation with code.",when:"Use when you're a developer who wants automation with the power to write real code steps."},
+  {name:"Bardeen",cat:"automation",price:"freemium",url:"https://bardeen.ai",origin:"Bardeen · USA",tags:["browser extension","scraping","LinkedIn","no-code"],desc:"Browser extension that automates repetitive browser tasks. Great for LinkedIn automation, web scraping, and CRM data entry. No coding needed.",when:"Use for automating browser-based repetitive tasks like LinkedIn outreach or web scraping."},
+
+  // ── DESIGN / 3D ──
+  {name:"Spline",cat:"design",price:"free",url:"https://spline.design",origin:"Spline · Germany",tags:["3D browser","interactive","web export","free","animations"],desc:"Browser-based 3D design tool. Create interactive 3D scenes, animations, and physics simulations. Export directly to web. Free plan is very generous. No Blender skills needed.",when:"Use when you want beautiful interactive 3D on your website without the complexity of Blender or Three.js."},
+  {name:"Figma",cat:"design",price:"freemium",url:"https://figma.com",origin:"Figma · USA",tags:["UI/UX","collaboration","components","design system","prototyping"],desc:"The industry-standard UI/UX design tool. Components, variants, prototyping, dev mode, and AI features. Used by 99% of product teams. Free for up to 3 projects.",when:"Use for any serious UI design, product design, or UX work. The universal standard."},
+  {name:"Canva",cat:"design",price:"freemium",url:"https://canva.com",origin:"Canva · Australia",tags:["non-designers","social media","presentations","marketing","AI"],desc:"Easy drag-and-drop design platform for non-designers. Social posts, presentations, docs, print. Has AI image generation, background removal, and Magic Studio.",when:"Use for fast marketing visuals, social media, presentations, and anything that doesn't need Figma-level precision."},
+  {name:"Adobe Firefly",cat:"design",price:"freemium",url:"https://firefly.adobe.com",origin:"Adobe · USA",tags:["commercial-safe","Photoshop","Illustrator","generative fill"],desc:"Adobe's AI image and design tools. Trained on licensed content — commercially safe. Generative Fill in Photoshop, Generative Recolor in Illustrator. Built for professionals.",when:"Use when you need AI-generated assets for commercial use, integrated with Adobe Creative Suite."},
+  {name:"Gamma",cat:"design",price:"freemium",url:"https://gamma.app",origin:"Gamma · USA",tags:["presentations","docs","websites","AI-generated","fast"],desc:"AI that generates beautiful presentations, documents, and landing pages from a prompt or outline. Stunning themes, responsive. Replaces PowerPoint for many use cases.",when:"Use when you need a stunning presentation or doc in minutes — just paste your bullet points."},
+  {name:"Napkin AI",cat:"design",price:"freemium",url:"https://napkin.ai",origin:"Napkin · USA",tags:["text-to-visual","diagrams","infographics","auto-generate"],desc:"Automatically turns your text into visual diagrams, infographics, and charts. Paste any text and get a visual. Great for business decks and documentation.",when:"Use to instantly visualize ideas, processes, or data without any design work."},
+  {name:"Rive",cat:"design",price:"freemium",url:"https://rive.app",origin:"Rive · USA",tags:["animation","interactive","state machine","games","real-time"],desc:"Real-time interactive animation tool. State machines make animations respond to user input. Used in games, apps, and websites. Lightweight runtime for web.",when:"Use for interactive animations that change based on user state — buttons, loading states, game characters."},
+  {name:"Jitter",cat:"design",price:"freemium",url:"https://jitter.video",origin:"Jitter · France",tags:["motion design","video","Figma plugin","social media"],desc:"Motion design tool with Figma integration. Animate UI designs and create motion graphics for social media and product demos. Clean and fast.",when:"Use to add motion to your Figma designs and create short animated videos or UI demos."},
+  {name:"Blender",cat:"design",price:"free",url:"https://blender.org",origin:"Blender Foundation · Netherlands",tags:["3D","open source","free","industry standard","VFX"],desc:"The world's best free 3D software. Film-quality rendering, sculpting, rigging, animation, VFX, and game assets. Open source and completely free. Steep learning curve.",when:"Use for serious 3D modeling, animation, and rendering when you're willing to invest in learning."},
+  {name:"Sora",cat:"image",price:"freemium",url:"https://openai.com/sora",origin:"OpenAI · USA",tags:["text-to-video","60 seconds","realistic","OpenAI"],desc:"OpenAI's text-to-video model. Generates photorealistic videos up to 60 seconds from text prompts. Understands physics and narrative structure. Available in ChatGPT.",when:"Use when you need the highest-quality AI video generation from text prompts."},
+
+  // ── IMAGE / VIDEO ──
+  {name:"Midjourney",cat:"image",price:"paid",url:"https://midjourney.com",origin:"Midjourney · USA",tags:["best quality","artistic","photorealistic","commercial"],desc:"The gold standard for AI image quality. Unmatched artistic output across styles — photorealistic, painterly, abstract. Now has a web interface. Used by professionals worldwide.",when:"Use when image quality and artistic control are your top priorities. No free tier."},
+  {name:"DALL-E 3",cat:"image",price:"freemium",url:"https://openai.com/dall-e-3",origin:"OpenAI · USA",tags:["accurate","ChatGPT","text in images","versatile"],desc:"OpenAI's image model. Exceptional at following complex prompts accurately. Integrated directly into ChatGPT Plus. Good at generating readable text in images.",when:"Use for prompt-accurate image generation — it follows instructions more literally than Midjourney."},
+  {name:"Stable Diffusion",cat:"image",price:"free",url:"https://stability.ai",origin:"Stability AI · UK",tags:["open source","local","ComfyUI","fine-tune","unlimited"],desc:"The foundational open-source image model. Run locally with no limits. Use with ComfyUI, Automatic1111, or InvokeAI. Fine-tune with LoRA. Huge community.",when:"Use for unlimited local image generation, fine-tuning, and when you want full control over the process."},
+  {name:"Flux",cat:"image",price:"free",url:"https://blackforestlabs.ai",origin:"Black Forest Labs · Germany",tags:["open source","Midjourney quality","fast","local"],desc:"Black Forest Labs' model (creators of Stable Diffusion). FLUX.1 rivals Midjourney in quality. Open weights available. Runs locally or via API. The new open-source king.",when:"Use as the best free open-source alternative for Midjourney-quality image generation."},
+  {name:"Ideogram",cat:"image",price:"freemium",url:"https://ideogram.ai",origin:"Ideogram · Canada",tags:["text in images","logos","posters","accurate text"],desc:"AI image model that excels at generating readable text inside images. Perfect for logos, posters, social thumbnails, and mockups where text matters.",when:"Use whenever your generated image needs to include readable text — logos, mockups, thumbnails."},
+  {name:"Leonardo AI",cat:"image",price:"freemium",url:"https://leonardo.ai",origin:"Leonardo AI · Australia",tags:["game assets","consistent","fine-tune","ControlNet"],desc:"AI image generation platform popular with game designers. Consistent character generation, ControlNet support, fine-tuning. Generous free tier.",when:"Use for game assets, character design, concept art, and when you need consistency across generations."},
+  {name:"Runway ML",cat:"image",price:"freemium",url:"https://runwayml.com",origin:"Runway · USA",tags:["video generation","Gen-3","edit video","professional"],desc:"Professional AI creative suite. Gen-3 Alpha for video generation, video editing with AI, background removal, motion capture. Used in professional film production.",when:"Use for professional video work where quality and editing control matter more than cost."},
+  {name:"Kling AI",cat:"image",price:"freemium",url:"https://klingai.com",origin:"Kuaishou · China",tags:["video","realistic","5s-10s","generous free","Chinese"],desc:"Top Chinese video generation model from Kuaishou. Rivals Sora in realism. Generates 5-10 second videos. Very generous free credits. Fast generation.",when:"Use for high-quality video generation when you want Sora-quality results with a generous free tier.",chinese:true},
+  {name:"Wan (Wanx)",cat:"image",price:"free",url:"https://wan.video",origin:"Alibaba · China",tags:["open source","video","free","download"],desc:"Alibaba's open-source video generation model. Wan 2.1 produces competitive quality. Can be downloaded and run locally. Free to use.",when:"Use for completely free, open-source video generation that you can run locally.",chinese:true},
+  {name:"Hailuo AI",cat:"image",price:"freemium",url:"https://hailuoai.com",origin:"MiniMax · China",tags:["video","cinematic","MiniMax","free credits"],desc:"MiniMax's video generation model (also called MiniMax Video). Cinematic-style outputs. Free daily credits. Strong competitor to international models.",when:"Use for cinematic AI video with a generous daily free tier.",chinese:true},
+  {name:"Pika Labs",cat:"image",price:"freemium",url:"https://pika.art",origin:"Pika · USA",tags:["video","text-to-video","image-to-video","fun"],desc:"Fun and accessible AI video platform. Animate images, generate videos from text. Good for social content and creative projects.",when:"Use for quick, fun video generation and animating still images for social media."},
+  {name:"Adobe Express",cat:"image",price:"freemium",url:"https://express.adobe.com",origin:"Adobe · USA",tags:["quick design","social media","AI","templates","free"],desc:"Adobe's free, easy design tool. Thousands of templates, AI background removal, text effects, Firefly integration. More powerful than Canva in some areas.",when:"Use for branded social content with Adobe quality but without Photoshop complexity."},
+
+  // ── SEARCH ──
+  {name:"You.com",cat:"search",price:"freemium",url:"https://you.com",origin:"You.com · USA",tags:["AI modes","privacy","research","code mode"],desc:"AI search with multiple specialized modes: Chat, Research (with citations), Code, and Creative. Privacy-focused alternative to Google. Strong sourced research mode.",when:"Use when you want AI search with multiple specialized modes and more privacy than Google."},
+  {name:"Phind",cat:"search",price:"freemium",url:"https://phind.com",origin:"Phind · USA",tags:["developer","code search","technical","accurate"],desc:"AI search engine built for developers. Finds code examples, debugs errors, explains technical concepts. Much better than Google for programming questions.",when:"Use specifically for programming searches — it finds better code solutions faster than any other search engine."},
+  {name:"Andi",cat:"search",price:"free",url:"https://andisearch.com",origin:"Andi · USA",tags:["conversational","summarize","no ads","clean"],desc:"Ad-free conversational AI search. Summarizes results instead of showing links. Clean interface with no tracking.",when:"Use when you want a clean, ad-free AI search experience with summarized answers."},
+  {name:"Kagi",cat:"search",price:"paid",url:"https://kagi.com",origin:"Kagi · USA",tags:["paid","best quality","no ads","lenses"],desc:"The highest quality search engine. No ads, personalized ranking, AI summaries. Integrates multiple AI models. Used by power users.",when:"Use if you want the absolute best search quality and are willing to pay a small monthly fee."},
+  {name:"Exa",cat:"search",price:"freemium",url:"https://exa.ai",origin:"Exa · USA",tags:["semantic","API","developer","neural search"],desc:"Neural search API that finds conceptually similar content, not just keyword matches. Best-in-class for AI applications that need web search built in.",when:"Use as the best API for adding semantic web search to your AI applications."},
+
+  // ── AGENTS ──
+  {name:"Manus AI",cat:"agent",price:"freemium",url:"https://manus.ai",origin:"Monica · China",tags:["multi-agent","browse","code","execute","autonomous"],desc:"Multi-agent system that combines browsing, coding, research, and file creation to complete complex multi-step tasks. Caused massive buzz on launch in early 2025.",when:"Use when you need an agent to complete a full task end-to-end — from research to final document.",chinese:true},
+  {name:"OpenHands",cat:"agent",price:"free",url:"https://github.com/All-Hands-AI/OpenHands",origin:"All Hands AI · USA",tags:["open source","self-host","browse","terminal","free"],desc:"Open-source AI agent (formerly OpenDevin). Can browse the web, write code, run terminals, and complete multi-step software tasks. Self-hostable.",when:"Use as a free, powerful self-hosted agent — the open-source alternative to commercial agents."},
+  {name:"AutoGPT",cat:"agent",price:"free",url:"https://agpt.co",origin:"Significant Gravitas · UK",tags:["open source","autonomous","GPT","pioneer","loop"],desc:"One of the original autonomous AI agents. Open-source, goal-driven, multi-step execution. Started the AI agent movement in 2023.",when:"Use for open-source autonomous task completion, or to understand how AI agents work fundamentally."},
+  {name:"CrewAI",cat:"agent",price:"free",url:"https://crewai.com",origin:"CrewAI · USA",tags:["multi-agent","Python","roles","collaborate","framework"],desc:"Python framework for building multi-agent systems. Define agents with specific roles (researcher, writer, coder) and let them collaborate. Used widely in production.",when:"Use when building custom multi-agent pipelines in Python with well-defined role separation."},
+  {name:"LangChain",cat:"agent",price:"free",url:"https://langchain.com",origin:"LangChain · USA",tags:["RAG","tools","memory","Python","JS","framework"],desc:"The most popular LLM application framework. Build RAG systems, agents, chains, and pipelines. Huge community and ecosystem. Python and JavaScript versions.",when:"Use when building production LLM applications with retrieval, memory, tool use, and complex pipelines."},
+  {name:"LlamaIndex",cat:"agent",price:"free",url:"https://llamaindex.ai",origin:"LlamaIndex · USA",tags:["RAG","data ingestion","indexing","agents","Python"],desc:"Specialized framework for connecting LLMs to your data. Better than LangChain specifically for RAG, document indexing, and knowledge bases.",when:"Use specifically for building RAG applications and AI that queries your own documents and data."},
+  {name:"Dify",cat:"agent",price:"free",url:"https://dify.ai",origin:"LangGenius · China",tags:["visual","self-host","RAG","workflows","API"],desc:"Visual AI application builder. Build LLM apps, chatbots, and agent workflows with a drag-and-drop interface. Self-hostable. Backend-as-a-service for AI.",when:"Use when you want to build and deploy AI apps visually without writing full LangChain code.",chinese:true},
+  {name:"Flowise",cat:"agent",price:"free",url:"https://flowiseai.com",origin:"FlowiseAI · Singapore",tags:["visual","open source","LangChain UI","self-host","no-code"],desc:"Open-source visual builder for LangChain flows. Drag-and-drop nodes to create LLM applications, chatbots, and RAG systems. Self-hostable.",when:"Use to visually build LangChain applications without code. Best free no-code LLM app builder."},
+  {name:"AgentGPT",cat:"agent",price:"freemium",url:"https://agentgpt.reworkd.ai",origin:"Reworkd · USA",tags:["browser","autonomous","GPT","web tasks","beginner"],desc:"Browser-based autonomous AI agent. Give it a goal and watch it plan and execute tasks. No setup needed. Good for beginners to understand AI agents.",when:"Use for a zero-setup taste of autonomous AI agents — great for demos and exploration."},
+  {name:"BabyAGI",cat:"agent",price:"free",url:"https://github.com/yoheinakajima/babyagi",origin:"Yohei Nakajima · USA",tags:["task management","open source","GPT","loop","pioneer"],desc:"Pioneering AI task management system. Creates, prioritizes, and executes tasks in a loop. Minimalist, educational, open-source.",when:"Use to understand how AI task loops and autonomous agents work at a foundational level."},
+
+  // ── AUDIO ──
+  {name:"ElevenLabs",cat:"audio",price:"freemium",url:"https://elevenlabs.io",origin:"ElevenLabs · USA/Poland",tags:["voice clone","TTS","30 languages","realistic","API"],desc:"Best-in-class text-to-speech and voice cloning. Ultra-realistic in 30+ languages. Clone any voice from a 1-minute sample. Used by major publishers and podcasters.",when:"Use for voiceovers, audiobooks, podcasts, video dubbing, or any high-quality TTS."},
+  {name:"Suno",cat:"audio",price:"freemium",url:"https://suno.ai",origin:"Suno · USA",tags:["full songs","vocals","instruments","text prompt"],desc:"Generate complete songs with vocals and instruments from a text prompt. Surprisingly good quality across many genres. Simple interface, fast results.",when:"Use when you want to create full original songs from a short description — jingles, demos, creative projects."},
+  {name:"Udio",cat:"audio",price:"freemium",url:"https://udio.com",origin:"Udio · USA",tags:["hi-fi music","stems","extend","high quality"],desc:"High-fidelity AI music generation. Often produces better audio quality than Suno. Can generate stems, extend songs, and handles more complex musical structures.",when:"Use when you want the highest quality AI music, especially for more complex musical ideas."},
+  {name:"Whisper",cat:"audio",price:"free",url:"https://github.com/openai/whisper",origin:"OpenAI · USA",tags:["transcription","open source","99 languages","local","accurate"],desc:"OpenAI's open-source speech-to-text model. 99-language support, highly accurate, runs locally. Powers many transcription apps. Gold standard for STT.",when:"Use for free, highly accurate speech transcription. Run locally with no API costs."},
+  {name:"Descript",cat:"audio",price:"freemium",url:"https://descript.com",origin:"Descript · USA",tags:["podcast","video edit","overdub","transcript","remove filler"],desc:"Edit audio and video by editing the transcript. Remove filler words, overdub with your voice clone, remove silence. Podcasters' favorite tool.",when:"Use for podcast production and video editing where you want to work with text instead of waveforms."},
+  {name:"Adobe Podcast",cat:"audio",price:"free",url:"https://podcast.adobe.com",origin:"Adobe · USA",tags:["noise removal","enhance","free","professional quality"],desc:"Adobe's free AI audio enhancement. Removes background noise, echo, and room reverb from any recording. Makes bad microphone recordings sound professional.",when:"Use to instantly make any audio recording sound like a professional studio recording — completely free."},
+  {name:"Mubert",cat:"audio",price:"freemium",url:"https://mubert.com",origin:"Mubert · Ukraine",tags:["royalty-free","background music","API","generative","moods"],desc:"AI royalty-free music generation for content creators. Generate background music by mood, genre, and duration. API for developers.",when:"Use for royalty-free background music in videos, apps, and podcasts without licensing concerns."},
+
+  // ── DATA / PLATFORMS ──
+  {name:"Google AI Studio",cat:"data",price:"free",url:"https://aistudio.google.com",origin:"Google · USA",tags:["Gemini","free API","playground","multimodal","prompt engineering"],desc:"Google's free playground for Gemini models. System prompts, multimodal input, function calling, and free API key generation. The fastest way to access Gemini.",when:"Use to test Gemini for free, prototype prompts, or get a free Gemini API key for your projects."},
+  {name:"Vertex AI",cat:"data",price:"freemium",url:"https://cloud.google.com/vertex-ai",origin:"Google Cloud · USA",tags:["enterprise","MLOps","fine-tune","RAG","Gemini","scale"],desc:"Google Cloud's full AI platform. Host Gemini, Claude, or Llama. Fine-tuning, RAG pipelines, agent deployment, and MLOps at enterprise scale.",when:"Use for production AI systems on Google Cloud with enterprise compliance and scalability requirements."},
+  {name:"Hugging Face",cat:"data",price:"free",url:"https://huggingface.co",origin:"Hugging Face · USA/France",tags:["open source hub","models","datasets","spaces","free API"],desc:"The GitHub of AI. Host, download, and run any open-source model. 500K+ models, 100K+ datasets. Free GPU Spaces for demos. Essential resource.",when:"Use to find any open-source model, run demos, explore datasets, or host your own models for free."},
+  {name:"Ollama",cat:"data",price:"free",url:"https://ollama.com",origin:"Ollama · USA",tags:["local","one command","Mac/Linux/Windows","LLaMA","Qwen","Mistral"],desc:"Run any LLM locally with a single command. `ollama run llama3` — that's it. Supports LLaMA, Mistral, Qwen, Phi, Gemma, and 100+ models. Free forever.",when:"Use to run powerful AI completely locally with zero API costs and complete privacy."},
+  {name:"LM Studio",cat:"data",price:"free",url:"https://lmstudio.ai",origin:"Element Labs · USA",tags:["local models","GUI","Windows/Mac","offline","GGUF"],desc:"Beautiful desktop app for running local LLMs. Browse and download models, chat interface, local API server. Easier than Ollama for non-technical users.",when:"Use when you want a beautiful GUI for running local models without using the command line."},
+  {name:"Groq",cat:"data",price:"freemium",url:"https://groq.com",origin:"Groq · USA",tags:["fastest inference","LPU","free API","LLaMA","Mixtral"],desc:"The fastest LLM inference in the world. Uses custom LPU chips. Free API for LLaMA, Mixtral, Gemma. 800 tokens/second — 10x faster than GPT-4.",when:"Use when you need the absolute fastest LLM API responses, especially for real-time applications."},
+  {name:"Together AI",cat:"data",price:"freemium",url:"https://together.ai",origin:"Together AI · USA",tags:["cheapest API","open models","fine-tune","scale"],desc:"Cheapest API for running open-source models at scale. LLaMA, Mixtral, DBRX at a fraction of OpenAI's cost. Fine-tuning and serverless endpoints.",when:"Use when you need to run open-source models via API at the lowest possible cost at scale."},
+  {name:"NotebookLM",cat:"data",price:"free",url:"https://notebooklm.google",origin:"Google · USA",tags:["documents","RAG","podcast","Google","free","research"],desc:"Google's free AI research notebook. Upload documents, YouTube links, or websites. Ask questions, get summaries, or generate an AI podcast conversation about your sources.",when:"Use to deeply analyze your own documents and research — or generate an audio podcast summary."},
+  {name:"Weights & Biases",cat:"data",price:"freemium",url:"https://wandb.ai",origin:"W&B · USA",tags:["ML tracking","experiments","fine-tune","teams","monitoring"],desc:"The standard ML experiment tracking platform. Log metrics, visualize training, compare runs, manage datasets. Used by most serious ML teams.",when:"Use when training or fine-tuning models and you need to track experiments and visualize results."},
+  {name:"Replicate",cat:"data",price:"freemium",url:"https://replicate.com",origin:"Replicate · USA",tags:["model API","Stable Diffusion","one-click","no infra"],desc:"Run any AI model via API without managing infrastructure. Stable Diffusion, LLaMA, custom models. Pay per second. No GPU setup needed.",when:"Use to run any AI model via simple API without needing your own GPU infrastructure."},
+
+  // ── CLOUD DATA ──
+  {name:"AWS S3",cat:"cloud",price:"freemium",url:"https://aws.amazon.com/s3",origin:"Amazon · USA",tags:["object storage","industry standard","scalable","CDN","backup"],desc:"Amazon's Simple Storage Service — the world's most used object storage. Store and serve any file at any scale. Integrates with every AWS service and most third-party tools.",when:"Use for reliable, scalable file and data storage that integrates with the rest of your AWS stack."},
+  {name:"AWS Bedrock",cat:"cloud",price:"freemium",url:"https://aws.amazon.com/bedrock",origin:"Amazon · USA",tags:["AI models","Claude","Llama","Titan","enterprise","serverless"],desc:"AWS managed AI service. Access Claude, LLaMA, Mistral, Titan, and Stable Diffusion via a single API. No infrastructure to manage. Enterprise-grade security and compliance.",when:"Use when building production AI apps on AWS with enterprise security and no model infrastructure to manage."},
+  {name:"AWS SageMaker",cat:"cloud",price:"freemium",url:"https://aws.amazon.com/sagemaker",origin:"Amazon · USA",tags:["MLOps","train","deploy","notebooks","pipelines"],desc:"AWS's full ML platform. Train, fine-tune, and deploy ML models at scale. Jupyter notebooks, automated pipelines, model monitoring. Industry standard for ML teams.",when:"Use for end-to-end ML workflows on AWS — from experimentation to production model deployment."},
+  {name:"Google BigQuery",cat:"cloud",price:"freemium",url:"https://cloud.google.com/bigquery",origin:"Google · USA",tags:["SQL","petabyte scale","serverless","analytics","BI"],desc:"Google's fully managed, serverless data warehouse. Analyze petabytes of data with SQL in seconds. BigQuery ML lets you train models directly in SQL. Free 1TB/month queries.",when:"Use for large-scale data analytics, business intelligence, and when you want ML directly inside your SQL queries."},
+  {name:"Google Cloud Storage",cat:"cloud",price:"freemium",url:"https://cloud.google.com/storage",origin:"Google · USA",tags:["object storage","GCS","multi-region","CDN","buckets"],desc:"Google's object storage service. Store any type of data at any scale. Multi-region options, integrated with BigQuery and all GCP services. Strong consistency guarantees.",when:"Use for data storage on Google Cloud, especially if you're already using BigQuery or Vertex AI."},
+  {name:"Snowflake",cat:"cloud",price:"freemium",url:"https://snowflake.com",origin:"Snowflake · USA",tags:["data warehouse","multi-cloud","SQL","data sharing","Cortex AI"],desc:"The leading cloud data platform. Runs on AWS, Azure, and GCP simultaneously. Snowflake Cortex adds built-in AI/ML. Famous for data sharing and collaboration features.",when:"Use when you need a multi-cloud data warehouse with strong data sharing, governance, and built-in AI features."},
+  {name:"Databricks",cat:"cloud",price:"freemium",url:"https://databricks.com",origin:"Databricks · USA",tags:["Spark","Delta Lake","MLflow","Lakehouse","DBRX"],desc:"The unified data and AI platform. Apache Spark-based, Delta Lake for reliable data, MLflow for tracking. Built DBRX open-source LLM. Bridges data engineering and AI.",when:"Use for large-scale data pipelines, Spark workloads, and unified data + ML workflows on one platform."},
+  {name:"Azure Blob Storage",cat:"cloud",price:"freemium",url:"https://azure.microsoft.com/en-us/products/storage/blobs",origin:"Microsoft · USA",tags:["object storage","Azure","enterprise","CDN","tiers"],desc:"Microsoft Azure's object storage. Hot, cool, and archive storage tiers for cost optimization. Deep integration with Azure AI services and Power BI.",when:"Use for data storage in the Microsoft Azure ecosystem, especially when paired with Azure AI or Power BI."},
+  {name:"Azure OpenAI Service",cat:"cloud",price:"freemium",url:"https://azure.microsoft.com/en-us/products/ai-services/openai-service",origin:"Microsoft · USA",tags:["GPT-4","enterprise","compliance","Azure","private deployment"],desc:"OpenAI's models (GPT-4, DALL-E, Whisper) hosted in Azure with enterprise security. Data never leaves your Azure region. HIPAA, SOC2, and GDPR compliant.",when:"Use when you need GPT-4 but with enterprise compliance, private deployment, and Microsoft support SLAs."},
+  {name:"Cloudflare R2",cat:"cloud",price:"freemium",url:"https://cloudflare.com/products/r2",origin:"Cloudflare · USA",tags:["zero egress","S3-compatible","edge","cheap","CDN"],desc:"S3-compatible object storage with zero egress fees. Store data at the edge globally. Way cheaper than S3 for read-heavy workloads. Integrates with Cloudflare Workers.",when:"Use as a cheaper S3 alternative especially for files that are served to users frequently — no egress fees."},
+  {name:"Supabase",cat:"cloud",price:"freemium",url:"https://supabase.com",origin:"Supabase · USA",tags:["Postgres","open source","auth","realtime","storage","vector"],desc:"Open-source Firebase alternative built on PostgreSQL. Database, auth, storage, edge functions, and vector embeddings in one platform. Generous free tier. pgvector built in.",when:"Use as your backend for web apps — especially when you need SQL, auth, vector search, and real-time features."},
+  {name:"PlanetScale",cat:"cloud",price:"freemium",url:"https://planetscale.com",origin:"PlanetScale · USA",tags:["MySQL","serverless","branching","scalable","schema changes"],desc:"Serverless MySQL database platform. Vitess-powered for infinite horizontal scaling. Database branching for safe schema changes. Used by GitHub and other large-scale apps.",when:"Use when you need a massively scalable MySQL database with zero-downtime schema migrations."},
+  {name:"Neon",cat:"cloud",price:"freemium",url:"https://neon.tech",origin:"Neon · USA",tags:["serverless Postgres","branching","scale to zero","free tier"],desc:"Serverless PostgreSQL with branching, scale-to-zero, and instant provisioning. Best free PostgreSQL option for development. Great for AI apps needing vector search.",when:"Use for serverless Postgres in development and production — especially for AI apps needing pgvector."},
+  {name:"Pinecone",cat:"cloud",price:"freemium",url:"https://pinecone.io",origin:"Pinecone · USA",tags:["vector database","RAG","semantic search","embeddings","managed"],desc:"The leading managed vector database. Store and query millions of high-dimensional embeddings at millisecond speed. Purpose-built for RAG and semantic search.",when:"Use when building RAG applications that need fast, scalable vector similarity search in production."},
+  {name:"Weaviate",cat:"cloud",price:"free",url:"https://weaviate.io",origin:"Weaviate · Netherlands",tags:["vector database","open source","hybrid search","self-host","GraphQL"],desc:"Open-source vector database with hybrid search (vector + keyword). Can be self-hosted or managed cloud. GraphQL and REST APIs. Supports BM25 + vector combined queries.",when:"Use for a free self-hostable vector database with powerful hybrid search capabilities."},
+  {name:"Qdrant",cat:"cloud",price:"free",url:"https://qdrant.tech",origin:"Qdrant · Germany",tags:["vector database","open source","Rust","fast","self-host"],desc:"High-performance vector database written in Rust. Open-source, self-hostable. Extremely fast similarity search. Managed cloud option available. Great Rust-native performance.",when:"Use when you need the fastest self-hosted vector database — ideal for production RAG at scale."},
+  {name:"Chroma",cat:"cloud",price:"free",url:"https://trychroma.com",origin:"Chroma · USA",tags:["vector database","open source","Python","embedded","local"],desc:"The simplest open-source vector database. Runs embedded in Python, no server needed. Used in most LangChain tutorials. Great for prototyping and small-scale RAG.",when:"Use for local and development RAG projects — the easiest way to add vector search to a Python script."},
+  {name:"Cloudflare Workers AI",cat:"cloud",price:"freemium",url:"https://developers.cloudflare.com/workers-ai",origin:"Cloudflare · USA",tags:["edge AI","serverless","LLaMA","Mistral","free tier","global"],desc:"Run AI models at the edge globally via Cloudflare's network. LLaMA, Mistral, Stable Diffusion at millisecond latency. Very generous free tier. No cold starts.",when:"Use when you want to run AI inference as close to users as possible with no infrastructure setup."},
+  {name:"Modal",cat:"cloud",price:"freemium",url:"https://modal.com",origin:"Modal · USA",tags:["serverless GPU","Python","fast cold start","ML inference","training"],desc:"Serverless GPU cloud for Python ML workloads. Deploy any Python function with GPU in seconds. Fast cold starts. Used for fine-tuning, inference, and data processing.",when:"Use when you need on-demand GPU compute for ML inference or training without managing servers."},
+  {name:"Fly.io",cat:"cloud",price:"freemium",url:"https://fly.io",origin:"Fly.io · USA",tags:["edge deploy","Docker","Postgres","global","fast"],desc:"Deploy Docker containers globally at the edge. Fast deploys, generous free tier, built-in Postgres. Excellent for deploying AI API backends close to users.",when:"Use to deploy your AI backend applications globally with low latency and a generous free tier."},
+];
+
+const SECTIONS = [
+  {id:"chat",   label:"Chat AI & LLMs",       icon:"💬"},
+  {id:"chinese",label:"Chinese AI models",     icon:"🇨🇳"},
+  {id:"code",   label:"Code assistants",       icon:"⌨"},
+  {id:"editor", label:"Code editors",          icon:"🗒"},
+  {id:"app",    label:"App builders",          icon:"🚀"},
+  {id:"automation",label:"Automation & workflows",icon:"⚡"},
+  {id:"design", label:"Design, 3D & creative", icon:"✦"},
+  {id:"image",  label:"Image & video generation",icon:"🎨"},
+  {id:"search", label:"AI search engines",     icon:"🔍"},
+  {id:"agent",  label:"Agents & frameworks",   icon:"🤖"},
+  {id:"audio",  label:"Audio, voice & music",  icon:"🎵"},
+  {id:"data",   label:"Data, platforms & local AI",icon:"🗄"},
+  {id:"cloud",  label:"Cloud data & infrastructure",icon:"☁"},
+];
+
+let activeFilter = 'all';
+
+function setFilter(f, el) {
+  activeFilter = f;
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  filterAll();
+}
+
+function filterAll() {
+  const q = document.getElementById('search').value.toLowerCase().trim();
+  let visible = 0;
+
+  SECTIONS.forEach(sec => {
+    const secEl = document.getElementById('sec-' + sec.id);
+    if (!secEl) return;
+    const secWrap = secEl.closest('.section');
+    const cards = secEl.querySelectorAll('.card');
+    let secVisible = 0;
+
+    cards.forEach(c => {
+      const name = c.dataset.name.toLowerCase();
+      const desc = c.dataset.desc.toLowerCase();
+      const tags = c.dataset.tags.toLowerCase();
+      const cat = c.dataset.cat;
+      const price = c.dataset.price;
+      const chinese = c.dataset.chinese === 'true';
+
+      let pass = true;
+      if (activeFilter === 'freeflag') pass = (price === 'free' || price === 'freemium');
+      else if (activeFilter === 'chinese') pass = chinese;
+      else if (activeFilter !== 'all') pass = (cat === activeFilter);
+
+      if (pass && q) pass = (name.includes(q) || desc.includes(q) || tags.includes(q) || cat.includes(q));
+
+      c.classList.toggle('hidden', !pass);
+      if (pass) { secVisible++; visible++; }
+    });
+
+    const countEl = secWrap.querySelector('.section-count');
+    if (countEl) countEl.textContent = secVisible + ' tools';
+    secWrap.classList.toggle('hidden', secVisible === 0);
+  });
+
+  document.getElementById('visible-count').textContent = visible;
+  document.getElementById('empty').classList.toggle('show', visible === 0);
+}
+
+function openModal(idx) {
+  const t = TOOLS[idx];
+  document.getElementById('m-name').textContent = t.name;
+  let badges = `<span class="badge badge-${t.price}">${t.price}</span>`;
+  if (t.chinese) badges += `<span class="badge badge-china">Chinese AI</span>`;
+  document.getElementById('m-badges').innerHTML = badges;
+  document.getElementById('m-desc').textContent = t.desc;
+  document.getElementById('m-when').textContent = t.when;
+  document.getElementById('m-tags').innerHTML = t.tags.map(tg => `<span class="modal-tag">${tg}</span>`).join('');
+  const link = document.getElementById('m-link');
+  link.href = t.url;
+  link.textContent = 'Visit ' + t.url.replace('https://','').replace(/\//,'') + ' ↗';
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModalBtn();
+}
+function closeModalBtn() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModalBtn(); });
+
+function render() {
+  const main = document.getElementById('main');
+  main.innerHTML = '';
+
+  // Separate chinese tools into their own category
+  SECTIONS.forEach(sec => {
+    const sectionTools = sec.id === 'chinese'
+      ? TOOLS.filter(t => t.chinese)
+      : TOOLS.filter(t => t.cat === sec.id && !t.chinese || (sec.id !== 'chinese' && t.cat === sec.id));
+
+    if (sectionTools.length === 0) return;
+
+    const section = document.createElement('div');
+    section.className = 'section';
+    section.dataset.cat = sec.id;
+    section.innerHTML = `
+      <div class="section-header">
+        <div class="section-title">${sec.icon} ${sec.label}</div>
+        <div class="section-count">${sectionTools.length} tools</div>
+        <div class="section-line"></div>
+      </div>
+      <div class="tools-grid" id="sec-${sec.id}"></div>
+    `;
+    main.appendChild(section);
+
+    const grid = section.querySelector('#sec-' + sec.id);
+
+    sectionTools.forEach(t => {
+      const idx = TOOLS.indexOf(t);
+      const card = document.createElement('div');
+      card.className = `card cat-${t.cat}`;
+      card.dataset.name = t.name;
+      card.dataset.desc = t.desc;
+      card.dataset.tags = t.tags.join(' ');
+      card.dataset.cat = t.cat;
+      card.dataset.price = t.price;
+      card.dataset.chinese = t.chinese || false;
+
+      const shortDesc = t.desc.length > 100 ? t.desc.slice(0, 98) + '…' : t.desc;
+
+      card.innerHTML = `
+        <div class="card-top">
+          <div class="card-name-wrap">
+            <div class="card-name">${t.name}</div>
+            <div class="card-origin">${t.origin}</div>
+          </div>
+          <div class="badges">
+            <span class="badge badge-${t.price}">${t.price}</span>
+            ${t.chinese ? '<span class="badge badge-china">CN</span>' : ''}
+          </div>
+        </div>
+        <div class="card-desc">${shortDesc}</div>
+        <div class="card-tags">${t.tags.slice(0,4).map(tg => `<span class="tag">${tg}</span>`).join('')}</div>
+        <div class="card-footer">
+          <a class="card-link" href="${t.url}" target="_blank" rel="noopener" onclick="event.stopPropagation()">↗ visit</a>
+          <div class="card-when">${t.when.slice(0,50)}${t.when.length>50?'…':''}</div>
+        </div>
+      `;
+      card.onclick = () => openModal(idx);
+      grid.appendChild(card);
+    });
+  });
+
+  main.innerHTML += `<div class="empty" id="empty"><div class="empty-icon">⊘</div><div>No tools match your search</div></div>`;
+
+  // Stats
+  const freeCount = TOOLS.filter(t => t.price === 'free' || t.price === 'freemium').length;
+  document.getElementById('total-count').textContent = TOOLS.length;
+  document.getElementById('free-count').textContent = freeCount;
+  document.getElementById('visible-count').textContent = TOOLS.length;
+}
+
+// Back to top
+window.addEventListener('scroll', () => {
+  document.getElementById('back-top').classList.toggle('visible', window.scrollY > 400);
+});
+
+render();
+</script>
+</body>
+</html>
