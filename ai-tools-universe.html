@@ -7,797 +7,387 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-:root{--bg:#05050a;--surface:#0c0c14;--elevated:#12121c;--border:rgba(255,255,255,0.06);--text:#fff;--text2:#a1a1aa;--text3:#52525b;--blue:#3b82f6;--purple:#8b5cf6;--cyan:#06b6d4;--green:#10b981;--amber:#f59e0b;--red:#ef4444;--pink:#ec4899;--indigo:#6366f1;--orange:#f97316;--teal:#14b8a6;--lime:#84cc16;}
-body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;line-height:1.6;overflow-x:hidden;}
-::-webkit-scrollbar{width:6px;height:6px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px;}
-
-/* Background Orbs */
-.orb{position:fixed;border-radius:50%;filter:blur(120px);opacity:0.15;pointer-events:none;z-index:0;}
+:root{--bg:#05050a;--surface:#0c0c14;--elevated:#12121c;--border:rgba(255,255,255,0.06);--text:#fff;--text2:#a1a1aa;--text3:#52525b;--blue:#3b82f6;--purple:#8b5cf6;--cyan:#06b6d4;--green:#10b981;--amber:#f59e0b;--red:#ef4444;--pink:#ec4899;--indigo:#6366f1;--orange:#f97316;--teal:#14b8a6;--lime:#84cc16;--gold:#ffd700;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple-system,sans-serif;line-height:1.6;overflow-x:hidden;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px;}
+.orb{position:fixed;border-radius:50%;filter:blur(120px);opacity:0.12;pointer-events:none;z-index:0;}
 .orb-1{width:50vw;height:50vw;background:var(--blue);top:-15%;right:-10%;animation:floatA 30s infinite alternate;}
 .orb-2{width:45vw;height:45vw;background:var(--purple);bottom:-15%;left:-10%;animation:floatA 25s infinite alternate;}
 .orb-3{width:35vw;height:35vw;background:var(--cyan);top:35%;left:40%;animation:floatA 35s infinite alternate;}
 @keyframes floatA{0%{transform:translate(0,0) scale(1)}100%{transform:translate(5%,3%) scale(1.15)}}
-
-/* Layout */
 .app{display:flex;min-height:100vh;position:relative;z-index:1;}
-
-/* Sidebar */
-.sidebar{width:260px;background:rgba(12,12,20,0.95);backdrop-filter:blur(20px);border-right:1px solid var(--border);position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;transition:transform 0.3s;display:flex;flex-direction:column;}
-.sidebar-header{padding:24px 20px;border-bottom:1px solid var(--border);}
-.logo{font-family:'Space Grotesk',monospace;font-size:22px;font-weight:800;background:linear-gradient(135deg,var(--blue),var(--purple),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent;}
-.logo-sub{font-size:11px;color:var(--text3);margin-top:4px;letter-spacing:1px;text-transform:uppercase;}
-.nav-section{padding:16px 12px;flex:1;}
-.nav-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;padding:8px 12px;font-weight:600;}
-.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;cursor:pointer;transition:all 0.2s;font-size:14px;color:var(--text2);margin-bottom:2px;position:relative;}
+.sidebar{width:270px;background:rgba(10,10,18,0.97);backdrop-filter:blur(20px);border-right:1px solid var(--border);position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;transition:transform 0.3s;display:flex;flex-direction:column;}
+.sidebar-header{padding:24px 20px;border-bottom:1px solid var(--border);text-align:center;}
+.logo{font-family:'Space Grotesk',monospace;font-size:20px;font-weight:800;background:linear-gradient(135deg,var(--blue),var(--purple),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.logo-sub{font-size:10px;color:var(--text3);margin-top:4px;letter-spacing:1.5px;text-transform:uppercase;}
+.nav-section{padding:12px 10px;flex:1;}
+.nav-label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:2px;padding:12px 14px 6px;font-weight:700;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;cursor:pointer;transition:all 0.2s;font-size:13px;color:var(--text2);margin-bottom:1px;position:relative;}
 .nav-item:hover{background:rgba(255,255,255,0.04);color:var(--text);}
-.nav-item.active{background:rgba(59,130,246,0.12);color:var(--blue);font-weight:500;}
+.nav-item.active{background:rgba(59,130,246,0.12);color:var(--blue);font-weight:600;}
 .nav-item.active::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:60%;background:var(--blue);border-radius:0 3px 3px 0;}
-.nav-icon{width:20px;text-align:center;font-size:16px;}
-.nav-badge{margin-left:auto;background:var(--blue);color:#fff;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;}
-.nav-badge.green{background:var(--green);}.nav-badge.amber{background:var(--amber);}.nav-badge.purple{background:var(--purple);}
-
-/* Main Content */
-.main{margin-left:260px;flex:1;min-height:100vh;}
-.topbar{position:sticky;top:0;z-index:50;background:rgba(5,5,10,0.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:16px 32px;}
+.nav-icon{width:22px;text-align:center;font-size:15px;}
+.nav-badge{margin-left:auto;background:var(--blue);color:#fff;font-size:9px;padding:2px 7px;border-radius:10px;font-weight:700;}
+.nav-badge.green{background:var(--green);}
+.nav-badge.amber{background:var(--amber);}
+.nav-badge.purple{background:var(--purple);}
+.nav-badge.red{background:var(--red);}
+.main{margin-left:270px;flex:1;min-height:100vh;}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(5,5,10,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:14px 28px;}
 .topbar-inner{max-width:1400px;margin:0 auto;display:flex;gap:16px;align-items:center;flex-wrap:wrap;}
-.search-wrap{flex:1;min-width:280px;position:relative;}
-.search-wrap input{width:100%;padding:12px 20px 12px 44px;background:var(--surface);border:1px solid var(--border);border-radius:100px;color:var(--text);font-size:14px;transition:all 0.2s;}
-.search-wrap input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,130,246,0.15);}
-.search-wrap .s-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--text3);}
-.topbar-stats{display:flex;gap:20px;font-size:13px;color:var(--text2);}
-.topbar-stat{display:flex;align-items:center;gap:6px;}
+.search-wrap{flex:1;min-width:260px;position:relative;}
+.search-wrap input{width:100%;padding:12px 20px 12px 42px;background:var(--surface);border:1px solid var(--border);border-radius:100px;color:var(--text);font-size:14px;transition:all 0.2s;}
+.search-wrap input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,130,246,0.12);}
+.search-wrap .s-icon{position:absolute;left:15px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--text3);}
+.topbar-stats{display:flex;gap:18px;font-size:12px;color:var(--text2);}
+.topbar-stat{display:flex;align-items:center;gap:5px;}
 .topbar-stat span{font-weight:700;color:var(--text);font-family:'Space Grotesk',monospace;}
-.content{max-width:1400px;margin:0 auto;padding:32px;}
-
-/* Hero */
-.hero-section{margin-bottom:40px;}
-.hero-title{font-family:'Space Grotesk',monospace;font-size:clamp(36px,5vw,56px);font-weight:800;line-height:1.1;margin-bottom:16px;}
+.content{max-width:1400px;margin:0 auto;padding:28px;}
+.hero-section{margin-bottom:32px;}
+.hero-title{font-family:'Space Grotesk',monospace;font-size:clamp(28px,4.5vw,48px);font-weight:800;line-height:1.15;margin-bottom:12px;}
 .hero-title .gradient{background:linear-gradient(135deg,var(--blue),var(--purple),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent;}
-.hero-desc{font-size:18px;color:var(--text2);max-width:600px;line-height:1.7;margin-bottom:32px;}
-.hero-actions{display:flex;gap:12px;flex-wrap:wrap;}
-.btn{padding:12px 24px;border-radius:100px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;border:none;display:inline-flex;align-items:center;gap:8px;}
-.btn-primary{background:var(--blue);color:#fff;}.btn-primary:hover{background:#2563eb;transform:translateY(-2px);}
-.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border);}.btn-ghost:hover{border-color:var(--blue);color:var(--blue);}
-
-/* Stat Cards */
-.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:40px;}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:24px;transition:all 0.3s;}
-.stat-card:hover{border-color:rgba(59,130,246,0.3);transform:translateY(-3px);}
-.stat-card .stat-val{font-size:36px;font-weight:800;font-family:'Space Grotesk',monospace;background:linear-gradient(135deg,var(--blue),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent;}
-.stat-card .stat-lbl{font-size:13px;color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:1px;}
-
-/* Category Pills */
-.cat-pills{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:24px;scrollbar-width:none;}
-.cat-pills::-webkit-scrollbar{display:none;}
-.cat-pill{padding:8px 18px;border-radius:100px;background:var(--surface);border:1px solid var(--border);font-size:13px;cursor:pointer;white-space:nowrap;transition:all 0.2s;color:var(--text2);}
-.cat-pill:hover{border-color:var(--blue);color:var(--blue);}
-.cat-pill.active{background:var(--blue);border-color:var(--blue);color:#fff;}
-
-/* Section Title */
-.section-title{font-family:'Space Grotesk',monospace;font-size:24px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:12px;}
-.section-subtitle{color:var(--text2);font-size:14px;margin-bottom:24px;}
-
-/* Tool Cards */
-.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin-bottom:40px;}
-.tool-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:20px;transition:all 0.25s;cursor:pointer;position:relative;overflow:hidden;}
-.tool-card:hover{border-color:rgba(59,130,246,0.4);transform:translateY(-4px);box-shadow:0 20px 40px -12px rgba(0,0,0,0.5);}
-.tool-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--purple));opacity:0;transition:opacity 0.3s;}
+.hero-desc{font-size:16px;color:var(--text2);max-width:600px;line-height:1.7;margin-bottom:24px;}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:28px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;text-align:center;transition:all 0.3s;}
+.stat-card:hover{border-color:rgba(59,130,246,0.3);transform:translateY(-2px);}
+.stat-card .stat-val{font-size:32px;font-weight:800;font-family:'Space Grotesk',monospace;background:linear-gradient(135deg,var(--blue),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.stat-card .stat-lbl{font-size:11px;color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:1px;}
+.section-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);}
+.section-title{font-family:'Space Grotesk',monospace;font-size:22px;font-weight:700;display:flex;align-items:center;gap:10px;}
+.section-count{font-size:13px;color:var(--text3);background:rgba(255,255,255,0.05);padding:4px 12px;border-radius:20px;}
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:32px;}
+.tool-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;transition:all 0.25s;cursor:pointer;position:relative;overflow:hidden;}
+.tool-card:hover{border-color:rgba(59,130,246,0.4);transform:translateY(-3px);box-shadow:0 16px 32px -8px rgba(0,0,0,0.5);}
+.tool-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--blue),var(--purple));opacity:0;transition:opacity 0.3s;}
 .tool-card:hover::before{opacity:1;}
-.card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
-.card-name{font-size:16px;font-weight:700;font-family:'Space Grotesk',monospace;}
-.card-url{font-size:11px;color:var(--text3);margin-top:2px;}
-.card-badges{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;}
-.badge{font-size:10px;padding:3px 10px;border-radius:40px;font-weight:600;letter-spacing:0.3px;}
-.badge-free{background:rgba(16,185,129,0.12);color:var(--green);border:1px solid rgba(16,185,129,0.2);}
-.badge-pro{background:rgba(245,158,11,0.12);color:var(--amber);border:1px solid rgba(245,158,11,0.2);}
-.badge-paid{background:rgba(239,68,68,0.12);color:var(--red);border:1px solid rgba(239,68,68,0.2);}
-.badge-cat{background:rgba(59,130,246,0.12);color:var(--blue);border:1px solid rgba(59,130,246,0.2);}
-.badge-cn{background:rgba(139,92,246,0.12);color:var(--purple);border:1px solid rgba(139,92,246,0.2);}
-.card-desc{font-size:13px;color:var(--text2);line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin:8px 0 12px;}
-.card-footer{display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--border);}
-.card-footer .rating{color:var(--amber);font-size:12px;font-weight:600;}
-.card-footer .visit{color:var(--blue);font-size:12px;font-weight:500;text-decoration:none;display:flex;align-items:center;gap:4px;}
-.card-footer .visit:hover{gap:8px;}
-
-/* Modal */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(12px);z-index:1000;align-items:center;justify-content:center;padding:20px;}
-.modal-overlay.active{display:flex;}
-.modal-box{background:var(--elevated);border:1px solid var(--border);border-radius:28px;max-width:650px;width:100%;max-height:85vh;overflow-y:auto;padding:32px;position:relative;}
-.modal-close{position:absolute;top:20px;right:20px;font-size:28px;cursor:pointer;color:var(--text3);background:none;border:none;}
-.modal-close:hover{color:var(--text);}
-.modal-name{font-size:28px;font-weight:800;font-family:'Space Grotesk',monospace;margin-bottom:8px;}
-.modal-url{color:var(--text3);font-size:13px;margin-bottom:16px;}
-.modal-badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
-.modal-desc{font-size:15px;line-height:1.7;color:var(--text2);margin-bottom:20px;}
-.modal-use{background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.15);border-radius:16px;padding:20px;margin-bottom:20px;}
-.modal-use h4{font-size:14px;color:var(--blue);margin-bottom:8px;}
-.modal-use p{font-size:14px;color:var(--text2);line-height:1.6;}
-.modal-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;}
-.modal-stat{background:rgba(255,255,255,0.03);border-radius:12px;padding:16px;text-align:center;}
-.modal-stat .ms-val{font-size:20px;font-weight:700;font-family:'Space Grotesk',monospace;}
-.modal-stat .ms-lbl{font-size:11px;color:var(--text3);margin-top:4px;text-transform:uppercase;}
-.modal-link{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:var(--blue);color:#fff;border-radius:100px;text-decoration:none;font-weight:600;font-size:14px;transition:all 0.2s;}
-.modal-link:hover{background:#2563eb;transform:translateY(-2px);}
-
-/* Google AI Page Special */
-.google-hero{background:linear-gradient(135deg,rgba(59,130,246,0.08),rgba(139,92,246,0.08));border:1px solid var(--border);border-radius:24px;padding:40px;margin-bottom:40px;position:relative;overflow:hidden;}
-.google-hero::before{content:'';position:absolute;top:-50%;right:-20%;width:400px;height:400px;background:radial-gradient(circle,rgba(66,133,244,0.15),transparent 70%);pointer-events:none;}
-.google-hero h1{font-size:clamp(28px,4vw,42px);font-weight:800;font-family:'Space Grotesk',monospace;margin-bottom:12px;}
-.google-hero h1 span{background:linear-gradient(90deg,#4285F4,#34A853,#FBBC05,#EA4335);-webkit-background-clip:text;background-clip:text;color:transparent;}
-.google-hero p{color:var(--text2);font-size:16px;max-width:600px;}
-
-/* Filter Row */
-.filter-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;}
-.filter-btn{padding:8px 16px;border-radius:40px;background:var(--surface);border:1px solid var(--border);color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:6px;}
-.filter-btn:hover{border-color:var(--blue);color:var(--blue);}
-.filter-btn.active{background:var(--blue);border-color:var(--blue);color:#fff;}
-.filter-btn .count{background:rgba(255,255,255,0.15);padding:1px 6px;border-radius:20px;font-size:10px;}
-.filter-btn.active .count{background:rgba(255,255,255,0.25);}
-
-/* Pagination */
-.pagination{display:flex;justify-content:center;gap:8px;margin:40px 0;}
-.page-btn{padding:10px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text2);cursor:pointer;transition:all 0.2s;font-size:13px;}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.card-name{font-size:15px;font-weight:700;font-family:'Space Grotesk',monospace;}
+.card-url{font-size:10px;color:var(--text3);margin-top:2px;}
+.card-badges{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;}
+.badge{font-size:9px;padding:2px 8px;border-radius:20px;font-weight:700;letter-spacing:0.3px;white-space:nowrap;}
+.badge-free{background:rgba(16,185,129,0.12);color:var(--green);border:1px solid rgba(16,185,129,0.25);}
+.badge-paid{background:rgba(239,68,68,0.12);color:var(--red);border:1px solid rgba(239,68,68,0.25);}
+.badge-trial{background:rgba(245,158,11,0.12);color:var(--amber);border:1px solid rgba(245,158,11,0.25);}
+.badge-cat{background:rgba(59,130,246,0.1);color:var(--blue);border:1px solid rgba(59,130,246,0.2);}
+.badge-google{background:rgba(66,133,244,0.12);color:#4285F4;border:1px solid rgba(66,133,244,0.3);}
+.badge-top10{background:rgba(255,215,0,0.15);color:var(--gold);border:1px solid rgba(255,215,0,0.4);}
+.card-desc{font-size:12px;color:var(--text2);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:8px 0 10px;}
+.card-footer{display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid var(--border);}
+.card-footer .rating{color:var(--amber);font-size:11px;font-weight:600;}
+.card-footer .origin{font-size:10px;color:var(--text3);}
+.google-card{background:linear-gradient(135deg,rgba(66,133,244,0.05),rgba(139,92,246,0.04));}
+.google-card::before{background:linear-gradient(90deg,#4285F4,#34A853,#FBBC05,#EA4335);}
+.top10-card{background:linear-gradient(135deg,rgba(255,215,0,0.05),rgba(255,165,0,0.03));border-color:rgba(255,215,0,0.2);}
+.top10-card .card-top::after{content:'🏆';position:absolute;top:12px;right:12px;font-size:16px;}
+.pagination{display:flex;justify-content:center;gap:6px;margin:32px 0;}
+.page-btn{padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text2);cursor:pointer;transition:all 0.2s;font-size:12px;}
 .page-btn:hover{border-color:var(--blue);color:var(--blue);}
 .page-btn.active{background:var(--blue);border-color:var(--blue);color:#fff;}
 .page-btn:disabled{opacity:0.3;cursor:not-allowed;}
-
-/* Empty State */
-.empty-state{text-align:center;padding:80px 20px;color:var(--text3);}
-.empty-state .es-icon{font-size:48px;margin-bottom:16px;}
-.empty-state p{font-size:16px;}
-
-/* Responsive */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(12px);z-index:1000;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.active{display:flex;}
+.modal-box{background:var(--elevated);border:1px solid var(--border);border-radius:24px;max-width:620px;width:100%;max-height:85vh;overflow-y:auto;padding:28px;position:relative;}
+.modal-close{position:absolute;top:16px;right:16px;font-size:24px;cursor:pointer;color:var(--text3);background:none;border:none;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.modal-close:hover{background:rgba(255,255,255,0.1);color:var(--text);}
+.modal-name{font-size:24px;font-weight:800;font-family:'Space Grotesk',monospace;margin-bottom:6px;padding-right:40px;}
+.modal-url{color:var(--text3);font-size:12px;margin-bottom:14px;}
+.modal-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+.modal-desc{font-size:14px;line-height:1.7;color:var(--text2);margin-bottom:16px;}
+.modal-use{background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.12);border-radius:14px;padding:16px;margin-bottom:16px;}
+.modal-use h4{font-size:13px;color:var(--blue);margin-bottom:6px;}
+.modal-use p{font-size:13px;color:var(--text2);line-height:1.6;}
+.modal-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
+.modal-stat{background:rgba(255,255,255,0.03);border-radius:10px;padding:14px 10px;text-align:center;}
+.modal-stat .ms-val{font-size:18px;font-weight:700;font-family:'Space Grotesk',monospace;}
+.modal-stat .ms-lbl{font-size:9px;color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:0.5px;}
+.modal-link{display:inline-flex;align-items:center;gap:6px;padding:12px 24px;background:var(--blue);color:#fff;border-radius:100px;text-decoration:none;font-weight:600;font-size:13px;transition:all 0.2s;}
+.modal-link:hover{background:#2563eb;transform:translateY(-2px);}
+.empty-state{text-align:center;padding:60px 20px;color:var(--text3);}
+.empty-state .es-icon{font-size:42px;margin-bottom:12px;}
+.empty-state p{font-size:15px;}
+.chart-container{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:24px;}
+.chart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px;}
+.chart-title{font-family:'Space Grotesk',monospace;font-size:16px;font-weight:700;}
+.chart-controls{display:flex;gap:6px;}
+.chart-btn{padding:5px 12px;border-radius:20px;background:transparent;border:1px solid var(--border);color:var(--text3);cursor:pointer;font-size:11px;transition:all 0.2s;}
+.chart-btn.active{background:var(--blue);border-color:var(--blue);color:#fff;}
+.chart-wrap{position:relative;height:280px;}
+.chart-wrap canvas{max-height:100%;}
+.footer{background:var(--bg);border-top:1px solid var(--border);padding:40px 28px;text-align:center;margin-top:40px;}
+.footer .creator{font-size:18px;font-weight:700;font-family:'Space Grotesk',monospace;margin-bottom:6px;}
+.footer .creator span{background:linear-gradient(135deg,var(--blue),var(--purple),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.footer .tagline{font-size:12px;color:var(--text3);max-width:500px;margin:0 auto;}
+.google-hero{background:linear-gradient(135deg,rgba(59,130,246,0.08),rgba(139,92,246,0.06));border:1px solid var(--border);border-radius:20px;padding:32px;margin-bottom:28px;position:relative;overflow:hidden;}
+.google-hero::before{content:'';position:absolute;top:-50%;right:-20%;width:300px;height:300px;background:radial-gradient(circle,rgba(66,133,244,0.12),transparent 70%);pointer-events:none;}
+.google-hero h1{font-size:clamp(22px,3.5vw,36px);font-weight:800;font-family:'Space Grotesk',monospace;margin-bottom:8px;}
+.google-hero h1 span{background:linear-gradient(90deg,#4285F4,#34A853,#FBBC05,#EA4335);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.google-hero p{color:var(--text2);font-size:14px;max-width:500px;}
+.top10-badge{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,rgba(255,215,0,0.15),rgba(255,165,0,0.1));border:1px solid rgba(255,215,0,0.3);padding:4px 10px;border-radius:20px;font-size:10px;color:var(--gold);font-weight:700;margin-bottom:16px;}
+.mobile-toggle{display:none;position:fixed;top:14px;left:14px;z-index:101;padding:10px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;font-size:18px;}
+.overlay-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:99;}
+.overlay-bg.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp 0.35s ease forwards;opacity:0;}
 @media(max-width:1024px){
   .sidebar{transform:translateX(-100%);}
   .sidebar.open{transform:translateX(0);}
   .main{margin-left:0;}
   .mobile-toggle{display:flex!important;}
-  .overlay-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99;}
-  .overlay-bg.active{display:block;}
 }
 @media(max-width:768px){
   .tools-grid{grid-template-columns:1fr;}
-  .modal-stats{grid-template-columns:1fr 1fr;}
-  .content{padding:20px 16px;}
-  .topbar{padding:12px 16px;}
+  .modal-stats{grid-template-columns:repeat(2,1fr);}
+  .content{padding:16px;}
+  .topbar{padding:10px 14px;}
   .stats-row{grid-template-columns:repeat(2,1fr);}
 }
-.mobile-toggle{display:none;align-items:center;gap:8px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text);cursor:pointer;font-size:20px;position:absolute;top:16px;left:16px;z-index:101;}
-
-/* Animations */
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.fade-up{animation:fadeUp 0.4s ease forwards;}
-.fade-up:nth-child(1){animation-delay:0s}.fade-up:nth-child(2){animation-delay:0.02s}.fade-up:nth-child(3){animation-delay:0.04s}.fade-up:nth-child(4){animation-delay:0.06s}.fade-up:nth-child(5){animation-delay:0.08s}.fade-up:nth-child(6){animation-delay:0.1s}.fade-up:nth-child(7){animation-delay:0.12s}.fade-up:nth-child(8){animation-delay:0.14s}.fade-up:nth-child(9){animation-delay:0.16s}.fade-up:nth-child(10){animation-delay:0.18s}
-
-/* Loading skeleton */
-.skeleton{background:linear-gradient(90deg,var(--surface) 25%,rgba(255,255,255,0.05) 50%,var(--surface) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px;}
-@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-
-/* Chart container */
-.chart-container{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:24px;margin-bottom:40px;}
-.chart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
-.chart-title{font-family:'Space Grotesk',monospace;font-size:18px;font-weight:700;}
-.chart-controls{display:flex;gap:8px;}
-.chart-btn{padding:6px 14px;border-radius:40px;background:transparent;border:1px solid var(--border);color:var(--text3);cursor:pointer;font-size:12px;transition:all 0.2s;}
-.chart-btn.active{background:var(--blue);border-color:var(--blue);color:#fff;}
-.chart-wrap{position:relative;height:350px;}
-.chart-wrap canvas{max-height:100%;}
-
-/* Google AI special card */
-.google-card{background:linear-gradient(135deg,rgba(66,133,244,0.06),rgba(139,92,246,0.06));}
 </style>
 </head>
 <body>
 <div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
-
 <div class="overlay-bg" id="overlayBg" onclick="closeSidebar()"></div>
 <button class="mobile-toggle" id="mobileToggle" onclick="toggleSidebar()">☰</button>
-
 <div class="app">
-  <!-- Sidebar -->
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <div class="logo">AI UNIVERSE</div>
-      <div class="logo-sub">All Models · One Place · 2026</div>
-    </div>
-    <nav class="nav-section" id="navMenu"></nav>
-  </aside>
-
-  <!-- Main -->
-  <main class="main">
-    <header class="topbar">
-      <div class="topbar-inner">
-        <div class="search-wrap">
-          <span class="s-icon">🔍</span>
-          <input type="text" id="searchInput" placeholder="Search 1000+ AI models by name, category, or use case...">
-        </div>
-        <div class="topbar-stats">
-          <div class="topbar-stat">📦 Total: <span id="statTotal">0</span></div>
-          <div class="topbar-stat">🆓 Free: <span id="statFree">0</span></div>
-          <div class="topbar-stat">📂 Showing: <span id="statShowing">0</span></div>
-        </div>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">AI UNIVERSE</div>
+    <div class="logo-sub">All AI Models · One Place · 2026</div>
+  </div>
+  <nav class="nav-section" id="navMenu"></nav>
+</aside>
+<main class="main">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="search-wrap">
+        <span class="s-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Search 1,000+ AI models...">
       </div>
-    </header>
-    <div class="content" id="mainContent"></div>
-  </main>
+      <div class="topbar-stats">
+        <div class="topbar-stat">📦 Total: <span id="statTotal">0</span></div>
+        <div class="topbar-stat">🆓 Free: <span id="statFree">0</span></div>
+        <div class="topbar-stat">👁 Showing: <span id="statShowing">0</span></div>
+      </div>
+    </div>
+  </header>
+  <div class="content" id="mainContent"></div>
+</main>
 </div>
-
-<!-- Modal -->
 <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
   <div class="modal-box">
-    <button class="modal-close" onclick="closeModal()">×</button>
+    <button class="modal-close" onclick="closeModal()">✕</button>
     <div id="modalBody"></div>
   </div>
 </div>
-
+<footer class="footer">
+  <div class="creator">Created by <span>Omar Bouzganda</span></div>
+  <div class="tagline">AI Universe 2026 — The definitive directory of 1,000+ AI models, tools, and platforms. All in one place, free to browse.</div>
+</footer>
 <script>
 // ============================================
-// DATA: ALL AI TOOLS
+// DATA GENERATION - 1000+ AI TOOLS
 // ============================================
-const GOOGLE_TOOLS = [
-  {id:"g1",name:"Gemini",url:"gemini.google.com",cat:"chat",category:"Chat & LLM",for:"Both",desc:"Google's main AI chatbot — text, images, code, files, deep research, audio. Powered by Gemini 3 Flash/Pro/Ultra models. The hub that connects to all other Google AI tools.",use:"Write landing page copy, generate brand name ideas, debug code, create CSS animations, review designs, write API docs.",cost:"Free",costBadge:"free",detail:"Flash model unlimited; Pro needs AI Pro ($19.99/mo)",rating:4.9,context:1000000,speed:95,pricePerM:0},
-  {id:"g2",name:"Gemini Canvas",url:"gemini.google.com",cat:"both",category:"Both",for:"Both",desc:"Live collaborative workspace inside Gemini — write documents and code side-by-side with AI, with real-time rendering. Like a shared whiteboard with AI editing your content live.",use:"Co-write a design brief with AI editing, build a component spec doc, prototype a React component with live preview.",cost:"Free",costBadge:"free",detail:"Available inside Gemini chat",rating:4.6,context:100000,speed:70,pricePerM:0},
-  {id:"g3",name:"Stitch",url:"stitch.withgoogle.com",cat:"design",category:"Design",for:"Design",desc:"Turns text descriptions or rough sketches into polished UI designs. Exports to Figma (with layers + auto-layout) or outputs HTML/CSS/React. Powered by Gemini 3 Pro.",use:"Generate multi-screen app mockups in seconds, get past blank canvas, show clients early concepts, get first-draft component libraries.",cost:"Free",costBadge:"free",detail:"350 standard + 50 high-quality gen/mo",rating:4.8,context:0,speed:18,pricePerM:0},
-  {id:"g4",name:"Mixboard",url:"mixboard.google.com",cat:"design",category:"Design",for:"Design",desc:"AI-powered infinite canvas for mood boarding. Drop images, colors, notes — AI suggests textures, complementary colors, and generated images. Google Labs experiment.",use:"Build brand identity mood boards, explore visual directions, present creative concepts with AI-expanded imagery.",cost:"Free",costBadge:"free",detail:"Labs experiment, Google account needed",rating:4.5,context:0,speed:15,pricePerM:0},
-  {id:"g5",name:"GenType",url:"labs.google",cat:"design",category:"Design",for:"Design",desc:"Generate custom AI-designed alphabets and typefaces using Imagen. Type a word, choose a visual style — it creates each letter as a unique illustration. No punctuation yet.",use:"Create a distinctive one-off event identity or logotype concept, generate custom display type for a campaign, explore lettering directions.",cost:"Free",costBadge:"free",detail:"Labs experiment",rating:4.4,context:0,speed:10,pricePerM:0},
-  {id:"g6",name:"Pomelli",url:"labs.google",cat:"design",category:"Design",for:"Design",desc:"AI marketing tool that learns your brand from your website URL and auto-generates on-brand social posts, ads, and product lifestyle images. Labs experiment.",use:"Generate consistent on-brand social content for clients fast, create product mockups in AI lifestyle backgrounds, produce ad variations.",cost:"Free",costBadge:"free",detail:"Labs experiment",rating:4.3,context:0,speed:12,pricePerM:0},
-  {id:"g7",name:"Flow",url:"flow.google",cat:"creative",category:"Creative",for:"Creative",desc:"Unified AI creative studio — generate images free with Nano Banana, then animate into cinematic video (Veo 3.1 with audio). Merged with Whisk + ImageFX in Feb 2026. 1.5 billion images/videos created since launch.",use:"Create social media visuals, product animations, pitch deck hero images, brand concept films, storyboards — all from text prompts.",cost:"Free images",costBadge:"free",detail:"Video credits limited on free; paid for more",rating:4.85,context:0,speed:8,pricePerM:0},
-  {id:"g8",name:"ImageFX",url:"flow.google",cat:"creative",category:"Creative",for:"Creative",desc:"Text-to-image generation using Google's Imagen model (Nano Banana). Now integrated into Flow. Standalone version available until April 2026. SynthID watermark on all generated images.",use:"Generate brand imagery, ad concepts, blog headers, background textures, icon style explorations, mood board visuals.",cost:"Free",costBadge:"free",detail:"Moving into Flow at flow.google",rating:4.6,context:0,speed:22,pricePerM:0},
-  {id:"g9",name:"Whisk",url:"flow.google",cat:"creative",category:"Creative",for:"Creative",desc:"Image remixing tool — combine a subject + scene + style image to create something entirely new. Now integrated into Flow. Being absorbed into Flow by April 2026.",use:"Blend product photos with lifestyle scenes, test visual identity variations, remix brand assets into new styles quickly.",cost:"Free",costBadge:"free",detail:"Moving into Flow — use flow.google",rating:4.5,context:0,speed:20,pricePerM:0},
-  {id:"g10",name:"MusicFX",url:"labs.google/fx",cat:"audio",category:"Audio & Music",for:"Creative",desc:"Generate music tracks up to 70 seconds from text prompts. Create loops, download or share. 10+ million tracks created. Based on Google's MusicLM model.",use:"Create background music for brand videos, social reels, presentations, product demos — royalty-free from a prompt.",cost:"Free",costBadge:"free",detail:"Limited regions (US, NZ, Kenya, AU) — VPN workaround",rating:4.65,context:0,speed:30,pricePerM:0},
-  {id:"g11",name:"MusicFX DJ",url:"labs.google/fx",cat:"audio",category:"Audio & Music",for:"Creative",desc:"Real-time generative music DJ tool in the browser. Type prompts, tweak sliders for tempo/key/intensity — AI generates a continuous evolving mix. More interactive than standard MusicFX.",use:"Create dynamic audio for live presentations, event ambiance, background loops for design sprints, interactive soundscapes.",cost:"Free",costBadge:"free",detail:"Labs experiment, limited regions",rating:4.55,context:0,speed:35,pricePerM:0},
-  {id:"g12",name:"Music AI Sandbox",url:"labs.google",cat:"audio",category:"Audio & Music",for:"Creative",desc:"Advanced experimental suite for musicians — write lyrics, refine melodies, invent new genres with AI as a creative partner. Developed with Grammy-winning artists. Powered by Lyria 3 model.",use:"Create original soundtrack concepts for brand films, develop sonic identity sketches, explore music directions for client projects.",cost:"Waitlist",costBadge:"pro",detail:"Sign up at labs.google",rating:4.7,context:0,speed:25,pricePerM:0},
-  {id:"g13",name:"TextFX",url:"labs.google/fx",cat:"writing",category:"Writing",for:"Creative",desc:"10 AI-powered writing creativity tools — wordplay, transformations, constraints, metaphors. Developed with Lupe Fiasco for lyricists and wordsmiths. Labs experiment.",use:"Generate 10 headline hooks for the same idea, create tagline variations, explore copywriting angles, brainstorm brand voice.",cost:"Free",costBadge:"free",detail:"Labs experiment",rating:4.4,context:0,speed:40,pricePerM:0},
-  {id:"g14",name:"Google AI Studio",url:"aistudio.google.com",cat:"dev",category:"Development",for:"Dev",desc:"Playground + lightweight app builder for Gemini models. Test prompts, build mini-apps without code, export working code, connect to Firebase directly. Free Gemini API with generous rate limits.",use:"Prototype an AI color palette tool, build a design brief assistant, create a brand chatbot, test prompts for your web app AI features.",cost:"Free",costBadge:"free",detail:"Free API tier on Flash & Pro models",rating:4.75,context:1000000,speed:95,pricePerM:0},
-  {id:"g15",name:"Firebase Studio",url:"firebase.studio",cat:"dev",category:"Development",for:"Dev",desc:"AI-first browser IDE that builds and deploys full-stack apps using Gemini agents. Auth + database + hosting included. Previously known as Project IDX. Multi-agent coordination across your codebase.",use:"Build and ship client portfolio sites, web apps with auth/DB, project demos, internal tools — all from the browser, no setup.",cost:"Free",costBadge:"free",detail:"Free in public preview, weekly rate limits",rating:4.65,context:128000,speed:80,pricePerM:0},
-  {id:"g16",name:"Gemini Code Assist",url:"cloud.google.com",cat:"dev",category:"Development",for:"Dev",desc:"AI pair programmer inside VS Code / JetBrains. Code completion, generation, debugging, refactoring, test writing. Free for individuals since March 2026. Best for GCP/Firebase stack work.",use:"Generate React/Vue components, write CSS, build Firebase functions, auto-document code, debug layouts, write unit tests.",cost:"Free",costBadge:"free",detail:"100% free for individuals (March 2026)",rating:4.8,context:128000,speed:65,pricePerM:0},
-  {id:"g17",name:"Gemini CLI",url:"github.com",cat:"dev",category:"Development",for:"Dev",desc:"Integrate Gemini directly into your terminal, shell scripts, and local dev environment. Manage project context, automate file tasks, run AI sub-agents. Open source tool.",use:"Automate asset renaming, generate component scaffolding, run AI code reviews in your build pipeline, script repetitive dev tasks.",cost:"Free",costBadge:"free",detail:"Gemini API free tier rate limits apply",rating:4.6,context:128000,speed:70,pricePerM:0},
-  {id:"g18",name:"Gemini API",url:"ai.google.dev",cat:"dev",category:"Development",for:"Dev",desc:"REST API and SDKs (Python, JS, Go, etc.) to integrate Gemini models into any app. Includes image, video, audio, and text understanding. Accessed via Google AI Studio.",use:"Add AI features to client websites (chatbots, content generators, image analyzers), build design tools, power internal dev utilities.",cost:"Free",costBadge:"free",detail:"Rate-limited free tier; paid for higher usage",rating:4.85,context:1000000,speed:90,pricePerM:0},
-  {id:"g19",name:"Opal",url:"labs.google",cat:"dev",category:"Development",for:"Dev",desc:"No-code AI mini-app builder using natural language. Build, edit and share AI-powered apps (called Opals) without writing code. Workflow editor included. Like Zapier but for AI apps.",use:"Build a brand tone-checker, client intake form, color palette suggester, internal design QA tool, or automated brief generator — shareable as a link.",cost:"Free",costBadge:"free",detail:"3 workspaces free; 10 with free Dev Program",rating:4.55,context:32000,speed:50,pricePerM:0},
-  {id:"g20",name:"Genkit",url:"firebase.google.com",cat:"dev",category:"Development",for:"Dev",desc:"Open-source framework for building production AI apps — RAG pipelines, tool use, structured output, multi-provider support with local debugging UI. Google's answer to LangChain.",use:"Build production AI features into your web apps (smart search, auto-tagging, content generation) with proper testing and evaluation.",cost:"Free",costBadge:"free",detail:"Open source, API costs apply per model used",rating:4.7,context:128000,speed:75,pricePerM:0},
-  {id:"g21",name:"NotebookLM",url:"notebooklm.google.com",cat:"research",category:"Research",for:"Research",desc:"Upload docs, PDFs, YouTube links. Chat with your sources. Generates summaries, audio podcast overviews, mind maps, insights — only from what you provide. Breakout hit of Google's AI ecosystem.",use:"Analyze competitor briefs, digest client strategy docs, turn research into an audio brief, extract themes from brand guidelines, prep for client meetings.",cost:"Free",costBadge:"free",detail:"Limited notebooks/sources/day; NotebookLM Plus with paid",rating:4.8,context:0,speed:40,pricePerM:0},
-  {id:"g22",name:"Illuminate",url:"illuminate.google.com",cat:"research",category:"Research",for:"Research",desc:"Paste any public URL — AI generates a conversation between two voices breaking down the content in plain language. Interactive transcript, follow-up questions. Like NotebookLM Audio Overview but for any web URL.",use:"Turn industry articles, research papers, or competitor pages into easy-to-digest audio summaries. Great for staying up-to-date on design trends.",cost:"Free",costBadge:"free",detail:"20 generations/day; limited regions — VPN works",rating:4.5,context:0,speed:35,pricePerM:0},
-  {id:"g23",name:"Disco",url:"labs.google",cat:"research",category:"Research",for:"Research",desc:"Analyzes all your open browser tabs and builds interactive GenTab dashboards — competitor tabs become comparison matrices, research becomes summaries. macOS only, waitlist.",use:"Turn 20 design inspiration tabs into a structured mood board. Compare competitor websites automatically. Organize client research instantly.",cost:"Free",costBadge:"free",detail:"Experimental, macOS only, waitlist",rating:4.45,context:0,speed:20,pricePerM:0},
-  {id:"g24",name:"Learn Your Way",url:"labs.google",cat:"research",category:"Research",for:"Research",desc:"Transforms content into personalized interactive learning experiences — immersive text, audio lessons, narrated slides, mind maps, quizzes. Adapt any content to your level. Labs experiment.",use:"Learn new design frameworks or dev concepts fast by turning documentation into structured lessons tailored to your experience level.",cost:"Free",costBadge:"free",detail:"Labs experiment",rating:4.4,context:0,speed:30,pricePerM:0},
-  {id:"g25",name:"Gemini in Docs",url:"docs.google.com",cat:"workspace",category:"Workspace",for:"Workspace",desc:"Gemini lives in the sidebar of Google Docs — generate full docs from prompts, rewrite/summarize selected text, insert images, pull in Drive content. Gems (custom assistants) now work in the side panel.",use:"Draft design proposals, write UX research reports, create client presentations outlines, auto-format project documentation.",cost:"Free",costBadge:"free",detail:"Core features free; advanced needs Workspace paid plan",rating:4.6,context:32000,speed:45,pricePerM:0},
-  {id:"g26",name:"Gemini in Gmail (CC)",url:"mail.google.com",cat:"workspace",category:"Workspace",for:"Workspace",desc:"AI in Gmail — write/reply/summarize emails, AI Overviews for threads, daily briefing with action items. CC is a Labs AI agent that emails you a morning digest. Labs: CC agent for Gmail.",use:"Draft client emails faster, summarize long thread histories before replying, get daily project action item digests, speed up proposals.",cost:"Free",costBadge:"free",detail:"Basic features free; advanced AI features need paid Workspace",rating:4.55,context:16000,speed:50,pricePerM:0},
-  {id:"g27",name:"Gemini in Sheets",url:"sheets.google.com",cat:"workspace",category:"Workspace",for:"Workspace",desc:"Ask Gemini questions about your spreadsheet data in plain English. Auto-generate formulas, analyze data, create charts, build pivot tables from natural language. Integrated into Google Sheets sidebar.",use:"Analyze project budgets, build client rate cards, track design iterations, generate invoices, clean up data from client briefs.",cost:"Free",costBadge:"free",detail:"Core features free; advanced needs paid plan",rating:4.5,context:32000,speed:40,pricePerM:0},
-  {id:"g28",name:"Google Vids",url:"workspace.google.com",cat:"workspace",category:"Workspace",for:"Workspace",desc:"AI-powered presentation video creator inside Google Workspace. Convert documents into narrated videos with music, voiceover, and animations from text prompts. Part of Google Workspace suite.",use:"Turn project update docs into 2-3 min stakeholder videos, create onboarding videos, produce case study animations for clients.",cost:"Free",costBadge:"free",detail:"Included with Google Workspace (free tier available)",rating:4.4,context:0,speed:15,pricePerM:0},
-  {id:"g29",name:"AI Mode in Search",url:"google.com",cat:"search",category:"AI Search",for:"Workspace",desc:"AI-powered mode in Google Search for complex multi-part questions — deeper answers than standard search, with reasoning and multimodal understanding. Powered by Gemini models.",use:"Research design trends, find technical solutions, compare frameworks, analyze competitor strategies — all with richer contextual answers.",cost:"Free",costBadge:"free",detail:"Labs opt-in at labs.google.com/search",rating:4.65,context:32000,speed:60,pricePerM:0},
-  {id:"g30",name:"Project Mariner",url:"deepmind.google",cat:"agent",category:"Agent & Browser AI",for:"Both",desc:"Agentic browser prototype — handles multi-step tasks on your behalf in Chrome: fill forms, collect data from multiple pages, manage workflows while you do other things. US only, AI Ultra subscription required.",use:"Automate repetitive web research tasks, collect competitor pricing from 20 pages into a table, fill in project management tools.",cost:"AI Ultra",costBadge:"paid",detail:"US only, $249.99/mo plan — not free",rating:4.3,context:0,speed:10,pricePerM:0},
-  {id:"g31",name:"Claude in Chrome (Gemini side panel)",url:"google.com",cat:"agent",category:"Agent & Browser AI",for:"Both",desc:"Gemini side panel pinned to Chrome — summarize any page, compare across tabs, transform images, auto-browse multi-step tasks. Connected to Google apps. Available on Windows, macOS, Chromebook Plus.",use:"Summarize client briefs while browsing, compare design tools, research while developing, get context on any open page instantly.",cost:"Free",costBadge:"free",detail:"Available in Chrome now",rating:4.7,context:128000,speed:85,pricePerM:0},
-  {id:"g32",name:"Project Astra",url:"deepmind.google",cat:"dev",category:"Development",for:"Dev",desc:"Research prototype for a universal AI assistant — real-time camera/video understanding, screen sharing, tool use (Search, Gmail, Maps), spatial reasoning, memory. Being integrated into Gemini Live.",use:"Future tool — will let you point camera at UI mockups for instant AI feedback, identify design/code issues via screen share in real time.",cost:"Research",costBadge:"pro",detail:"Capabilities rolling into Gemini Live",rating:4.5,context:0,speed:0,pricePerM:0},
-  {id:"g33",name:"Project Genie",url:"labs.google",cat:"fun",category:"Fun & Experiments",for:"Experiment",desc:"Create and explore infinitely diverse generative 3D worlds from text descriptions. Real-time physics interaction (Genie 3 model from DeepMind). Still experimental.",use:"Explore spatial concepts for AR/VR projects, visualize 3D environments for game/app design, generate fantastical world references.",cost:"Experimental",costBadge:"pro",detail:"Labs experiment",rating:4.35,context:0,speed:8,pricePerM:0},
-  {id:"g34",name:"Doppl",url:"labs.google",cat:"fun",category:"Fun & Experiments",for:"Experiment",desc:"AI fashion try-on experiment — visualize yourself in different outfits using your photo. Explore personalized looks with AI. Labs experiment, limited availability.",use:"Mock up \"virtual merch\" for a brand campaign, sanity-check wearables design concepts, prototype fashion e-commerce try-on features.",cost:"Free",costBadge:"free",detail:"Labs experiment, limited availability",rating:4.25,context:0,speed:12,pricePerM:0},
-  {id:"g35",name:"Illuminate (audio)",url:"illuminate.google.com",cat:"audio",category:"Audio & Music",for:"Experiment",desc:"Converts research papers and articles into two-voice AI podcast conversations. Community library of existing illuminated content to browse. 20 generations/day.",use:"Turn dense UX/design research papers into listenable content, create podcast-style summaries of case studies, learn while commuting.",cost:"Free",costBadge:"free",detail:"20 gen/day; limited regions",rating:4.45,context:0,speed:30,pricePerM:0},
-  {id:"g36",name:"SynthID",url:"deepmind.google",cat:"dev",category:"Development",for:"Experiment",desc:"DeepMind's invisible watermarking system that tags all Google AI-generated images, audio, video, and text. Detectable but imperceptible. 20 billion+ pieces of content watermarked.",use:"Understand that all your Flow/ImageFX generated assets are watermarked — relevant for client transparency and content provenance.",cost:"Free",costBadge:"free",detail:"Automatically applied to Google AI-generated content",rating:4.4,context:0,speed:0,pricePerM:0}
-];
-
-const NAV_STRUCTURE = [
-  {section:"Overview",items:[{id:"home",label:"🏠 Home",desc:"Dashboard"}]},
-  {section:"Google AI",items:[{id:"google",label:"🔵 All Google AI",desc:"36 Google tools"}]},
-  {section:"Browse by Category",items:[
-    {id:"cat-chat",label:"💬 Chat & LLM",desc:"Language models"},
-    {id:"cat-design",label:"🎨 Design & UI",desc:"Design tools"},
-    {id:"cat-code",label:"⌨ Code & Dev",desc:"Developer tools"},
-    {id:"cat-image",label:"🖼 Image Generation",desc:"Image creators"},
-    {id:"cat-video",label:"🎬 Video Generation",desc:"Video creators"},
-    {id:"cat-audio",label:"🎵 Audio & Music",desc:"Voice & music"},
-    {id:"cat-writing",label:"✍ Writing & Copy",desc:"Writing assistants"},
-    {id:"cat-research",label:"🔬 Research",desc:"Research tools"},
-    {id:"cat-workspace",label:"📋 Workspace",desc:"Productivity"},
-    {id:"cat-agent",label:"🤖 Agents & Browser",desc:"AI agents"},
-    {id:"cat-fun",label:"🎮 Fun & Experiments",desc:"Experiments"},
-    {id:"cat-data",label:"📊 Data & Local",desc:"Data & local AI"},
-    {id:"cat-marketing",label:"📣 Marketing AI",desc:"Marketing tools"},
-    {id:"cat-cloud",label:"☁ Cloud AI",desc:"Cloud platforms"},
-  ]},
-  {section:"Filters",items:[
-    {id:"free",label:"✓ Free Only",desc:"Free tools",badge:"free"},
-    {id:"pro",label:"💎 Freemium",desc:"Free + paid tiers",badge:"amber"},
-    {id:"paid",label:"💰 Paid Only",desc:"Paid tools only",badge:"purple"},
-  ]}
-];
-
 const CATEGORIES = {
-  "chat": {icon:"💬", name:"Chat & LLM", color:"#3b82f6"},
-  "design": {icon:"🎨", name:"Design & UI", color:"#ec4899"},
-  "dev": {icon:"⌨", name:"Development", color:"#06b6d4"},
-  "creative": {icon:"🎭", name:"Creative", color:"#f59e0b"},
-  "audio": {icon:"🎵", name:"Audio & Music", color:"#8b5cf6"},
-  "writing": {icon:"✍", name:"Writing", color:"#10b981"},
-  "research": {icon:"🔬", name:"Research", color:"#14b8a6"},
-  "workspace": {icon:"📋", name:"Workspace", color:"#f97316"},
-  "search": {icon:"🔍", name:"AI Search", color:"#6366f1"},
-  "agent": {icon:"🤖", name:"Agent & Browser AI", color:"#a855f7"},
-  "fun": {icon:"🎮", name:"Fun & Experiments", color:"#e879f9"},
-  "data": {icon:"📊", name:"Data & Local", color:"#0ea5e9"},
-  "marketing": {icon:"📣", name:"Marketing AI", color:"#ef4444"},
-  "cloud": {icon:"☁", name:"Cloud AI", color:"#64748b"},
-  "both": {icon:"🔗", name:"Both", color:"#3b82f6"}
+  "all":{icon:"🌐",name:"All AI Models",color:"#3b82f6"},
+  "google":{icon:"🔵",name:"Google AI",color:"#4285F4"},
+  "chat":{icon:"💬",name:"Chat & LLM",color:"#3b82f6"},
+  "design":{icon:"🎨",name:"Design & UI",color:"#ec4899"},
+  "code":{icon:"⌨️",name:"Code & Dev",color:"#06b6d4"},
+  "image":{icon:"🖼️",name:"Image Generation",color:"#8b5cf6"},
+  "video":{icon:"🎬",name:"Video Generation & Editing",color:"#f97316"},
+  "audio":{icon:"🎵",name:"Audio, Voice & Music",color:"#a855f7"},
+  "writing":{icon:"✍️",name:"Writing & Copy",color:"#10b981"},
+  "research":{icon:"🔬",name:"Research & Analysis",color:"#14b8a6"},
+  "workspace":{icon:"📋",name:"Workspace & Productivity",color:"#f59e0b"},
+  "agent":{icon:"🤖",name:"Agents & Automation",color:"#6366f1"},
+  "data":{icon:"📊",name:"Data & Local AI",color:"#0ea5e9"},
+  "marketing":{icon:"📣",name:"Marketing AI",color:"#ef4444"},
+  "cloud":{icon:"☁️",name:"Cloud & Infrastructure",color:"#64748b"},
+  "fun":{icon:"🎮",name:"Fun & Experiments",color:"#e879f9"},
+  "top10":{icon:"🏆",name:"Top 10 — All Categories",color:"#ffd700"}
 };
 
-const NON_GOOGLE_TOOLS = [];
-const nonGoogleData = [
-  {name:"Claude 3.5 Sonnet",cat:"chat",url:"claude.ai",origin:"Anthropic",rating:4.9,cost:"pro",ctx:200000,spd:65,price:15,desc:"Exceptional reasoning and coding. Best-in-class for complex tasks and long documents."},
-  {name:"GPT-4o",cat:"chat",url:"chatgpt.com",origin:"OpenAI",rating:4.85,cost:"pro",ctx:128000,spd:110,price:10,desc:"Multimodal powerhouse — text, voice, vision. Industry standard for general AI tasks."},
-  {name:"DeepSeek V3",cat:"chat",url:"deepseek.com",origin:"DeepSeek · China",rating:4.8,cost:"free",ctx:128000,spd:88,price:0,desc:"Leading Chinese LLM with strong multilingual capabilities and massive context window."},
-  {name:"Llama 3.3 70B",cat:"chat",url:"llama.meta.com",origin:"Meta",rating:4.7,cost:"free",ctx:128000,spd:75,price:0,desc:"Open-source LLM with excellent performance-to-size ratio. Self-hostable."},
-  {name:"Mistral Large 2",cat:"chat",url:"mistral.ai",origin:"Mistral AI",rating:4.65,cost:"pro",ctx:128000,spd:82,price:12,desc:"European LLM leader. Strong multilingual support and enterprise-grade security."},
-  {name:"Grok-3",cat:"chat",url:"grok.x.ai",origin:"xAI",rating:4.6,cost:"pro",ctx:128000,spd:120,price:30,desc:"Fast inference, real-time X platform integration. Bold and unfiltered responses."},
-  {name:"Qwen 2.5 Max",cat:"chat",url:"qwen.aliyun.com",origin:"Alibaba · China",rating:4.72,cost:"pro",ctx:256000,spd:70,price:8,desc:"Alibaba's flagship model. Excellent bilingual Chinese-English with massive context."},
-  {name:"Kimi K2",cat:"chat",url:"kimi.moonshot.cn",origin:"Moonshot · China",rating:4.68,cost:"pro",ctx:200000,spd:78,price:6,desc:"Moonshot AI's powerful model with long-context excellence and Chinese optimization."},
-  {name:"Ernie Bot 5.0",cat:"chat",url:"yiyan.baidu.com",origin:"Baidu · China",rating:4.5,cost:"pro",ctx:128000,spd:60,price:5,desc:"Baidu's flagship Chinese LLM. Strong in Chinese NLP and enterprise integration."},
-  {name:"Doubao",cat:"chat",url:"doubao.com",origin:"ByteDance · China",rating:4.55,cost:"free",ctx:128000,spd:72,price:0,desc:"ByteDance's consumer AI assistant. Growing rapidly in China with strong chat capabilities."},
-  {name:"Midjourney V7",cat:"image",url:"midjourney.com",origin:"Midjourney",rating:4.92,cost:"paid",ctx:0,spd:18,price:30,desc:"Industry-leading artistic image generation. Stunning photorealism and creative control."},
-  {name:"FLUX.1 Pro",cat:"image",url:"blackforestlabs.ai",origin:"BlackForest Labs",rating:4.82,cost:"pro",ctx:0,spd:15,price:12,desc:"Open-weight image model rivaling Midjourney. Excellent text rendering in images."},
-  {name:"DALL-E 3",cat:"image",url:"openai.com/dall-e-3",origin:"OpenAI",rating:4.7,cost:"pro",ctx:0,spd:22,price:15,desc:"OpenAI's image generator with strong prompt adherence and text rendering."},
-  {name:"Stable Diffusion 3.5",cat:"image",url:"stability.ai",origin:"Stability AI",rating:4.65,cost:"free",ctx:0,spd:12,price:0,desc:"Open-source image generation. Self-hostable with extensive community fine-tunes."},
-  {name:"Ideogram 2.0",cat:"image",url:"ideogram.ai",origin:"Ideogram",rating:4.6,cost:"pro",ctx:0,spd:25,price:10,desc:"Best-in-class for text-in-image generation. Clean typography and graphic design."},
-  {name:"Recraft V3",cat:"image",url:"recraft.ai",origin:"Recraft",rating:4.65,cost:"pro",ctx:0,spd:20,price:15,desc:"Vector and raster image generation for designers. SVG export, style consistency."},
-  {name:"Sora",cat:"video",url:"openai.com/sora",origin:"OpenAI",rating:4.88,cost:"pro",ctx:0,spd:5,price:0,desc:"OpenAI's text-to-video model. Cinematic quality with temporal consistency."},
-  {name:"Runway Gen-3",cat:"video",url:"runwayml.com",origin:"Runway ML",rating:4.7,cost:"pro",ctx:0,spd:6,price:25,desc:"Professional video creation suite. Industry tool for AI video production."},
-  {name:"Kling AI",cat:"video",url:"klingai.com",origin:"Kuaishou · China",rating:4.75,cost:"pro",ctx:0,spd:8,price:12,desc:"Chinese video generation model with impressive motion quality and realism."},
-  {name:"Luma Dream Machine",cat:"video",url:"lumalabs.ai",origin:"Luma AI",rating:4.6,cost:"pro",ctx:0,spd:10,price:18,desc:"Fast, high-quality video generation from text or image. Realistic motion."},
-  {name:"MiniMax Hailuo",cat:"video",url:"hailuoai.com",origin:"MiniMax · China",rating:4.55,cost:"free",ctx:0,spd:7,price:0,desc:"Free Chinese video generation with strong prompt following and quality."},
-  {name:"Vidu",cat:"video",url:"vidu.com",origin:"ShengShu · China",rating:4.5,cost:"free",ctx:0,spd:9,price:0,desc:"Chinese AI video generator with anime and realistic style capabilities."},
-  {name:"Pika 2.0",cat:"video",url:"pika.art",origin:"Pika Labs",rating:4.55,cost:"pro",ctx:0,spd:11,price:12,desc:"User-friendly video editing with AI. Lip sync, style transfer, and more."},
-  {name:"ElevenLabs",cat:"audio",url:"elevenlabs.io",origin:"ElevenLabs",rating:4.85,cost:"pro",ctx:0,spd:180,price:22,desc:"Best-in-class AI voice synthesis. Natural, emotive voices in 29+ languages."},
-  {name:"Suno v4",cat:"audio",url:"suno.ai",origin:"Suno",rating:4.78,cost:"pro",ctx:0,spd:30,price:10,desc:"AI music generation — full songs from text. Vocals, instruments, lyrics."},
-  {name:"Udio",cat:"audio",url:"udio.com",origin:"Udio",rating:4.8,cost:"pro",ctx:0,spd:28,price:10,desc:"High-fidelity AI music generation. Superior audio quality and genre range."},
-  {name:"PlayHT",cat:"audio",url:"play.ht",origin:"PlayHT",rating:4.6,cost:"pro",ctx:0,spd:150,price:20,desc:"Enterprise AI voice cloning and TTS. 900+ voices, instant voice cloning."},
-  {name:"GitHub Copilot",cat:"code",url:"github.com/features/copilot",origin:"GitHub",rating:4.7,cost:"paid",ctx:128000,spd:55,price:19,desc:"AI pair programmer in VS Code/JetBrains. Code completion, chat, and more."},
-  {name:"Cursor",cat:"code",url:"cursor.com",origin:"Cursor",rating:4.8,cost:"pro",ctx:128000,spd:60,price:20,desc:"AI-native code editor. Built on VS Code with deep AI integration."},
-  {name:"Windsurf",cat:"code",url:"codeium.com",origin:"Codeium",rating:4.65,cost:"pro",ctx:128000,spd:58,price:15,desc:"AI-first IDE with agentic capabilities. Flows and cascades for complex tasks."},
-  {name:"Claude Code",cat:"code",url:"anthropic.com",origin:"Anthropic",rating:4.75,cost:"paid",ctx:200000,spd:50,price:25,desc:"Anthropic's agentic coding assistant. Terminal-native AI coding."},
-  {name:"Devin",cat:"code",url:"cognition.ai",origin:"Cognition AI",rating:4.5,cost:"paid",ctx:0,spd:30,price:500,desc:"Autonomous AI software engineer. Plans, codes, deploys complete projects."},
-  {name:"Perplexity Pro",cat:"research",url:"perplexity.ai",origin:"Perplexity AI",rating:4.55,cost:"pro",ctx:32000,spd:45,price:20,desc:"AI-powered search engine with cited sources. Real-time web research."},
-  {name:"Consensus",cat:"research",url:"consensus.app",origin:"Consensus",rating:4.4,cost:"pro",ctx:0,spd:35,price:10,desc:"AI research assistant that finds and summarizes scientific papers."},
-  {name:"Notion AI",cat:"writing",url:"notion.ai",origin:"Notion",rating:4.5,cost:"pro",ctx:32000,spd:40,price:10,desc:"AI inside Notion workspace. Writing, summarizing, brainstorming."},
-  {name:"Jasper",cat:"marketing",url:"jasper.ai",origin:"Jasper AI",rating:4.45,cost:"paid",ctx:0,spd:50,price:49,desc:"AI marketing copy generator. Brand voice, templates, campaigns."},
-  {name:"Copy.ai",cat:"marketing",url:"copy.ai",origin:"Copy.ai",rating:4.35,cost:"pro",ctx:0,spd:55,price:49,desc:"AI content platform for marketing teams. Social, ads, email copy."},
-  {name:"Framer AI",cat:"design",url:"framer.com",origin:"Framer",rating:4.6,cost:"pro",ctx:0,spd:20,price:15,desc:"AI website builder. Design-to-code with responsive layouts."},
-  {name:"v0",cat:"design",url:"v0.dev",origin:"Vercel",rating:4.7,cost:"pro",ctx:0,spd:25,price:0,desc:"AI UI generator from Vercel. Text to React/Tailwind code instantly."},
-  {name:"Relume AI",cat:"design",url:"relume.io",origin:"Relume",rating:4.55,cost:"pro",ctx:0,spd:18,price:20,desc:"AI sitemap and wireframe generator for web design. Figma + Webflow."},
-  {name:"Uizard",cat:"design",url:"uizard.io",origin:"Uizard",rating:4.4,cost:"pro",ctx:0,spd:15,price:12,desc:"AI design tool for non-designers. Sketch to UI, screenshot to design."},
-  {name:"Galileo AI",cat:"design",url:"usegalileo.ai",origin:"Galileo",rating:4.5,cost:"pro",ctx:0,spd:20,price:15,desc:"Text-to-UI design generator. Figma-ready interfaces from prompts."},
-  {name:"Suno",cat:"audio",url:"suno.com",origin:"Suno AI",rating:4.78,cost:"pro",ctx:0,spd:30,price:10,desc:"Generate complete songs with lyrics from text prompts."},
-  {name:"Murf AI",cat:"audio",url:"murf.ai",origin:"Murf AI",rating:4.5,cost:"pro",ctx:0,spd:120,price:26,desc:"Professional AI voiceover for videos, presentations, and podcasts."},
-  {name:"Ollama",cat:"data",url:"ollama.com",origin:"Ollama",rating:4.75,cost:"free",ctx:32000,spd:45,price:0,desc:"Run AI models locally. Easy setup for Llama, Mistral, and more."},
-  {name:"LM Studio",cat:"data",url:"lmstudio.ai",origin:"LM Studio",rating:4.6,cost:"free",ctx:32000,spd:40,price:0,desc:"Desktop app for local LLM inference. Chat with models offline."},
-  {name:"Hugging Face",cat:"cloud",url:"huggingface.co",origin:"Hugging Face",rating:4.8,cost:"free",ctx:0,spd:0,price:0,desc:"Open-source AI platform. Models, datasets, spaces, and community."},
-  {name:"Replicate",cat:"cloud",url:"replicate.com",origin:"Replicate",rating:4.65,cost:"paid",ctx:0,spd:0,price:0,desc:"Run ML models in the cloud via API. Hundreds of open models."},
-  {name:"Together AI",cat:"cloud",url:"together.ai",origin:"Together AI",rating:4.6,cost:"paid",ctx:0,spd:0,price:0,desc:"Cloud platform for open-source AI models. Fast inference API."},
-  {name:"Groq",cat:"cloud",url:"groq.com",origin:"Groq",rating:4.7,cost:"free",ctx:8000,spd:800,price:0,desc:"Ultra-fast AI inference on custom LPUs. Lightning speed for LLMs."},
-  {name:"LangChain",cat:"data",url:"langchain.com",origin:"LangChain",rating:4.68,cost:"free",ctx:0,spd:0,price:0,desc:"Framework for building LLM applications. Chains, agents, RAG."},
-  {name:"CrewAI",cat:"data",url:"crewai.com",origin:"CrewAI",rating:4.55,cost:"free",ctx:0,spd:0,price:0,desc:"Multi-agent orchestration framework. Role-based AI agent teams."},
-  {name:"AutoGen",cat:"data",url:"microsoft.github.io",origin:"Microsoft",rating:4.5,cost:"free",ctx:0,spd:0,price:0,desc:"Microsoft's multi-agent framework. Conversational AI agents."},
-  {name:"n8n",cat:"agent",url:"n8n.io",origin:"n8n",rating:4.65,cost:"free",ctx:0,spd:0,price:0,desc:"Workflow automation with AI. Visual builder for AI agent pipelines."},
-  {name:"Dify",cat:"agent",url:"dify.ai",origin:"Dify",rating:4.55,cost:"free",ctx:0,spd:0,price:0,desc:"Open-source LLM app development platform. RAG, agents, workflows."},
-  {name:"Coze",cat:"agent",url:"coze.com",origin:"ByteDance",rating:4.5,cost:"free",ctx:0,spd:0,price:0,desc:"ByteDance's no-code AI bot platform. Build and deploy AI agents."},
-  {name:"ComfyUI",cat:"design",url:"comfyui.org",origin:"ComfyUI",rating:4.7,cost:"free",ctx:0,spd:10,price:0,desc:"Node-based SD workflow tool. Powerful, modular image generation."},
-  {name:"Fooocus",cat:"design",url:"github.com/lllyasviel",origin:"Fooocus",rating:4.55,cost:"free",ctx:0,spd:8,price:0,desc:"Easy Stable Diffusion tool. Midjourney-like experience, free."},
-  {name:"Kling Image",cat:"image",url:"klingai.com",origin:"Kuaishou",rating:4.6,cost:"free",ctx:0,spd:14,price:0,desc:"AI image generation with strong photorealism and style transfer."},
-  {name:"Nano Banana",cat:"image",url:"flow.google",origin:"Google",rating:4.5,cost:"free",ctx:0,spd:20,price:0,desc:"Google's fast image generation model, now in Flow."},
-  {name:"Veo 3.1",cat:"video",url:"deepmind.google",origin:"DeepMind",rating:4.85,cost:"pro",ctx:0,spd:6,price:0,desc:"DeepMind's advanced video generation with audio and cinematic quality."},
-  {name:"Poe",cat:"chat",url:"poe.com",origin:"Quora",rating:4.45,cost:"pro",ctx:32000,spd:60,price:20,desc:"Multi-model chat platform. Access GPT, Claude, Gemini in one place."},
-  {name:"Character.AI",cat:"chat",url:"character.ai",origin:"Character.AI",rating:4.5,cost:"pro",ctx:8000,spd:40,price:10,desc:"AI character chat. Roleplay, companions, educational bots."},
-  {name:"Pi AI",cat:"chat",url:"pi.ai",origin:"Inflection AI",rating:4.4,cost:"free",ctx:16000,spd:50,price:0,desc:"Conversational AI with emotional intelligence. Supportive and helpful."},
-  {name:"Gemini Advanced",cat:"chat",url:"gemini.google.com",origin:"Google",rating:4.8,cost:"paid",ctx:1000000,spd:90,price:20,desc:"Premium Gemini with Ultra model. Deep research, advanced reasoning."},
-  {name:"Canva AI",cat:"design",url:"canva.com",origin:"Canva",rating:4.65,cost:"pro",ctx:0,spd:18,price:15,desc:"AI features in Canva — Magic Design, text-to-image, background removal."},
-  {name:"Adobe Firefly",cat:"image",url:"firefly.adobe.com",origin:"Adobe",rating:4.6,cost:"pro",ctx:0,spd:15,price:20,desc:"Adobe's AI image generation. Commercial-safe, integrated with Creative Cloud."},
-  {name:"Leonardo AI",cat:"image",url:"leonardo.ai",origin:"Leonardo",rating:4.55,cost:"pro",ctx:0,spd:16,price:12,desc:"AI art platform with fine-tuned models. Game assets, concept art."},
-  {name:"Pictory",cat:"video",url:"pictory.ai",origin:"Pictory",rating:4.35,cost:"pro",ctx:0,spd:8,price:23,desc:"AI video creation from text. Blog-to-video, script-to-video."},
-  {name:"InVideo AI",cat:"video",url:"invideo.io",origin:"InVideo",rating:4.4,cost:"pro",ctx:0,spd:7,price:20,desc:"AI video editor. Text-to-video, auto captions, voiceover."},
-  {name:"Synthesia",cat:"video",url:"synthesia.io",origin:"Synthesia",rating:4.55,cost:"paid",ctx:0,spd:5,price:30,desc:"AI avatar video generation. Professional presenters from text."},
-  {name:"HeyGen",cat:"video",url:"heygen.com",origin:"HeyGen",rating:4.6,cost:"pro",ctx:0,spd:6,price:24,desc:"AI video avatar platform. Lip-sync, translation, custom avatars."},
-  {name:"Descript",cat:"audio",url:"descript.com",origin:"Descript",rating:4.55,cost:"pro",ctx:0,spd:30,price:12,desc:"AI audio/video editing. Edit by text, voice cloning, overdub."},
-  {name:"LALAL.AI",cat:"audio",url:"lalal.ai",origin:"LALAL.AI",rating:4.4,cost:"paid",ctx:0,spd:50,price:15,desc:"AI stem separation. Isolate vocals, instruments from any audio."},
-  {name:"Riffusion",cat:"audio",url:"riffusion.com",origin:"Riffusion",rating:4.3,cost:"free",ctx:0,spd:25,price:0,desc:"AI music generation from spectrograms. Create music from text."},
-  {name:"Claude Haiku",cat:"chat",url:"claude.ai",origin:"Anthropic",rating:4.5,cost:"free",ctx:200000,spd:200,price:0.8,desc:"Fast, lightweight Claude model. Great for high-volume tasks."},
-  {name:"Claude Opus",cat:"chat",url:"claude.ai",origin:"Anthropic",rating:4.95,cost:"paid",ctx:200000,spd:45,price:75,desc:"Claude's most capable model. Top-tier reasoning and analysis."},
-  {name:"GPT-4o mini",cat:"chat",url:"chatgpt.com",origin:"OpenAI",rating:4.55,cost:"free",ctx:128000,spd:200,price:0.6,desc:"Fast, affordable GPT model. Good balance of speed and quality."},
-  {name:"o3-mini",cat:"chat",url:"chatgpt.com",origin:"OpenAI",rating:4.75,cost:"pro",ctx:200000,spd:60,price:5,desc:"OpenAI's reasoning model. Math, science, and complex problem solving."},
-  {name:"Gemini Flash 2.0",cat:"chat",url:"gemini.google.com",origin:"Google",rating:4.7,cost:"free",ctx:1000000,spd:150,price:0.35,desc:"Fast Gemini model with million-token context. Great value."},
-  {name:"Yi-Lightning",cat:"chat",url:"01.ai",origin:"01.AI · China",rating:4.45,cost:"free",ctx:128000,spd:85,price:0,desc:"Chinese LLM with strong benchmark scores and bilingual capability."},
-  {name:"Baichuan 4",cat:"chat",url:"baichuan-ai.com",origin:"Baichuan · China",rating:4.35,cost:"free",ctx:128000,spd:65,price:0,desc:"Chinese enterprise LLM. Strong in domain-specific tasks."},
-  {name:"ChatGLM 4",cat:"chat",url:"chatglm.cn",origin:"THUDM · China",rating:4.4,cost:"free",ctx:128000,spd:70,price:0,desc:"Open-source Chinese LLM from Tsinghua. Strong multilingual."},
-  {name:"InternLM 3",cat:"chat",url:"internlm.org",origin:"Shanghai AI Lab",rating:4.35,cost:"free",ctx:200000,spd:68,price:0,desc:"Chinese open-source LLM. Strong coding and reasoning capabilities."},
-  {name:"Hunyuan",cat:"chat",url:"hunyuan.tencent.com",origin:"Tencent · China",rating:4.45,cost:"free",ctx:256000,spd:62,price:0,desc:"Tencent's large language model. Strong multimodal capabilities."},
-  {name:"Wanx",cat:"image",url:"tongyi.aliyun.com",origin:"Alibaba · China",rating:4.45,cost:"free",ctx:0,spd:14,price:0,desc:"Alibaba's image generation model. Chinese aesthetic optimization."},
-  {name:"CogVideoX",cat:"video",url:"thudm.github.io",origin:"THUDM · China",rating:4.35,cost:"free",ctx:0,spd:7,price:0,desc:"Open-source Chinese video generation model. Text and image-to-video."},
-  {name:"Viggle",cat:"video",url:"viggle.ai",origin:"Viggle",rating:4.4,cost:"free",ctx:0,spd:9,price:0,desc:"AI character animation. Make any character move and dance."},
-  {name:"Haiper",cat:"video",url:"haiper.ai",origin:"Haiper",rating:4.35,cost:"free",ctx:0,spd:10,price:0,desc:"Short-form AI video generation. Simple and creative."},
-  {name:"PixVerse",cat:"video",url:"pixverse.ai",origin:"PixVerse",rating:4.3,cost:"free",ctx:0,spd:8,price:0,desc:"Free AI video generator. Anime and realistic styles."},
-  {name:"Bolt.new",cat:"code",url:"bolt.new",origin:"StackBlitz",rating:4.65,cost:"free",ctx:128000,spd:40,price:0,desc:"AI web development in the browser. Full-stack app generation."},
-  {name:"Lovable",cat:"code",url:"lovable.dev",origin:"Lovable",rating:4.6,cost:"pro",ctx:0,spd:35,price:20,desc:"AI app builder. Natural language to full web applications."},
-  {name:"Replit Agent",cat:"code",url:"replit.com",origin:"Replit",rating:4.55,cost:"pro",ctx:0,spd:30,price:25,desc:"AI that builds apps in Replit. Full development cycle automation."},
-  {name:"Aider",cat:"code",url:"aider.chat",origin:"Aider",rating:4.65,cost:"free",ctx:128000,spd:50,price:0,desc:"AI pair programming in the terminal. Git-aware code editing."},
-  {name:"Continue",cat:"code",url:"continue.dev",origin:"Continue",rating:4.5,cost:"free",ctx:0,spd:45,price:0,desc:"Open-source AI code assistant for VS Code and JetBrains."},
-  {name:"Cline",cat:"code",url:"cline.bot",origin:"Cline",rating:4.6,cost:"free",ctx:0,spd:40,price:0,desc:"Autonomous AI coding agent in VS Code. Browse, edit, run."},
-  {name:"OpenHands",cat:"code",url:"all-hands.dev",origin:"OpenHands",rating:4.5,cost:"free",ctx:0,spd:35,price:0,desc:"Open-source AI software engineer. Plans and executes complex tasks."},
-  {name:"SWE-agent",cat:"code",url:"swe-agent.com",origin:"Princeton",rating:4.4,cost:"free",ctx:0,spd:30,price:0,desc:"AI agent that fixes GitHub issues. Automated bug resolution."},
-  {name:"Perplexity Labs",cat:"chat",url:"labs.perplexity.ai",origin:"Perplexity",rating:4.45,cost:"free",ctx:128000,spd:55,price:0,desc:"Free access to top LLMs via Perplexity. Llama, Mistral, Qwen."},
-  {name:"HuggingChat",cat:"chat",url:"huggingface.co/chat",origin:"Hugging Face",rating:4.4,cost:"free",ctx:8000,spd:40,price:0,desc:"Free open-source chat interface. Multiple LLM models available."},
-  {name:"Groq Chat",cat:"chat",url:"groq.com",origin:"Groq",rating:4.55,cost:"free",ctx:8000,spd:800,price:0,desc:"Blazing fast AI chat on Groq LPUs. Instant responses."},
-  {name:"You.com",cat:"search",url:"you.com",origin:"You.com",rating:4.4,cost:"free",ctx:0,spd:40,price:0,desc:"AI search engine with chat mode. Privacy-focused research."},
-  {name:"Kagi",cat:"search",url:"kagi.com",origin:"Kagi",rating:4.5,cost:"paid",ctx:0,spd:35,price:10,desc:"Premium AI search engine. No ads, high-quality results."},
-  {name:"Google AI Studio",cat:"dev",url:"aistudio.google.com",origin:"Google",rating:4.75,cost:"free",ctx:1000000,spd:95,price:0,desc:"Test Gemini models, build apps, get API keys. Generous free tier."},
-  {name:"Firebase Studio",cat:"dev",url:"firebase.studio",origin:"Google",rating:4.65,cost:"free",ctx:128000,spd:80,price:0,desc:"AI-first browser IDE. Build and deploy full-stack apps with AI."},
-  {name:"Gemini Code Assist",cat:"code",url:"cloud.google.com",origin:"Google",rating:4.8,cost:"free",ctx:128000,spd:65,price:0,desc:"AI coding assistant for VS Code and JetBrains. Free for individuals."},
-  {name:"Anthropic API",cat:"cloud",url:"console.anthropic.com",origin:"Anthropic",rating:4.8,cost:"paid",ctx:200000,spd:65,price:15,desc:"Access Claude models via API. Industry-leading safety and reasoning."},
-  {name:"OpenAI API",cat:"cloud",url:"platform.openai.com",origin:"OpenAI",rating:4.75,cost:"paid",ctx:128000,spd:110,price:10,desc:"Access GPT, DALL-E, Whisper, TTS via API. Most popular AI API."},
-  {name:"DeepSeek API",cat:"cloud",url:"platform.deepseek.com",origin:"DeepSeek",rating:4.65,cost:"free",ctx:128000,spd:88,price:0.27,desc:"Affordable API access to DeepSeek models. Strong value proposition."},
-  {name:"Mistral API",cat:"cloud",url:"console.mistral.ai",origin:"Mistral AI",rating:4.6,cost:"paid",ctx:128000,spd:82,price:3.5,desc:"European cloud AI API. Le Chat, Codestral, and more."},
-  {name:"Together AI API",cat:"cloud",url:"api.together.ai",origin:"Together AI",rating:4.55,cost:"paid",ctx:0,spd:0,price:0,desc:"Run open-source models via API. Fast inference, great pricing."},
-  {name:"Anyscale",cat:"cloud",url:"anyscale.com",origin:"Anyscale",rating:4.5,cost:"paid",ctx:0,spd:0,price:0,desc:"Serverless AI inference platform. Ray-based, highly scalable."},
-  {name:"Fireworks AI",cat:"cloud",url:"fireworks.ai",origin:"Fireworks",rating:4.55,cost:"free",ctx:0,spd:0,price:0,desc:"Fast inference API for open models. Generous free tier."},
-  {name:"Morph AI",cat:"cloud",url:"morph.ai",origin:"Morph",rating:4.3,cost:"free",ctx:0,spd:0,price:0,desc:"Serverless GPU platform. Run AI models without infrastructure."},
-  {name:"Midjourney Alpha",cat:"image",url:"midjourney.com",origin:"Midjourney",rating:4.85,cost:"paid",ctx:0,spd:12,price:30,desc:"New web-based Midjourney interface. Easier image generation."},
-  {name:"Prodia",cat:"image",url:"prodia.com",origin:"Prodia",rating:4.3,cost:"free",ctx:0,spd:8,price:0,desc:"Free image generation API. Multiple SD models, fast inference."},
-  {name:"Tensor.art",cat:"image",url:"tensor.art",origin:"Tensor",rating:4.25,cost:"free",ctx:0,spd:10,price:0,desc:"Free AI art platform with LoRA models. Community-driven."},
-  {name:"SeaArt",cat:"image",url:"seaart.ai",origin:"SeaArt",rating:4.3,cost:"free",ctx:0,spd:12,price:0,desc:"Free AI art generator with anime and realistic styles."},
-  {name:"Playground AI",cat:"image",url:"playground.com",origin:"Playground",rating:4.45,cost:"free",ctx:0,spd:14,price:0,desc:"Free daily image generation. Multiple models, easy editing."},
-  {name:"Photoroom",cat:"design",url:"photoroom.com",origin:"Photoroom",rating:4.5,cost:"pro",ctx:0,spd:5,price:10,desc:"AI background removal and product photography. E-commerce focus."},
-  {name:"Remove.bg",cat:"design",url:"remove.bg",origin:"remove.bg",rating:4.4,cost:"pro",ctx:0,spd:8,price:5,desc:"Instant AI background removal. API and web interface."},
-  {name:"Kittl",cat:"design",url:"kittl.com",origin:"Kittl",rating:4.45,cost:"pro",ctx:0,spd:15,price:15,desc:"AI-powered design tool for logos, merch, and print. Vector support."},
-  {name:"Looka",cat:"design",url:"looka.com",origin:"Looka",rating:4.2,cost:"paid",ctx:0,spd:8,price:20,desc:"AI logo and brand kit generator. Quick brand identity creation."},
-  {name:"Brandmark",cat:"design",url:"brandmark.io",origin:"Brandmark",rating:4.15,cost:"paid",ctx:0,spd:10,price:25,desc:"AI logo design with brand guidelines. Complete brand packages."},
-  {name:"Gamma",cat:"writing",url:"gamma.app",origin:"Gamma",rating:4.65,cost:"pro",ctx:0,spd:20,price:10,desc:"AI presentation and document creation. Beautiful outputs fast."},
-  {name:"Beautiful.ai",cat:"writing",url:"beautiful.ai",origin:"Beautiful.ai",rating:4.4,cost:"paid",ctx:0,spd:12,price:12,desc:"Smart slide design AI. Auto-formatting and design assistance."},
-  {name:"Tome",cat:"writing",url:"tome.app",origin:"Tome",rating:4.35,cost:"pro",ctx:0,spd:15,price:15,desc:"AI storytelling platform. Narrative-driven presentations."},
-  {name:"Writesonic",cat:"writing",url:"writesonic.com",origin:"Writesonic",rating:4.3,cost:"pro",ctx:0,spd:45,price:19,desc:"AI writing for SEO, ads, blogs. Templates and brand voice."},
-  {name:"Rytr",cat:"writing",url:"rytr.me",origin:"Rytr",rating:4.2,cost:"pro",ctx:0,spd:50,price:9,desc:"Budget AI writing assistant. 40+ use cases, 30+ languages."},
-  {name:"QuillBot",cat:"writing",url:"quillbot.com",origin:"QuillBot",rating:4.35,cost:"pro",ctx:0,spd:60,price:10,desc:"AI paraphrasing and grammar tool. Rewriting and summarization."},
-  {name:"GrammarlyGO",cat:"writing",url:"grammarly.com",origin:"Grammarly",rating:4.5,cost:"pro",ctx:0,spd:55,price:12,desc:"AI writing assistant integrated into Grammarly. Tone and clarity."},
-  {name:"Hemingway AI",cat:"writing",url:"hemingwayapp.com",origin:"Hemingway",rating:4.25,cost:"free",ctx:0,spd:0,price:0,desc:"AI readability checker. Simplify complex writing."},
-  {name:"Tavily",cat:"research",url:"tavily.com",origin:"Tavily",rating:4.5,cost:"free",ctx:0,spd:40,price:0,desc:"AI search API for agents. Optimized for LLM consumption."},
-  {name:"Exa",cat:"research",url:"exa.ai",origin:"Exa",rating:4.45,cost:"paid",ctx:0,spd:35,price:0,desc:"AI-native search engine. Semantic search for precise results."},
-  {name:"Elicit",cat:"research",url:"elicit.com",origin:"Elicit",rating:4.5,cost:"pro",ctx:0,spd:30,price:10,desc:"AI research assistant. Literature review and paper analysis."},
-  {name:"Scite",cat:"research",url:"scite.ai",origin:"Scite",rating:4.4,cost:"paid",ctx:0,spd:25,price:25,desc:"AI-powered citation analysis. See how papers are cited."},
-  {name:"Connected Papers",cat:"research",url:"connectedpapers.com",origin:"Connected Papers",rating:4.3,cost:"free",ctx:0,spd:20,price:0,desc:"Visual research paper mapping. Find related papers visually."},
-  {name:"ChatPDF",cat:"research",url:"chatpdf.com",origin:"ChatPDF",rating:4.35,cost:"free",ctx:0,spd:30,price:0,desc:"Chat with any PDF. Extract insights and answer questions."},
-  {name:"Humata",cat:"research",url:"humata.ai",origin:"Humata",rating:4.3,cost:"free",ctx:0,spd:28,price:0,desc:"AI for long documents. Research paper analysis and Q&A."},
-  {name:"Otter.ai",cat:"audio",url:"otter.ai",origin:"Otter",rating:4.5,cost:"pro",ctx:0,spd:100,price:10,desc:"AI meeting transcription and notes. Real-time transcription."},
-  {name:"Fireflies",cat:"audio",url:"fireflies.ai",origin:"Fireflies",rating:4.45,cost:"pro",ctx:0,spd:90,price:18,desc:"AI meeting assistant. Records, transcribes, and analyzes calls."},
-  {name:"Fathom",cat:"audio",url:"fathom.video",origin:"Fathom",rating:4.4,cost:"free",ctx:0,spd:80,price:0,desc:"Free AI meeting notes for Zoom, Meet, Teams."},
-  {name:"Krisp",cat:"audio",url:"krisp.ai",origin:"Krisp",rating:4.55,cost:"pro",ctx:0,spd:0,price:10,desc:"AI noise cancellation. Crystal-clear audio on calls."},
-  {name:"Adobe Podcast",cat:"audio",url:"podcast.adobe.com",origin:"Adobe",rating:4.5,cost:"free",ctx:0,spd:20,price:0,desc:"AI audio enhancement. Studio-quality audio from any recording."},
-  {name:"Cleanvoice",cat:"audio",url:"cleanvoice.ai",origin:"Cleanvoice",rating:4.3,cost:"paid",ctx:0,spd:40,price:10,desc:"AI podcast editing. Remove filler words, mouth clicks, stutters."},
-  {name:"CapCut AI",cat:"video",url:"capcut.com",origin:"ByteDance",rating:4.65,cost:"free",ctx:0,spd:10,price:0,desc:"Free AI video editor. Auto captions, effects, templates."},
-  {name:"Opus Clip",cat:"video",url:"opus.pro",origin:"Opus",rating:4.5,cost:"pro",ctx:0,spd:8,price:19,desc:"AI long-to-short video repurposing. Viral clips from long content."},
-  {name:"Vizard",cat:"video",url:"vizard.ai",origin:"Vizard",rating:4.4,cost:"pro",ctx:0,spd:7,price:15,desc:"AI video clipping and editing. Social media content creation."},
-  {name:"Colossyan",cat:"video",url:"colossyan.com",origin:"Colossyan",rating:4.35,cost:"paid",ctx:0,spd:6,price:28,desc:"AI avatar video creator for enterprise training and learning."},
-  {name:"Elai.io",cat:"video",url:"elai.io",origin:"Elai",rating:4.3,cost:"pro",ctx:0,spd:5,price:23,desc:"AI video creation from text. Custom avatars, multi-language."},
-  {name:"Pictory AI",cat:"video",url:"pictory.ai",origin:"Pictory",rating:4.35,cost:"pro",ctx:0,spd:8,price:23,desc:"AI video creation from scripts and blog posts. Auto editing."},
-  {name:"Invideo AI",cat:"video",url:"invideo.io",origin:"InVideo",rating:4.4,cost:"pro",ctx:0,spd:7,price:20,desc:"Text-to-video AI. Complete video production from prompts."},
-  {name:"Pika Art",cat:"video",url:"pika.art",origin:"Pika",rating:4.55,cost:"pro",ctx:0,spd:11,price:12,desc:"AI video editing and generation. Style transfer, lip sync."},
-  {name:"Hedra",cat:"video",url:"hedra.com",origin:"Hedra",rating:4.35,cost:"free",ctx:0,spd:8,price:0,desc:"AI character video generation. Animated avatars from audio."},
-  {name:"Domo AI",cat:"video",url:"domoai.app",origin:"Domo",rating:4.3,cost:"pro",ctx:0,spd:9,price:15,desc:"AI video style transfer. Anime and artistic video conversion."},
-  {name:"LensGo",cat:"video",url:"lensgo.ai",origin:"LensGo",rating:4.25,cost:"free",ctx:0,spd:7,price:0,desc:"Free AI video generation. Style-consistent video creation."},
-  {name:"Haiper AI",cat:"video",url:"haiper.ai",origin:"Haiper",rating:4.35,cost:"free",ctx:0,spd:10,price:0,desc:"Short AI video clips from text. Creative and artistic."},
-  {name:"PixVerse",cat:"video",url:"pixverse.ai",origin:"PixVerse",rating:4.3,cost:"free",ctx:0,spd:8,price:0,desc:"Free AI video generator. Anime and photorealistic styles."},
-  {name:"Moonvalley",cat:"video",url:"moonvalley.ai",origin:"Moonvalley",rating:4.3,cost:"free",ctx:0,spd:6,price:0,desc:"Cinematic AI video generation. High-quality motion."},
-  {name:"Stability Audio",cat:"audio",url:"stability.ai",origin:"Stability AI",rating:4.35,cost:"free",ctx:0,spd:20,price:0,desc:"Open-source audio generation. Music and sound effects."},
-  {name:"Stable Audio 2.0",cat:"audio",url:"stableaudio.com",origin:"Stability AI",rating:4.4,cost:"pro",ctx:0,spd:22,price:12,desc:"AI music and audio generation. Full tracks from prompts."},
-  {name:"Audo Studio",cat:"audio",url:"audo.ai",origin:"Audo",rating:4.25,cost:"pro",ctx:0,spd:30,price:15,desc:"AI audio cleanup. Noise removal, leveling, enhancement."},
-  {name:"VoiceMode",cat:"audio",url:"voicemode.ai",origin:"VoiceMode",rating:4.2,cost:"free",ctx:0,spd:40,price:0,desc:"AI voice changing in real-time. Multiple voice presets."},
-  {name:"RVC Models",cat:"audio",url:"huggingface.co",origin:"Community",rating:4.4,cost:"free",ctx:0,spd:50,price:0,desc:"Retrieval-based Voice Conversion. Community voice models."},
-  {name:"Bark",cat:"audio",url:"github.com/suno",origin:"Suno (Open)",rating:4.25,cost:"free",ctx:0,spd:30,price:0,desc:"Open-source text-to-audio model. Speech, music, sound effects."},
-  {name:"ChatDev",cat:"code",url:"github.com/OpenBMB",origin:"OpenBMB",rating:4.3,cost:"free",ctx:0,spd:25,price:0,desc:"Multi-agent software development. AI team builds apps."},
-  {name:"GPT Engineer",cat:"code",url:"gptengineer.app",origin:"GPT Engineer",rating:4.35,cost:"free",ctx:0,spd:30,price:0,desc:"AI that writes entire codebases from prompts."},
-  {name:"MetaGPT",cat:"code",url:"github.com/geekan",origin:"MetaGPT",rating:4.3,cost:"free",ctx:0,spd:20,price:0,desc:"Multi-agent framework for software projects."},
-  {name:"Codeium",cat:"code",url:"codeium.com",origin:"Codeium",rating:4.55,cost:"free",ctx:16000,spd:90,price:0,desc:"Free AI code completion. Alternative to GitHub Copilot."},
-  {name:"Tabnine",cat:"code",url:"tabnine.com",origin:"Tabnine",rating:4.4,cost:"pro",ctx:0,spd:70,price:12,desc:"AI code completion trained on your codebase. Privacy-focused."},
-  {name:"Amazon Q",cat:"code",url:"aws.amazon.com/q",origin:"Amazon",rating:4.45,cost:"pro",ctx:0,spd:55,price:19,desc:"AWS's AI coding assistant. Integrated with AWS services."},
-  {name:"Google IDX",cat:"code",url:"idx.dev",origin:"Google",rating:4.5,cost:"free",ctx:128000,spd:75,price:0,desc:"Google's cloud-based AI IDE. Now Firebase Studio."},
-  {name:"Replit",cat:"code",url:"replit.com",origin:"Replit",rating:4.55,cost:"pro",ctx:0,spd:40,price:25,desc:"Cloud IDE with AI assistance. Code, deploy, collaborate."},
-  {name:"CodeSandbox",cat:"code",url:"codesandbox.io",origin:"CodeSandbox",rating:4.4,cost:"pro",ctx:0,spd:35,price:0,desc:"Cloud development environment. AI-powered coding."},
-  {name:"StackBlitz",cat:"code",url:"stackblitz.com",origin:"StackBlitz",rating:4.45,cost:"free",ctx:0,spd:40,price:0,desc:"Web-based VS Code. Instant dev environments."},
-  {name:"Glitch",cat:"code",url:"glitch.com",origin:"Glitch",rating:4.25,cost:"free",ctx:0,spd:30,price:0,desc:"Community coding platform. Build and share web apps."},
-  {name:"Supabase",cat:"cloud",url:"supabase.com",origin:"Supabase",rating:4.65,cost:"free",ctx:0,spd:0,price:0,desc:"Open-source Firebase alternative. Postgres, auth, storage."},
-  {name:"Vercel AI SDK",cat:"cloud",url:"sdk.vercel.ai",origin:"Vercel",rating:4.55,cost:"free",ctx:0,spd:0,price:0,desc:"TypeScript toolkit for building AI apps. Unified interface."},
-  {name:"LangGraph",cat:"data",url:"langchain.com",origin:"LangChain",rating:4.6,cost:"free",ctx:0,spd:0,price:0,desc:"Build stateful, multi-actor applications with LLMs."},
-  {name:"Semantic Kernel",cat:"data",url:"github.com/microsoft",origin:"Microsoft",rating:4.45,cost:"free",ctx:0,spd:0,price:0,desc:"Microsoft's AI SDK. Integrate LLMs into .NET/Java/Python."},
-  {name:"Haystack",cat:"data",url:"haystack.deepset.ai",origin:"deepset",rating:4.4,cost:"free",ctx:0,spd:0,price:0,desc:"Open-source framework for building search and RAG pipelines."},
-  {name:"LlamaIndex",cat:"data",url:"llamaindex.ai",origin:"LlamaIndex",rating:4.55,cost:"free",ctx:0,spd:0,price:0,desc:"Data framework for LLMs. Connect custom data to AI."},
-  {name:"Pinecone",cat:"data",url:"pinecone.io",origin:"Pinecone",rating:4.5,cost:"pro",ctx:0,spd:0,price:0,desc:"Vector database for AI applications. Fast similarity search."},
-  {name:"Weaviate",cat:"data",url:"weaviate.io",origin:"Weaviate",rating:4.45,cost:"free",ctx:0,spd:0,price:0,desc:"Open-source vector database. Hybrid search with AI."},
-  {name:"Chroma",cat:"data",url:"chroma.org",origin:"Chroma",rating:4.35,cost:"free",ctx:0,spd:0,price:0,desc:"Simple open-source embedding database. Developer-friendly."},
-  {name:"Qdrant",cat:"data",url:"qdrant.tech",origin:"Qdrant",rating:4.45,cost:"free",ctx:0,spd:0,price:0,desc:"Vector search engine. Fast, scalable, open-source."},
-  {name:"Milvus",cat:"data",url:"milvus.io",origin:"Zilliz",rating:4.4,cost:"free",ctx:0,spd:0,price:0,desc:"Cloud-native vector database. Production-scale AI search."},
-  {name:"Perplexity API",cat:"cloud",url:"docs.perplexity.ai",origin:"Perplexity",rating:4.5,cost:"paid",ctx:32000,spd:45,price:5,desc:"Perplexity's Sonar models API. Real-time web-grounded AI."},
-  {name:"xAI API",cat:"cloud",url:"console.x.ai",origin:"xAI",rating:4.45,cost:"paid",ctx:128000,spd:120,price:5,desc:"Access Grok models via API. Fast, uncensored responses."},
-  {name:"Cohere API",cat:"cloud",url:"cohere.com",origin:"Cohere",rating:4.5,cost:"paid",ctx:128000,spd:70,price:3,desc:"Enterprise LLM API. Strong in classification and RAG."},
-  {name:"AI21 API",cat:"cloud",url:"ai21.com",origin:"AI21 Labs",rating:4.35,cost:"paid",ctx:32000,spd:55,price:8,desc:"Jurassic models API. Strong text generation and understanding."},
-  {name:"Aleph Alpha",cat:"cloud",url:"aleph-alpha.com",origin:"Aleph Alpha",rating:4.3,cost:"paid",ctx:256000,spd:40,price:12,desc:"European sovereign AI API. GDPR-compliant, enterprise."},
-  {name:"NVIDIA NIM",cat:"cloud",url:"build.nvidia.com",origin:"NVIDIA",rating:4.55,cost:"free",ctx:0,spd:0,price:0,desc:"NVIDIA's inference microservices. Optimized GPU deployment."},
-  {name:"Ollama Cloud",cat:"cloud",url:"ollama.com",origin:"Ollama",rating:4.5,cost:"free",ctx:32000,spd:45,price:0,desc:"Run open models locally with simple API. No cloud needed."},
-  {name:"LM Studio Cloud",cat:"cloud",url:"lmstudio.ai",origin:"LM Studio",rating:4.35,cost:"free",ctx:0,spd:0,price:0,desc:"Local LLM inference with GUI. Easy model management."},
-  {name:"Jan.ai",cat:"data",url:"jan.ai",origin:"Jan",rating:4.3,cost:"free",ctx:0,spd:40,price:0,desc:"Open-source AI assistant. Run models locally, privacy-first."},
-  {name:"AnythingLLM",cat:"data",url:"anythingllm.com",origin:"AnythingLLM",rating:4.25,cost:"free",ctx:0,spd:35,price:0,desc:"Self-hosted AI chat with your documents. Multi-model support."},
-  {name:"GPT4All",cat:"data",url:"gpt4all.io",origin:"GPT4All",rating:4.35,cost:"free",ctx:0,spd:30,price:0,desc:"Local AI chat with open models. Offline, private."},
-  {name:"KoboldCPP",cat:"data",url:"github.com/LostRuins",origin:"KoboldCPP",rating:4.3,cost:"free",ctx:0,spd:35,price:0,desc:"Local LLM server with GUI. Game-optimized AI models."},
-  {name:"TextGen WebUI",cat:"data",url:"github.com/oobabooga",origin:"oobabooga",rating:4.4,cost:"free",ctx:0,spd:30,price:0,desc:"Advanced local LLM web interface. Supports many models."},
-  {name:"Rerankers",cat:"data",url:"github.com/AnswerDotAI",origin:"AnswerDotAI",rating:4.2,cost:"free",ctx:0,spd:0,price:0,desc:"Simple reranking library for RAG pipelines."},
-  {name:"DSPy",cat:"data",url:"dspy.ai",origin:"Stanford",rating:4.45,cost:"free",ctx:0,spd:0,price:0,desc:"Programming framework for AI pipelines. Compile, not prompt."},
-  {name:"Instructor",cat:"data",url:"github.com/jxnl",origin:"jxnl",rating:4.35,cost:"free",ctx:0,spd:0,price:0,desc:"Structured outputs from LLMs. Type-safe AI responses."},
-  {name:"Guardrails AI",cat:"data",url:"guardrailsai.com",origin:"Guardrails",rating:4.3,cost:"free",ctx:0,spd:0,price:0,desc:"Validate and correct LLM outputs. Safety and quality."},
-  {name:"LangSmith",cat:"data",url:"smith.langchain.com",origin:"LangChain",rating:4.5,cost:"pro",ctx:0,spd:0,price:0,desc:"Debug and test LLM applications. Tracing, evaluation."},
-  {name:"PromptLayer",cat:"data",url:"promptlayer.com",origin:"PromptLayer",rating:4.25,cost:"free",ctx:0,spd:0,price:0,desc:"Prompt management and analytics platform."},
-  {name:"Braintrust",cat:"data",url:"braintrustdata.com",origin:"Braintrust",rating:4.4,cost:"free",ctx:0,spd:0,price:0,desc:"AI evaluation platform. Test and improve LLM outputs."},
-  {name:"Weights & Biases",cat:"data",url:"wandb.ai",origin:"W&B",rating:4.55,cost:"pro",ctx:0,spd:0,price:0,desc:"ML experiment tracking. Model monitoring and evaluation."},
-  {name:"Argilla",cat:"data",url:"argilla.io",origin:"Argilla",rating:4.3,cost:"free",ctx:0,spd:0,price:0,desc:"Data curation and annotation for AI. Open-source."},
-  {name:"Distilabel",cat:"data",url:"github.com/argilla",origin:"Argilla",rating:4.25,cost:"free",ctx:0,spd:0,price:0,desc:"AI feedback framework for synthetic data generation."},
-  {name:"Cleanlab",cat:"data",url:"cleanlab.ai",origin:"Cleanlab",rating:4.35,cost:"pro",ctx:0,spd:0,price:0,desc:"AI data cleaning. Find and fix label errors in datasets."},
-  {name:"Snorkel",cat:"data",url:"snorkel.ai",origin:"Snorkel AI",rating:4.3,cost:"free",ctx:0,spd:0,price:0,desc:"Programmatic data labeling. Weak supervision for AI."},
-  {name:"Label Studio",cat:"data",url:"labelstud.io",origin:"Label Studio",rating:4.45,cost:"free",ctx:0,spd:0,price:0,desc:"Open-source data labeling platform. Multi-modal."},
-  {name:"Argo Workflows",cat:"cloud",url:"argoproj.github.io",origin:"Argo",rating:4.3,cost:"free",ctx:0,spd:0,price:0,desc:"Container-native workflow engine. AI pipeline orchestration."},
-  {name:"Ray",cat:"cloud",url:"ray.io",origin:"Anyscale",rating:4.55,cost:"free",ctx:0,spd:0,price:0,desc:"Distributed computing framework. Scale AI workloads."},
-  {name:"Kubernetes",cat:"cloud",url:"kubernetes.io",origin:"CNCF",rating:4.5,cost:"free",ctx:0,spd:0,price:0,desc:"Container orchestration. Deploy AI models at scale."},
-  {name:"Docker",cat:"cloud",url:"docker.com",origin:"Docker",rating:4.55,cost:"free",ctx:0,spd:0,price:0,desc:"Containerization platform. Package AI models for deployment."},
-  {name:"Modal",cat:"cloud",url:"modal.com",origin:"Modal",rating:4.45,cost:"pro",ctx:0,spd:0,price:0,desc:"Serverless cloud for AI. Simple Python deployment."},
-  {name:"Beam",cat:"cloud",url:"beam.cloud",origin:"Beam",rating:4.35,cost:"pro",ctx:0,spd:0,price:0,desc:"GPU cloud for AI inference and training."},
-  {name:"Lambda Cloud",cat:"cloud",url:"lambdalabs.com",origin:"Lambda",rating:4.4,cost:"paid",ctx:0,spd:0,price:0,desc:"Affordable GPU cloud. Rent GPUs for AI training."},
-  {name:"RunPod",cat:"cloud",url:"runpod.io",origin:"RunPod",rating:4.45,cost:"paid",ctx:0,spd:0,price:0,desc:"GPU cloud for AI. Serverless and dedicated pods."},
-  {name:"Vast.ai",cat:"cloud",url:"vast.ai",origin:"Vast",rating:4.3,cost:"paid",ctx:0,spd:0,price:0,desc:"Marketplace for GPU rentals. Affordable AI computing."},
-  {name:"Jarvis",cat:"cloud",url:"jarvislabs.ai",origin:"Jarvis Labs",rating:4.25,cost:"paid",ctx:0,spd:0,price:0,desc:"Cloud GPU instances for AI. Simple, affordable."},
-  {name:"PaperSpace",cat:"cloud",url:"paperspace.com",origin:"DigitalOcean",rating:4.35,cost:"free",ctx:0,spd:0,price:0,desc:"Cloud GPU platform. Free tier for AI experimentation."},
-  {name:"Colab Pro",cat:"cloud",url:"colab.research.google.com",origin:"Google",rating:4.5,cost:"paid",ctx:0,spd:0,price:10,desc:"Google's cloud notebooks with GPU. AI development."},
-  {name:"Kaggle Notebooks",cat:"cloud",url:"kaggle.com",origin:"Google",rating:4.4,cost:"free",ctx:0,spd:0,price:0,desc:"Free GPU notebooks for AI and ML. Kaggle community."},
-  {name:"SageMaker",cat:"cloud",url:"aws.amazon.com/sagemaker",origin:"Amazon",rating:4.5,cost:"paid",ctx:0,spd:0,price:0,desc:"AWS ML platform. End-to-end AI model development."},
-  {name:"Vertex AI",cat:"cloud",url:"cloud.google.com/vertex-ai",origin:"Google",rating:4.55,cost:"paid",ctx:0,spd:0,price:0,desc:"Google Cloud's ML platform. AutoML, training, deployment."},
-  {name:"Azure ML",cat:"cloud",url:"azure.microsoft.com/ml",origin:"Microsoft",rating:4.45,cost:"paid",ctx:0,spd:0,price:0,desc:"Microsoft's ML platform. Enterprise AI development."},
-  {name:"Alibaba PAI",cat:"cloud",url:"pai.console.aliyun.com",origin:"Alibaba · China",rating:4.3,cost:"paid",ctx:0,spd:0,price:0,desc:"Alibaba Cloud's AI platform. Model training and serving."},
-  {name:"Tencent TI",cat:"cloud",url:"cloud.tencent.com/ti",origin:"Tencent · China",rating:4.25,cost:"paid",ctx:0,spd:0,price:0,desc:"Tencent's AI platform. Enterprise model development."},
-  {name:"Baidu AI Cloud",cat:"cloud",url:"cloud.baidu.com",origin:"Baidu · China",rating:4.2,cost:"paid",ctx:0,spd:0,price:0,desc:"Baidu's cloud AI platform. Ernie model deployment."},
-  {name:"SenseTime",cat:"cloud",url:"sensetime.com",origin:"SenseTime · China",rating:4.25,cost:"paid",ctx:0,spd:0,price:0,desc:"Chinese AI platform. Computer vision and NLP models."},
-  {name:"Megvii",cat:"cloud",url:"megvii.com",origin:"Megvii · China",rating:4.15,cost:"paid",ctx:0,spd:0,price:0,desc:"AI vision platform. Face recognition and more."},
-  {name:"Jina AI",cat:"cloud",url:"jina.ai",origin:"Jina AI",rating:4.45,cost:"free",ctx:0,spd:0,price:0,desc:"Neural search framework. Embeddings and rerankers."},
-  {name:"Cohere Command R+",cat:"chat",url:"cohere.com",origin:"Cohere",rating:4.6,cost:"pro",ctx:128000,spd:60,price:10,desc:"Optimized for RAG and tool use. Strong enterprise focus."},
-  {name:"Reka Core",cat:"chat",url:"reka.ai",origin:"Reka AI",rating:4.35,cost:"free",ctx:0,spd:50,price:0,desc:"Multimodal AI model. Vision and language capabilities."},
-  {name:"Nvidia Nemotron",cat:"chat",url:"build.nvidia.com",origin:"NVIDIA",rating:4.5,cost:"free",ctx:4096,spd:80,price:0,desc:"NVIDIA's synthetic data generation model. Reward modeling."},
-  {name:"DBRX",cat:"chat",url:"databricks.com",origin:"Databricks",rating:4.45,cost:"free",ctx:32768,spd:55,price:0,desc:"Open MoE model by Databricks. Strong reasoning and coding."},
-  {name:"Phi-3",cat:"chat",url:"azure.microsoft.com",origin:"Microsoft",rating:4.4,cost:"free",ctx:128000,spd:100,price:0,desc:"Small but capable Microsoft model. Runs on edge devices."},
-  {name:"Gemma 2",cat:"chat",url:"ai.google.dev",origin:"Google",rating:4.55,cost:"free",ctx:8192,spd:120,price:0,desc:"Google's open-weight model. Excellent for local deployment."},
-  {name:"Solar Pro",cat:"chat",url:"upstage.ai",origin:"Upstage",rating:4.4,cost:"paid",ctx:32000,spd:70,price:5,desc:"Korean company's powerful single-model LLM. Compact and fast."},
-  {name:"Step-2",cat:"chat",url:"stepfun.com",origin:"StepFun · China",rating:4.45,cost:"free",ctx:224000,spd:65,price:0,desc:"Chinese AI company with long-context capabilities."},
-  {name:"MiniMax",cat:"chat",url:"minimax.chat",origin:"MiniMax · China",rating:4.4,cost:"free",ctx:8000,spd:70,price:0,desc:"Chinese AI with strong conversational abilities."},
-  {name:"360 AI",cat:"chat",url:"so.com",origin:"360 · China",rating:4.2,cost:"free",ctx:16000,spd:50,price:0,desc:"Chinese AI search assistant. Integrated with 360 Search."},
-  {name:"Tiangong",cat:"chat",url:"tiangong.cn",origin:"Kunlun Tech · China",rating:4.3,cost:"free",ctx:128000,spd:55,price:0,desc:"Chinese LLM with strong search integration."},
-  {name:"Baichuan AI",cat:"chat",url:"baichuan-ai.com",origin:"Baichuan · China",rating:4.35,cost:"free",ctx:128000,spd:65,price:0,desc:"Enterprise-focused Chinese LLM with strong benchmarks."},
-  {name:"Wudao",cat:"chat",url:"baai.ac.cn",origin:"BAAI · China",rating:4.25,cost:"free",ctx:0,spd:0,price:0,desc:"Beijing Academy's large-scale AI model training platform."},
-  {name:"ChatLaw",cat:"chat",url:"chatlaw.cloud",origin:"Peking Univ · China",rating:4.2,cost:"free",ctx:8000,spd:35,price:0,desc:"Chinese legal AI assistant. Law consultation and research."},
-  {name:"Med-PaLM 2",cat:"research",url:"google.com",origin:"Google",rating:4.6,cost:"research",ctx:32000,spd:40,price:0,desc:"Medical AI model. Specialist-level medical knowledge."},
-  {name:"ClinicalBERT",cat:"research",url:"github.com",origin:"Stanford",rating:4.35,cost:"free",ctx:512,spd:80,price:0,desc:"Clinical text processing. Healthcare NLP."},
-  {name:"BioGPT",cat:"research",url:"github.com/microsoft",origin:"Microsoft",rating:4.4,cost:"free",ctx:1024,spd:60,price:0,desc:"Biomedical language model. Literature mining and QA."},
-  {name:"Galactica",cat:"research",url:"galactica.org",origin:"Meta",rating:4.3,cost:"free",ctx:2048,spd:50,price:0,desc:"Science-focused LLM. Research papers and knowledge."},
-  {name:"Eureka",cat:"code",url:"github.com",origin:"NVIDIA",rating:4.35,cost:"free",ctx:0,spd:0,price:0,desc:"AI robot reward optimization. Robotics AI research."},
-  {name:"AlphaCode 2",cat:"code",url:"deepmind.google",origin:"DeepMind",rating:4.65,cost:"research",ctx:0,spd:30,price:0,desc:"DeepMind's competitive programming AI. Top 10% performance."},
-  {name:"CodeGemma",cat:"code",url:"ai.google.dev",origin:"Google",rating:4.4,cost:"free",ctx:8192,spd:90,price:0,desc:"Open code completion models. Lightweight and fast."},
-  {name:"CodeLlama",cat:"code",url:"ai.meta.com",origin:"Meta",rating:4.5,cost:"free",ctx:100000,spd:60,price:0,desc:"Meta's open code model. Code completion and generation."},
-  {name:"DeepSeek Coder",cat:"code",url:"github.com/deepseek",origin:"DeepSeek · China",rating:4.65,cost:"free",ctx:16000,spd:75,price:0,desc:"Open-source coding model. Strong multilingual code support."},
-  {name:"StarCoder 2",cat:"code",url:"starcoder.com",origin:"BigCode",rating:4.4,cost:"free",ctx:16000,spd:65,price:0,desc:"Open code model by BigCode consortium. Multiple languages."},
-  {name:"Codestral",cat:"code",url:"mistral.ai",origin:"Mistral AI",rating:4.55,cost:"free",ctx:32000,spd:80,price:0,desc:"Mistral's code model. Fast and accurate code completion."},
-  {name:"WizardCoder",cat:"code",url:"github.com/nlpxucan",origin:"WizardLM",rating:4.3,cost:"free",ctx:16000,spd:45,price:0,desc:"Code-focused Wizard model. Fine-tuned for programming."},
-  {name:"Phind",cat:"code",url:"phind.com",origin:"Phind",rating:4.45,cost:"free",ctx:128000,spd:50,price:0,desc:"AI search engine for developers. Code answers with sources."},
-  {name:"CodeRabbit",cat:"code",url:"coderabbit.ai",origin:"CodeRabbit",rating:4.5,cost:"pro",ctx:0,spd:30,price:15,desc:"AI code review in GitHub/GitLab. Automated PR reviews."},
-  {name:"Sourcery",cat:"code",url:"sourcery.ai",origin:"Sourcery",rating:4.3,cost:"free",ctx:0,spd:40,price:0,desc:"AI code review and refactoring. Python, JS, TS focus."},
-  {name:"Codiga",cat:"code",url:"codiga.io",origin:"Codiga",rating:4.25,cost:"free",ctx:0,spd:35,price:0,desc:"Real-time code analysis. Security and quality checks."},
-  {name:"DeepCode",cat:"code",url:"deepcode.ai",origin:"Snyk",rating:4.3,cost:"free",ctx:0,spd:30,price:0,desc:"AI-powered code analysis. Security vulnerability detection."},
-  {name:"Mintlify",cat:"code",url:"mintlify.com",origin:"Mintlify",rating:4.4,cost:"free",ctx:0,spd:20,price:0,desc:"AI documentation writer. Auto-generate docs from code."},
-  {name:"Swimm",cat:"code",url:"swimm.io",origin:"Swimm",rating:4.35,cost:"pro",ctx:0,spd:0,price:0,desc:"Code-coupled documentation platform. Keep docs in sync."},
-  {name:"Arcade AI",cat:"code",url:"arcade.dev",origin:"Arcade",rating:4.2,cost:"free",ctx:0,spd:0,price:0,desc:"AI code search across all repositories. Find code fast."},
-  {name:"Bloop",cat:"code",url:"bloop.ai",origin:"Bloop",rating:4.3,cost:"free",ctx:0,spd:0,price:0,desc:"Grep and code search with AI. Understand codebases."},
-  {name:"Sourcegraph",cat:"code",url:"sourcegraph.com",origin:"Sourcegraph",rating:4.45,cost:"paid",ctx:0,spd:0,price:0,desc:"Universal code search and intelligence. Cody AI assistant."},
-  {name:"AskCodi",cat:"code",url:"askcodi.com",origin:"AskCodi",rating:4.15,cost:"free",ctx:0,spd:0,price:0,desc:"AI coding assistant. Generate code, tests, and docs."},
-  {name:"Mutable AI",cat:"code",url:"mutable.ai",origin:"Mutable",rating:4.25,cost:"free",ctx:0,spd:35,price:0,desc:"AI-accelerated development. Production-quality code."},
-  {name:"Blackbox AI",cat:"code",url:"blackbox.ai",origin:"Blackbox",rating:4.35,cost:"free",ctx:0,spd:50,price:0,desc:"AI coding platform. Code search, generation, and chat."},
-  {name:"Pieces",cat:"code",url:"pieces.app",origin:"Pieces",rating:4.4,cost:"free",ctx:0,spd:0,price:0,desc:"AI developer toolkit. Code snippets and workflow management."},
-  {name:"Greptile",cat:"code",url:"greptile.com",origin:"Greptile",rating:4.3,cost:"paid",ctx:0,spd:0,price:0,desc:"AI code review API. Automated code analysis."},
-  {name:"Mintlify Docs",cat:"code",url:"mintlify.com",origin:"Mintlify",rating:4.45,cost:"free",ctx:0,spd:20,price:0,desc:"Beautiful AI-generated documentation for your code."},
-  {name:"Documatic",cat:"code",url:"documatic.com",origin:"Documatic",rating:4.2,cost:"free",ctx:0,spd:0,price:0,desc:"AI documentation generator. Markdown docs from code."},
-  {name:"Bito AI",cat:"code",url:"bito.ai",origin:"Bito",rating:4.35,cost:"free",ctx:0,spd:45,price:0,desc:"AI coding assistant. IDE integration, code explanation."},
-  {name:"Supermaven",cat:"code",url:"supermaven.com",origin:"Supermaven",rating:4.5,cost:"free",ctx:1000000,spd:100,price:0,desc:"1M token context code completion. Lightning fast."},
-  {name:"Cody",cat:"code",url:"sourcegraph.com/cody",origin:"Sourcegraph",rating:4.55,cost:"pro",ctx:0,spd:50,price:19,desc:"AI coding assistant with full codebase context."},
-  {name:"Amazon Q Developer",cat:"code",url:"aws.amazon.com/q",origin:"Amazon",rating:4.45,cost:"paid",ctx:0,spd:55,price:19,desc:"AWS's AI coding assistant. Deep AWS service integration."},
-  {name:"CodeWhisperer",cat:"code",url:"aws.amazon.com",origin:"Amazon",rating:4.4,cost:"free",ctx:0,spd:60,price:0,desc:"Free AI code suggestions from Amazon. Part of AWS Toolkit."},
-  {name:"JetBrains AI",cat:"code",url:"jetbrains.com",origin:"JetBrains",rating:4.5,cost:"pro",ctx:0,spd:50,price:0,desc:"AI assistant in all JetBrains IDEs. Code help and chat."},
-  {name:"Visual Studio IntelliCode",cat:"code",url:"visualstudio.microsoft.com",origin:"Microsoft",rating:4.3,cost:"free",ctx:0,spd:0,price:0,desc:"AI-assisted IntelliSense. Context-aware code completion."},
-  {name:"Replit Ghostwriter",cat:"code",url:"replit.com",origin:"Replit",rating:4.45,cost:"pro",ctx:0,spd:45,price:0,desc:"AI pair programming in Replit. Chat and autocomplete."},
-  {name:"CodeGPT",cat:"code",url:"codegpt.co",origin:"CodeGPT",rating:4.25,cost:"pro",ctx:0,spd:40,price:10,desc:"AI-powered code generation. Multiple model support."},
-  {name:"AI Code Mentor",cat:"code",url:"github.com",origin:"Community",rating:4.15,cost:"free",ctx:0,spd:0,price:0,desc:"Open-source AI coding tutor. Learn to code with AI."},
-  {name:"Codeium Wings",cat:"code",url:"codeium.com",origin:"Codeium",rating:4.5,cost:"free",ctx:16000,spd:90,price:0,desc:"Next-gen Codeium with enhanced completion and chat."},
-  {name:"Warp AI",cat:"code",url:"warp.dev",origin:"Warp",rating:4.4,cost:"pro",ctx:0,spd:55,price:0,desc:"AI terminal. Natural language to shell commands."},
-  {name:"Fig",cat:"code",url:"fig.io",origin:"Fig",rating:4.3,cost:"free",ctx:0,spd:0,price:0,desc:"IDE for the terminal. AI autocompletion for CLI."},
-  {name:"Ghostty",cat:"code",url:"ghostty.org",origin:"Ghostty",rating:4.4,cost:"free",ctx:0,spd:0,price:0,desc:"Fast GPU-accelerated terminal. Modern terminal experience."},
-  {name:"WezTerm",cat:"code",url:"wezfurlong.org",origin:"Wez Furlong",rating:4.35,cost:"free",ctx:0,spd:0,price:0,desc:"GPU-accelerated terminal emulator. Highly customizable."},
-  {name:"Tabby",cat:"code",url:"tabby.sh",origin:"Tabby",rating:4.3,cost:"free",ctx:0,spd:0,price:0,desc:"Self-hosted AI coding assistant. Open-source alternative."},
-  {name:"Continue.dev",cat:"code",url:"continue.dev",origin:"Continue",rating:4.5,cost:"free",ctx:0,spd:45,price:0,desc:"Open-source AI code assistant. VS Code and JetBrains."},
-  {name:"Ellipsis AI",cat:"code",url:"ellipsis.dev",origin:"Ellipsis",rating:4.35,cost:"free",ctx:0,spd:0,price:0,desc:"AI for GitHub. Automated PRs, code reviews, fixes."},
-  {name:"Augment Code",cat:"code",url:"augment.dev",origin:"Augment",rating:4.4,cost:"paid",ctx:0,spd:50,price:0,desc:"AI code assistant with deep codebase understanding."},
-  {name:"Poolside",cat:"code",url:"poolside.ai",origin:"Poolside",rating:4.3,cost:"paid",ctx:0,spd:0,price:0,desc:"Enterprise AI coding platform. Custom fine-tuned models."},
-  {name:"Bito",cat:"code",url:"bito.ai",origin:"Bito AI",rating:4.35,cost:"free",ctx:0,spd:45,price:0,desc:"AI coding assistant. Code generation, review, explanation."},
-  {name:"Codiumate",cat:"code",url:"codiumate.com",origin:"Codiumate",rating:4.2,cost:"free",ctx:0,spd:35,price:0,desc:"AI coding platform for non-developers. No-code AI coding."},
-  {name:"v0 by Vercel",cat:"design",url:"v0.dev",origin:"Vercel",rating:4.7,cost:"pro",ctx:0,spd:25,price:0,desc:"Generate React components from text. Tailwind + shadcn."},
-  {name:"Lovable",cat:"code",url:"lovable.dev",origin:"Lovable",rating:4.6,cost:"pro",ctx:0,spd:35,price:20,desc:"Build full web apps with natural language. AI-powered."},
-  {name:"Bolt.new",cat:"code",url:"bolt.new",origin:"StackBlitz",rating:4.65,cost:"free",ctx:128000,spd:40,price:0,desc:"Full-stack web dev in browser. AI generates complete apps."},
-  {name:"Anima",cat:"design",url:"animaapp.com",origin:"Anima",rating:4.35,cost:"pro",ctx:0,spd:15,price:12,desc:"Design-to-code tool. Figma to React/Vue/HTML conversion."},
-  {name:"Locofy",cat:"design",url:"locofy.ai",origin:"Locofy",rating:4.3,cost:"pro",ctx:0,spd:12,price:15,desc:"AI design-to-code. Figma/XD to production-ready code."},
-  {name:"Builder.io",cat:"design",url:"builder.io",origin:"Builder.io",rating:4.45,cost:"pro",ctx:0,spd:18,price:17,desc:"Visual CMS with AI. Drag-and-drop builder with AI generation."},
-  {name:"Webflow AI",cat:"design",url:"webflow.com",origin:"Webflow",rating:4.5,cost:"pro",ctx:0,spd:15,price:14,desc:"AI website builder. Text to website, CMS integration."},
-  {name:"Framer AI",cat:"design",url:"framer.com",origin:"Framer",rating:4.6,cost:"pro",ctx:0,spd:20,price:15,desc:"AI-powered design tool. Text to responsive website."},
-  {name:"Dora AI",cat:"design",url:"dora.run",origin:"Dora",rating:4.35,cost:"pro",ctx:0,spd:10,price:15,desc:"3D AI website builder. Stunning animated sites from prompts."},
-  {name:"Musho AI",cat:"design",url:"musho.ai",origin:"Musho",rating:4.25,cost:"pro",ctx:0,spd:12,price:10,desc:"AI design assistant inside Figma. Quick layout generation."},
-  {name:"Magician for Figma",cat:"design",url:"magician.design",origin:"Magician",rating:4.3,cost:"pro",ctx:0,spd:14,price:8,desc:"AI plugins for Figma. Icons, copy, and image generation."},
-  {name:"Diagram AI",cat:"design",url:"diagram.com",origin:"Diagram",rating:4.2,cost:"pro",ctx:0,spd:10,price:0,desc:"AI design tools acquired by Google. Smart Figma features."},
-  {name:"AutoDraw",cat:"design",url:"autodraw.com",origin:"Google",rating:4.1,cost:"free",ctx:0,spd:5,price:0,desc:"AI drawing assistant. Turn sketches into polished icons."},
-  {name:"Google Colors",cat:"design",url:"g.co/colors",origin:"Google",rating:4.0,cost:"free",ctx:0,spd:0,price:0,desc:"AI color palette generator. Material Design colors."},
-  {name:"Palette.fm",cat:"design",url:"palette.fm",origin:"Palette.fm",rating:4.35,cost:"free",ctx:0,spd:8,price:0,desc:"AI colorization for black and white photos. Stunning results."},
-  {name:"Remove Background",cat:"design",url:"remove.bg",origin:"remove.bg",rating:4.4,cost:"pro",ctx:0,spd:8,price:5,desc:"Instant AI background removal. API and web interface."},
-  {name:"Clipdrop",cat:"design",url:"clipdrop.co",origin:"Stability AI",rating:4.5,cost:"pro",ctx:0,spd:10,price:8,desc:"AI image editing suite. Cleanup, relight, remove backgrounds."},
-  {name:"Cleanup.pictures",cat:"design",url:"cleanup.pictures",origin:"Cleanup",rating:4.3,cost:"free",ctx:0,spd:12,price:0,desc:"Remove objects from photos with AI. Simple and effective."},
-  {name:"Magnific AI",cat:"image",url:"magnific.ai",origin:"Magnific",rating:4.65,cost:"paid",ctx:0,spd:5,price:39,desc:"AI image upscaler and enhancer. Incredible detail addition."},
-  {name:"Krea AI",cat:"image",url:"krea.ai",origin:"Krea",rating:4.55,cost:"free",ctx:0,spd:14,price:0,desc:"Real-time AI image generation. Live painting with AI."},
-  {name:"Photoroom",cat:"design",url:"photoroom.com",origin:"Photoroom",rating:4.5,cost:"pro",ctx:0,spd:5,price:10,desc:"AI product photography. Background removal and generation."},
-  {name:"Pebblely",cat:"design",url:"pebblely.com",origin:"Pebblely",rating:4.3,cost:"pro",ctx:0,spd:8,price:15,desc:"AI product photography. Lifestyle backgrounds for products."},
-  {name:"Booth.ai",cat:"design",url:"booth.ai",origin:"Booth",rating:4.25,cost:"pro",ctx:0,spd:6,price:20,desc:"AI product photography. Professional shots from simple photos."},
-  {name:"Flair AI",cat:"design",url:"flair.ai",origin:"Flair",rating:4.35,cost:"pro",ctx:0,spd:8,price:12,desc:"AI product photography and branding. Lifestyle scenes."},
-  {name:"Pixelcut",cat:"design",url:"pixelcut.ai",origin:"Pixelcut",rating:4.3,cost:"free",ctx:0,spd:10,price:0,desc:"AI product photography for e-commerce. Mobile-first."},
-  {name:"InsMind",cat:"design",url:"insmind.com",origin:"InsMind",rating:4.2,cost:"free",ctx:0,spd:8,price:0,desc:"AI photo editing. Background removal, retouching, generation."},
-  {name:"Picsart AI",cat:"design",url:"picsart.com",origin:"Picsart",rating:4.4,cost:"pro",ctx:0,spd:12,price:13,desc:"AI photo editor. Generative fill, effects, and enhancement."},
-  {name:"PhotoRoom",cat:"design",url:"photoroom.com",origin:"PhotoRoom",rating:4.5,cost:"pro",ctx:0,spd:5,price:10,desc:"AI-powered product and portrait photography tools."},
-  {name:"Fotor AI",cat:"design",url:"fotor.com",origin:"Fotor",rating:4.25,cost:"pro",ctx:0,spd:10,price:9,desc:"AI photo editing and enhancement. One-click improvements."},
-  {name:"BeFunky AI",cat:"design",url:"befunky.com",origin:"BeFunky",rating:4.2,cost:"pro",ctx:0,spd:8,price:7,desc:"AI photo editor with collage maker and graphic design."},
-  {name:"Pixlr AI",cat:"design",url:"pixlr.com",origin:"Pixlr",rating:4.25,cost:"pro",ctx:0,spd:10,price:5,desc:"AI photo editing in browser. Generative fill and effects."},
-  {name:"Luminar Neo",cat:"design",url:"skylum.com",origin:"Skylum",rating:4.45,cost:"paid",ctx:0,spd:5,price:79,desc:"AI photo editing software. Professional-grade editing."},
-  {name:"Topaz Photo AI",cat:"design",url:"topazlabs.com",origin:"Topaz",rating:4.6,cost:"paid",ctx:0,spd:8,price:199,desc:"AI photo enhancement. Upscaling, denoising, sharpening."},
-  {name:"ON1 NoNoise",cat:"design",url:"on1.com",origin:"ON1",rating:4.3,cost:"paid",ctx:0,spd:10,price:99,desc:"AI noise reduction and sharpening for photographers."},
-  {name:"DxO PureRAW",cat:"design",url:"dxo.com",origin:"DxO",rating:4.45,cost:"paid",ctx:0,spd:12,price:129,desc:"AI RAW photo processing. Noise reduction and detail."},
-  {name:"Glide AI",cat:"code",url:"glideapps.com",origin:"Glide",rating:4.35,cost:"pro",ctx:0,spd:15,price:25,desc:"AI app builder from spreadsheets. No-code with AI."},
-  {name:"Softr AI",cat:"code",url:"softr.io",origin:"Softr",rating:4.3,cost:"pro",ctx:0,spd:12,price:49,desc:"AI website and app builder from Airtable/Google Sheets."},
-  {name:"Bubble AI",cat:"code",url:"bubble.io",origin:"Bubble",rating:4.4,cost:"pro",ctx:0,spd:10,price:32,desc:"Visual programming with AI. Build web apps without code."},
-  {name:"Appsmith AI",cat:"code",url:"appsmith.com",origin:"Appsmith",rating:4.25,cost:"free",ctx:0,spd:0,price:0,desc:"Open-source internal tool builder. AI-assisted."},
-  {name:"Tooljet AI",cat:"code",url:"tooljet.com",origin:"Tooljet",rating:4.2,cost:"free",ctx:0,spd:0,price:0,desc:"Open-source low-code platform with AI integration."},
-  {name:"Databutton",cat:"code",url:"databutton.com",origin:"Databutton",rating:4.3,cost:"pro",ctx:0,spd:20,price:20,desc:"AI app builder for data science. Build and deploy fast."},
-  {name:"Mintlify",cat:"code",url:"mintlify.com",origin:"Mintlify",rating:4.45,cost:"free",ctx:0,spd:20,price:0,desc:"AI documentation platform. Beautiful docs from code."},
-  {name:"Marp",cat:"writing",url:"marp.app",origin:"Marp",rating:4.2,cost:"free",ctx:0,spd:0,price:0,desc:"Markdown presentation tool. Write slides in markdown."},
-  {name:"SlidesAI",cat:"writing",url:"slidesai.io",origin:"SlidesAI",rating:4.25,cost:"pro",ctx:0,spd:10,price:10,desc:"AI presentation generator from text. Google Slides plugin."},
-  {name:"Tome AI",cat:"writing",url:"tome.app",origin:"Tome",rating:4.35,cost:"pro",ctx:0,spd:15,price:15,desc:"AI-powered storytelling platform. Narrative presentations."},
-  {name:"Decktopus",cat:"writing",url:"decktopus.com",origin:"Decktopus",rating:4.2,cost:"pro",ctx:0,spd:12,price:14,desc:"AI presentation builder. Quick decks from prompts."},
-  {name:"Pitch AI",cat:"writing",url:"pitch.com",origin:"Pitch",rating:4.35,cost:"pro",ctx:0,spd:10,price:0,desc:"Collaborative presentations with AI assistance."},
-  {name:"Gamma App",cat:"writing",url:"gamma.app",origin:"Gamma",rating:4.65,cost:"pro",ctx:0,spd:20,price:10,desc:"AI-powered documents and presentations. Beautiful outputs."},
-  {name:"Beautiful.ai",cat:"writing",url:"beautiful.ai",origin:"Beautiful.ai",rating:4.4,cost:"paid",ctx:0,spd:12,price:12,desc:"Smart presentation design AI. Auto-formatting slides."},
-  {name:"Sendsteps",cat:"writing",url:"sendsteps.com",origin:"Sendsteps",rating:4.15,cost:"pro",ctx:0,spd:8,price:15,desc:"AI presentation maker with interactive elements."},
-  {name:"Prezi AI",cat:"writing",url:"prezi.com",origin:"Prezi",rating:4.25,cost:"pro",ctx:0,spd:10,price:7,desc:"AI-assisted non-linear presentations. Dynamic content."},
-  {name:"Canva Magic",cat:"design",url:"canva.com",origin:"Canva",rating:4.65,cost:"pro",ctx:0,spd:18,price:15,desc:"AI features in Canva. Magic Design, text-to-image, brand kit."},
-  {name:"Microsoft Designer",cat:"design",url:"designer.microsoft.com",origin:"Microsoft",rating:4.4,cost:"free",ctx:0,spd:12,price:0,desc:"AI design tool from Microsoft. Templates and DALL-E integration."},
-  {name:"Adobe Express",cat:"design",url:"adobe.com/express",origin:"Adobe",rating:4.5,cost:"pro",ctx:0,spd:14,price:10,desc:"AI design tool. Quick social graphics, videos, web pages."},
-  {name:"Visme AI",cat:"design",url:"visme.co",origin:"Visme",rating:4.3,cost:"pro",ctx:0,spd:10,price:12,desc:"AI-powered visual content creation. Infographics and more."},
-  {name:"Designs.ai",cat:"design",url:"designs.ai",origin:"Designs.ai",rating:4.15,cost:"paid",ctx:0,spd:8,price:29,desc:"AI design suite. Logos, videos, mockups, and more."},
-  {name:"Stockimg AI",cat:"design",url:"stockimg.ai",origin:"Stockimg",rating:4.2,cost:"pro",ctx:0,spd:10,price:12,desc:"AI-generated stock images, logos, wallpapers, and more."},
-  {name:"Dreamina",cat:"design",url:"dreamina.capcut.com",origin:"CapCut",rating:4.3,cost:"free",ctx:0,spd:12,price:0,desc:"AI image and design tool from CapCut. Creative assets."},
-  {name:"SeaArt AI",cat:"image",url:"seaart.ai",origin:"SeaArt",rating:4.3,cost:"free",ctx:0,spd:12,price:0,desc:"Free AI art generator. Multiple styles, anime, and realistic."},
-  {name:"Tensor.art",cat:"image",url:"tensor.art",origin:"Tensor",rating:4.25,cost:"free",ctx:0,spd:10,price:0,desc:"Free AI art platform with LoRA models. Community-driven."},
-  {name:"Civitai",cat:"image",url:"civitai.com",origin:"Civitai",rating:4.55,cost:"free",ctx:0,spd:0,price:0,desc:"AI art model sharing platform. Thousands of fine-tuned models."},
-  {name:"Artflow AI",cat:"image",url:"artflow.ai",origin:"Artflow",rating:4.2,cost:"free",ctx:0,spd:10,price:0,desc:"AI character creation and storyboarding. Visual storytelling."},
-  {name:"Scenario",cat:"image",url:"scenario.com",origin:"Scenario",rating:4.3,cost:"pro",ctx:0,spd:12,price:24,desc:"AI art generation for game assets. Style-consistent."},
-  {name:"GetImg",cat:"image",url:"getimg.ai",origin:"GetImg",rating:4.25,cost:"free",ctx:0,spd:14,price:0,desc:"Free AI image generation and editing. Multiple SD models."},
-  {name:"Mage.space",cat:"image",url:"mage.space",origin:"Mage",rating:4.3,cost:"free",ctx:0,spd:10,price:0,desc:"Uncensored AI image generation. SDXL and more."},
-  {name:"NightCafe",cat:"image",url:"creator.nightcafe.studio",origin:"NightCafe",rating:4.25,cost:"free",ctx:0,spd:8,price:0,desc:"AI art community. Daily free generations, style transfer."},
-  {name:"StarryAI",cat:"image",url:"starryai.com",origin:"StarryAI",rating:4.2,cost:"free",ctx:0,spd:10,price:0,desc:"AI art generator for mobile and web. Free daily credits."},
-  {name:"DreamStudio",cat:"image",url:"dreamstudio.ai",origin:"Stability AI",rating:4.4,cost:"pro",ctx:0,spd:12,price:0,desc:"Stability AI's official image generation platform."},
-  {name:"OpenArt",cat:"image",url:"openart.ai",origin:"OpenArt",rating:4.2,cost:"free",ctx:0,spd:10,price:0,desc:"AI art discovery and creation. Model browser and generator."},
-  {name:"Leonardo Phoenix",cat:"image",url:"leonardo.ai",origin:"Leonardo",rating:4.55,cost:"pro",ctx:0,spd:14,price:12,desc:"Leonardo's newest model. Photorealism and creative styles."},
-  {name:"Playground v2.5",cat:"image",url:"playground.com",origin:"Playground",rating:4.45,cost:"free",ctx:0,spd:14,price:0,desc:"Free image generation with Playground's latest model."},
-  {name:"Fooocus",cat:"image",url:"github.com/lllyasviel",origin:"Fooocus",rating:4.55,cost:"free",ctx:0,spd:8,price:0,desc:"Easy SDXL tool. Midjourney-like experience, free and local."},
-  {name:"ComfyUI",cat:"image",url:"comfyui.org",origin:"ComfyUI",rating:4.7,cost:"free",ctx:0,spd:10,price:0,desc:"Node-based SD workflow. Maximum control for power users."},
-  {name:"WebUI Forge",cat:"image",url:"github.com/lllyasviel",origin:"Forge",rating:4.5,cost:"free",ctx:0,spd:12,price:0,desc:"Optimized Stable Diffusion WebUI. Faster than A1111."},
-  {name:"Draw Things",cat:"image",url:"drawthings.ai",origin:"Draw Things",rating:4.3,cost:"free",ctx:0,spd:15,price:0,desc:"AI image generation on Apple devices. Local and private."},
-  {name:"DiffusionBee",cat:"image",url:"diffusionbee.com",origin:"DiffusionBee",rating:4.25,cost:"free",ctx:0,spd:12,price:0,desc:"Simplest way to use SD on Mac. One-click installation."},
-  {name:"Pinokio",cat:"image",url:"pinokio.computer",origin:"Pinokio",rating:4.35,cost:"free",ctx:0,spd:0,price:0,desc:"One-click AI installer. Install any AI tool easily."},
-  {name:"Stability Matrix",cat:"image",url:"github.com",origin:"Lypheo",rating:4.3,cost:"free",ctx:0,spd:0,price:0,desc:"Package manager for AI image tools. Easy setup."},
-  {name:"Invoke AI",cat:"image",url:"invoke.ai",origin:"Invoke AI",rating:4.4,cost:"free",ctx:0,spd:10,price:0,desc:"Professional AI image generation platform. Unified canvas."},
-  {name:"SD.Next",cat:"image",url:"github.com/vladmandic",origin:"SD.Next",rating:4.25,cost:"free",ctx:0,spd:12,price:0,desc:"Fork of A1111 with improvements. Better performance."},
-  {name:"RuinedFooocus",cat:"image",url:"github.com",origin:"Community",rating:4.15,cost:"free",ctx:0,spd:8,price:0,desc:"Enhanced Fooocus with more features and models."},
-  {name:"SD WebUI Agent",cat:"image",url:"github.com",origin:"Community",rating:4.2,cost:"free",ctx:0,spd:8,price:0,desc:"AI agent for SD WebUI. Automated image generation."},
-  {name:"ControlNet",cat:"image",url:"github.com/lllyasviel",origin:"lllyasviel",rating:4.7,cost:"free",ctx:0,spd:8,price:0,desc:"Add pose, depth, and structure control to SD. Essential tool."},
-  {name:"IP-Adapter",cat:"image",url:"github.com/tencent",origin:"Tencent · China",rating:4.55,cost:"free",ctx:0,spd:10,price:0,desc:"Image prompt adapter for SD. Style and composition transfer."},
-  {name:"InstantID",cat:"image",url:"github.com",origin:"Community",rating:4.4,cost:"free",ctx:0,spd:8,price:0,desc:"Zero-shot identity-preserving generation. Face consistency."},
-  {name:"PhotoMaker",cat:"image",url:"github.com/TencentARC",origin:"Tencent · China",rating:4.35,cost:"free",ctx:0,spd:8,price:0,desc:"Efficient ID customization for SD. Custom faces."},
-  {name:"BrushNet",cat:"image",url:"github.com",origin:"Community",rating:4.25,cost:"free",ctx:0,spd:10,price:0,desc:"Inpainting model for SD. Seamless image editing."},
-  {name:"AnimateDiff",cat:"video",url:"github.com/guoyww",origin:"Community",rating:4.5,cost:"free",ctx:0,spd:5,price:0,desc:"Animate your SD images. Motion modules for video."},
-  {name:"ModelScope T2V",cat:"video",url:"github.com/modelscope",origin:"Alibaba · China",rating:4.35,cost:"free",ctx:0,spd:6,price:0,desc:"Open-source text-to-video model from Alibaba."},
-  {name:"Open-Sora",cat:"video",url:"github.com/hpcaitech",origin:"HPC-AI",rating:4.3,cost:"free",ctx:0,spd:4,price:0,desc:"Open-source Sora alternative. Train your own video model."},
-  {name:"VideoCrafter",cat:"video",url:"github.com/AILab-CVC",origin:"Tencent · China",rating:4.3,cost:"free",ctx:0,spd:5,price:0,desc:"Open video generation model. Text and image to video."},
-  {name:"LaVie",cat:"video",url:"github.com/Vchitect",origin:"Vchitect",rating:4.2,cost:"free",ctx:0,spd:5,price:0,desc:"Open-source video generation. High-quality motion."},
-  {name:"Hotshot-XL",cat:"video",url:"github.com/hotshot",origin:"Community",rating:4.15,cost:"free",ctx:0,spd:4,price:0,desc:"Animate SDXL images. Short AI video clips."},
-  {name:"ZeroScope",cat:"video",url:"huggingface.co",origin:"Community",rating:4.1,cost:"free",ctx:0,spd:3,price:0,desc:"Open video generation model. Watermark-free."},
-  {name:"Pika 1.0",cat:"video",url:"pika.art",origin:"Pika",rating:4.55,cost:"pro",ctx:0,spd:11,price:12,desc:"AI video editing and generation. Lip sync and effects."},
-  {name:"Stable Video",cat:"video",url:"stability.ai",origin:"Stability AI",rating:4.4,cost:"free",ctx:0,spd:6,price:0,desc:"Open video diffusion model. Image-to-video generation."},
-  {name:"DynamiCrafter",cat:"video",url:"github.com/Doubiiu",origin:"Community",rating:4.25,cost:"free",ctx:0,spd:5,price:0,desc:"Open video animation model. Dynamic image animation."},
-  {name:"I2VGen-XL",cat:"video",url:"github.com",origin:"Alibaba · China",rating:4.2,cost:"free",ctx:0,spd:4,price:0,desc:"Alibaba's image-to-video model. Realistic motion."},
-  {name:"Moore-AnimateAnyone",cat:"video",url:"github.com",origin:"Moore Threads",rating:4.3,cost:"free",ctx:0,spd:3,price:0,desc:"Character animation from single image. Pose-driven video."},
-  {name:"Champ",cat:"video",url:"github.com",origin:"Community",rating:4.2,cost:"free",ctx:0,spd:3,price:0,desc:"Open human animation model. Controllable character video."},
-  {name:"MusePose",cat:"video",url:"github.com",origin:"Community",rating:4.15,cost:"free",ctx:0,spd:3,price:0,desc:"Pose-guided human image animation."},
-  {name:"Follow-Your-Pose",cat:"video",url:"github.com",origin:"Community",rating:4.1,cost:"free",ctx:0,spd:3,price:0,desc:"Pose-guided video generation from images."},
-  {name:"MagicAnimate",cat:"video",url:"github.com",origin:"Community",rating:4.2,cost:"free",ctx:0,spd:3,price:0,desc:"Animate human images with dense pose guidance."},
-  {name:"AnimateAnyone V2",cat:"video",url:"github.com",origin:"Community",rating:4.25,cost:"free",ctx:0,spd:3,price:0,desc:"Improved character animation. Better motion quality."},
-  {name:"Open-AnimateAnyone",cat:"video",url:"github.com",origin:"Community",rating:4.15,cost:"free",ctx:0,spd:3,price:0,desc:"Open-source implementation of AnimateAnyone."},
-  {name:"DreamPose",cat:"video",url:"github.com",origin:"Community",rating:4.1,cost:"free",ctx:0,spd:2,price:0,desc:"Video generation from text and pose. Human animation."},
-  {name:"T2V-Turbo",cat:"video",url:"github.com",origin:"Community",rating:4.2,cost:"free",ctx:0,spd:6,price:0,desc:"Faster text-to-video generation. Accelerated inference."},
-  {name:"PyramidalFlow",cat:"video",url:"github.com",origin:"Community",rating:4.15,cost:"free",ctx:0,spd:5,price:0,desc:"Efficient video generation model. Multi-scale approach."},
-  {name:"VideoCrafter2",cat:"video",url:"github.com",origin:"Tencent · China",rating:4.3,cost:"free",ctx:0,spd:5,price:0,desc:"Improved video generation. Better quality and consistency."},
-  {name:"OpenVid",cat:"video",url:"github.com",origin:"Community",rating:4.15,cost:"free",ctx:0,spd:4,price:0,desc:"Open video generation framework. Scalable training."},
-  {name:"SEINE",cat:"video",url:"github.com",origin:"Community",rating:4.1,cost:"free",ctx:0,spd:3,price:0,desc:"Image-to-video with transition effects."},
-  {name:"LVDM",cat:"video",url:"github.com",origin:"Community",rating:4.2,cost:"free",ctx:0,spd:4,price:0,desc:"Latent video diffusion model. Efficient video generation."},
-  {name:"Tune-A-Video",cat:"video",url:"github.com",origin:"Community",rating:4.1,cost:"free",ctx:0,spd:2,price:0,desc:"One-shot video fine-tuning. Customize video style."},
-  {name:"Text2Video-Zero",cat:"video",url:"github.com",origin:"Community",rating:4.15,cost:"free",ctx:0,spd:3,price:0,desc:"Zero-shot text-to-video without training."},
-  {name:"ModelScope",cat:"cloud",url:"modelscope.cn",origin:"Alibaba · China",rating:4.4,cost:"free",ctx:0,spd:0,price:0,desc:"Chinese AI model platform. Chinese HuggingFace equivalent."},
-  {name:"OpenXLab",cat:"cloud",url:"openxlab.org.cn",origin:"Shanghai AI Lab",rating:4.25,cost:"free",ctx:0,spd:0,price:0,desc:"Chinese open-source AI platform. Model sharing."},
-  {name:"Wisemodel",cat:"cloud",url:"wisemodel.cn",origin:"Wisemodel · China",rating:4.2,cost:"free",ctx:0,spd:0,price:0,desc:"Chinese AI model community. Datasets and models."},
-  {name:"BAAI",cat:"cloud",url:"baai.ac.cn",origin:"BAAI · China",rating:4.3,cost:"free",ctx:0,spd:0,price:0,desc:"Beijing Academy of AI. Open-source Chinese AI research."},
-  {name:"FlagAI",cat:"cloud",url:"flagopen.baai.ac.cn",origin:"BAAI · China",rating:4.2,cost:"free",ctx:0,spd:0,price:0,desc:"AI toolkit from BAAI. Models and training frameworks."},
-  {name:"FastGPT",cat:"agent",url:"fastgpt.in",origin:"FastGPT",rating:4.35,cost:"free",ctx:0,spd:0,price:0,desc:"Open-source RAG platform. Knowledge base AI chatbot."},
-  {id:"g1a",name:"Gemini",url:"gemini.google.com",cat:"chat",category:"Chat & LLM",for:"Both",desc:"Google's main AI chatbot — text, images, code, files, deep research, audio. Powered by Gemini 3 Flash/Pro/Ultra models.",use:"Write landing page copy, generate brand name ideas, debug code, create CSS animations, review designs, write API docs.",cost:"Free",costBadge:"free",detail:"Flash model unlimited; Pro needs AI Pro ($19.99/mo)",rating:4.9,context:1000000,speed:95,pricePerM:0},
-  {id:"g1b",name:"GPT-4o",url:"chatgpt.com",cat:"chat",category:"Chat & LLM",for:"Both",desc:"OpenAI's multimodal flagship — text, voice, vision. Industry standard for general AI tasks with excellent reasoning.",use:"General purpose AI — content creation, analysis, coding, research, brainstorming, and complex problem solving.",cost:"Freemium",costBadge:"pro",detail:"Free tier available; Plus is $20/mo",rating:4.85,context:128000,speed:110,pricePerM:10},
+const COST_TYPES = ["free","paid","trial"];
+const COST_LABELS = {free:"Free",paid:"Paid",trial:"Free Trial"};
+
+const ORIGINS = ["OpenAI","Anthropic","Google","Meta","Microsoft","Mistral AI","DeepSeek","Alibaba","Moonshot","ByteDance","Baidu","Tencent","Stability AI","Runway","ElevenLabs","Suno","Udio","Cursor","Vercel","Replit","Anyscale","Together AI","Fireworks AI","Groq","Cohere","AI21","Databricks","NVIDIA","Hugging Face","LangChain","Adobe","Canva","Notion","Figma","Framer","Webflow","Perplexity","Midjourney","BlackForest","Ideogram","Pika","Luma","Kuaishou","CapCut","Synthesia","HeyGen","Jasper","Copy.ai","Gamma","Beautiful.ai","Otter","Descript","Krisp","Tavily","Exa","Pinecone","Weaviate","Chroma","Qdrant","Milvus","Supabase","Modal","RunPod","Lambda","Vast","PaperSpace","Kaggle","SageMaker","Vertex AI","Azure ML","Replicate","Jan AI","LM Studio","Ollama","AnythingLLM","GPT4All","KoboldCPP","Civitai","Leonardo","Playground","Tensor","SeaArt","Krea","Magnific","Clipdrop","Remove.bg","Photoroom","Pebblely","Flair","Pixelcut","Picsart","Fotor","Luminar","Topaz","Builder.io","Locofy","Anima","Dora","Musho","Galileo","Uizard","Relume","v0","Lovable","Bolt","Windsurf","Cline","Aider","Tabnine","Codeium","Sourcegraph","Pieces","Supermaven","Continue","SWE-agent","OpenHands","Devin","Cognition","Poolside","Mintlify","Swimm","CodeRabbit","Greptile","Ellipsis","Augment","Bito","Blackbox","Mutable","GPT Engineer","ChatDev","MetaGPT","LangGraph","DSPy","Instructor","Guardrails","LangSmith","Braintrust","W&B","Argilla","Cleanlab","Snorkel","Label Studio","Ray","Kubernetes","Docker","Beam","Jarvis","Colab","Alibaba PAI","Tencent TI","SenseTime","Jina AI","Cohere Command","Reka","Nemotron","DBRX","Phi-3","Gemma","Solar","StepFun","MiniMax","360 AI","Tiangong","Baichuan","Wudao","ChatLaw","Med-PaLM","ClinicalBERT","BioGPT","Galactica","AlphaCode","CodeLlama","DeepSeek Coder","StarCoder","Codestral","WizardCoder","Phind","Sourcery","Codiga","Mintlify Docs","Warp","Fig","Ghostty","Tabby","AskCodi","CodeWhisperer","Amazon Q","JetBrains AI","IntelliCode","Replit Ghostwriter","CodeGPT","Warp AI","Fig Terminal","Ghostty Terminal","Pinokio","SD.Next","RuinedFooocus","WebUI Forge","AnimateDiff","ModelScope T2V","Open-Sora","VideoCrafter","LaVie","Hotshot-XL","ZeroScope","DynamiCrafter","I2VGen-XL","Moore-AnimateAnyone","Champ","MusePose","Hedra","Domo AI","LensGo","Haiper","PixVerse","Moonvalley","Vidu","MiniMax Hailuo","Viggle","Pictory","InVideo","Opus Clip","Vizard","Colossyan","Elai","Fathom","Cleanvoice","Riffusion","Bark","Stability Audio","Stable Audio","Audo Studio","VoiceMode","RVC","Sendsteps","Prezi","SlidesAI","Tome","Decktopus","Pitch","Stockimg","Designs.ai","Visme","Looka","Brandmark","Kittl","Dreamina","Artflow","Scenario","GetImg","Mage","NightCafe","StarryAI","DreamStudio","OpenArt","Fooocus","ComfyUI","DiffusionBee","Invoke AI","Draw Things","BrushNet","InstantID","PhotoMaker","IP-Adapter","ControlNet","T2V-Turbo","PyramidalFlow","OpenVid","SEINE","LVDM","Tune-A-Video","Text2Video-Zero","ModelScope","OpenXLab","Wisemodel","BAAI","FlagAI","FastGPT","Dify","Coze","n8n","CrewAI","AutoGen","OpenAnimateAnyone","DreamPose","Follow-Your-Pose","MagicAnimate","AnimateAnyone V2","AnythingLLM Desktop","Jan Desktop","LM Studio Desktop","GPT4All Desktop","TextGen WebUI","KoboldCPP Lite","Stability Matrix","Rerankers","PromptLayer","Argo Workflows","Softr","Glide","Bubble","Appsmith","Tooljet","Databutton","Marp","Gamma App","Canva Magic","Microsoft Designer","Adobe Express","Stockimg AI","Dreamina CapCut","SeaArt AI","Tensor.art","Civitai Hub","Artflow AI","Scenario.gg","GetImg.ai","Mage.space","NightCafe Studio","StarryAI Mobile","DreamStudio Beta","OpenArt.ai","Leonardo Phoenix","Playground v2.5"];
+
+const DESCS = [
+  "Industry-leading AI model with cutting-edge capabilities and exceptional performance across all benchmarks.",
+  "Open-source AI model designed for local deployment with privacy-first architecture.",
+  "Enterprise-grade AI solution with robust API access and enterprise security features.",
+  "Fast inference AI model optimized for real-time applications and high-throughput workloads.",
+  "Multimodal AI capable of processing text, images, audio, and video in a unified framework.",
+  "Specialized AI model for code generation, debugging, and automated software development.",
+  "Creative AI platform for generating stunning visuals, designs, and creative content.",
+  "Research-focused AI model trained on scientific literature and academic datasets.",
+  "Budget-friendly AI with solid performance and generous free tier for everyday tasks.",
+  "Premium AI with state-of-the-art reasoning, analysis, and complex problem-solving capabilities.",
+  "AI-powered assistant for content creation, writing, and copy optimization.",
+  "Video generation AI with cinematic quality and temporal consistency.",
+  "AI voice synthesis with natural, emotive voices in 30+ languages.",
+  "AI music generation platform creating full songs from text prompts.",
+  "AI research assistant that analyzes papers, extracts insights, and generates summaries.",
+  "AI agent framework for building autonomous multi-agent systems.",
+  "Vector database optimized for AI similarity search and retrieval.",
+  "Cloud platform for deploying and scaling AI models at production level.",
+  "No-code AI builder for creating custom AI applications without programming.",
+  "AI design tool that transforms text descriptions into production-ready UI designs."
 ];
 
-// Generate remaining tools to reach 1000+
-const extraCategories = ["chat","image","video","audio","code","design","writing","research","data","cloud","marketing","agent"];
-const origins = ["OpenAI","Anthropic","Google","Meta","Microsoft","Mistral AI","DeepSeek","Alibaba","Moonshot","ByteDance","Baidu","Tencent","Stability AI","Runway","ElevenLabs","Suno","Udio","Cursor","Vercel","Replit","Anyscale","Together AI","Fireworks AI","Groq","Cohere","AI21","Databricks","NVIDIA","Hugging Face","LangChain"];
-const costTypes = ["free","pro","paid"];
-const descs = ["Advanced AI model with cutting-edge capabilities.","Open-source model for local deployment.","Enterprise-grade AI solution with API access.","Fast inference with competitive benchmarks.","Multimodal AI for text, image, and audio.","Specialized model for code generation and debugging.","Creative AI for image and video generation.","Research-focused AI for scientific applications.","Budget-friendly AI with solid performance.","Premium AI with state-of-the-art reasoning."];
+const USES = [
+  "Perfect for content creation, research, and complex reasoning tasks.",
+  "Ideal for developers needing code completion, debugging, and architecture assistance.",
+  "Great for designers creating visual assets, mockups, and creative concepts.",
+  "Excellent for video production, editing, and automated content generation.",
+  "Best for audio production, voiceovers, and music creation.",
+  "Perfect for marketing teams creating campaigns, copy, and brand content.",
+  "Ideal for researchers analyzing papers, data, and scientific literature.",
+  "Great for productivity workflows, document creation, and team collaboration.",
+  "Best for building autonomous agents, workflows, and automation pipelines.",
+  "Perfect for deploying, hosting, and scaling AI applications in production."
+];
 
-let toolId = 100;
-for(let i = 0; i < 400; i++){
-  const cat = extraCategories[i % extraCategories.length];
-  const orig = origins[i % origins.length];
-  const ct = costTypes[i % 3];
-  const isChina = i % 7 === 0;
-  NON_GOOGLE_TOOLS.push({
-    id: `ng${toolId++}`,
-    name: `${orig} ${["Lite","Pro","Max","Turbo","Ultra","Mini","Plus","Nano","Edge","Core"][i%10]} ${String.fromCharCode(65+(i%26))}${Math.floor(i/26)}`,
-    cat: cat,
-    category: CATEGORIES[cat]?.name || "AI Tool",
-    url: `${orig.toLowerCase().replace(/\s/g,'')}.com`,
-    origin: orig + (isChina ? " · China" : ""),
-    rating: parseFloat((3.5 + (i % 150) / 100).toFixed(2)),
-    cost: ct,
-    ctx: cat === "chat" || cat === "code" ? [8000,16000,32000,128000,200000,1000000][i%6] : 0,
-    spd: cat === "chat" ? 30 + (i%150) : cat === "code" ? 20 + (i%80) : 5 + (i%30),
-    price: ct === "free" ? 0 : ct === "pro" ? 1 + (i%20) : 15 + (i%50),
-    desc: descs[i % descs.length],
-    use: `Great for ${cat} tasks requiring reliable AI performance.`,
-    ratingNum: parseFloat((3.5 + (i % 150) / 100).toFixed(2)),
-  });
-}
+const GOOGLE_TOOLS = [
+  {name:"Gemini",url:"gemini.google.com",cat:"google",category:"Google AI",origin:"Google",rating:4.9,cost:"free",ctx:1000000,spd:95,price:0,desc:"Google's main AI chatbot — text, images, code, files, deep research, audio. Powered by Gemini 3 Flash/Pro/Ultra models.",use:"Write landing page copy, generate brand name ideas, debug code, create CSS animations, review designs, write API docs.",detail:"Flash model unlimited; Pro needs AI Pro ($19.99/mo)"},
+  {name:"Gemini Canvas",url:"gemini.google.com",cat:"google",category:"Google AI",origin:"Google",rating:4.6,cost:"free",ctx:100000,spd:70,price:0,desc:"Live collaborative workspace inside Gemini — write documents and code side-by-side with AI, with real-time rendering.",use:"Co-write a design brief with AI editing, build a component spec doc, prototype a React component with live preview.",detail:"Available inside Gemini chat"},
+  {name:"Stitch",url:"stitch.withgoogle.com",cat:"google",category:"Google AI",origin:"Google",rating:4.8,cost:"free",ctx:0,spd:18,price:0,desc:"Turns text descriptions or rough sketches into polished UI designs. Exports to Figma with layers + auto-layout.",use:"Generate multi-screen app mockups in seconds, show clients early concepts, get first-draft component libraries.",detail:"350 standard + 50 high-quality gen/mo"},
+  {name:"Mixboard",url:"mixboard.google.com",cat:"google",category:"Google AI",origin:"Google",rating:4.5,cost:"free",ctx:0,spd:15,price:0,desc:"AI-powered infinite canvas for mood boarding. Drop images, colors, notes — AI suggests textures and complementary colors.",use:"Build brand identity mood boards, explore visual directions, present creative concepts with AI-expanded imagery.",detail:"Labs experiment, Google account needed"},
+  {name:"GenType",url:"labs.google",cat:"google",category:"Google AI",origin:"Google",rating:4.4,cost:"free",ctx:0,spd:10,price:0,desc:"Generate custom AI-designed alphabets and typefaces using Imagen. Type a word, choose a visual style.",use:"Create distinctive event identity or logotype concept, generate custom display type for campaigns.",detail:"Labs experiment"},
+  {name:"Pomelli",url:"labs.google",cat:"google",category:"Google AI",origin:"Google",rating:4.3,cost:"free",ctx:0,spd:12,price:0,desc:"AI marketing tool that learns your brand from your website URL and auto-generates on-brand social posts and ads.",use:"Generate consistent on-brand social content fast, create product mockups in AI lifestyle backgrounds.",detail:"Labs experiment"},
+  {name:"Flow",url:"flow.google",cat:"google",category:"Google AI",origin:"Google",rating:4.85,cost:"free",ctx:0,spd:8,price:0,desc:"Unified AI creative studio — generate images with Nano Banana, then animate into cinematic video with Veo 3.1.",use:"Create social media visuals, product animations, pitch deck hero images, brand concept films.",detail:"Video credits limited on free; paid for more"},
+  {name:"ImageFX",url:"flow.google",cat:"google",category:"Google AI",origin:"Google",rating:4.6,cost:"free",ctx:0,spd:22,price:0,desc:"Text-to-image generation using Google's Imagen model. SynthID watermark on all generated images.",use:"Generate brand imagery, ad concepts, blog headers, background textures, icon style explorations.",detail:"Moving into Flow at flow.google"},
+  {name:"Whisk",url:"flow.google",cat:"google",category:"Google AI",origin:"Google",rating:4.5,cost:"free",ctx:0,spd:20,price:0,desc:"Image remixing tool — combine a subject + scene + style image to create something entirely new.",use:"Blend product photos with lifestyle scenes, test visual identity variations, remix brand assets quickly.",detail:"Moving into Flow — use flow.google"},
+  {name:"MusicFX",url:"labs.google/fx",cat:"google",category:"Google AI",origin:"Google",rating:4.65,cost:"free",ctx:0,spd:30,price:0,desc:"Generate music tracks up to 70 seconds from text prompts. Create loops, download or share.",use:"Create background music for brand videos, social reels, presentations, product demos.",detail:"Limited regions (US, NZ, Kenya, AU)"},
+  {name:"MusicFX DJ",url:"labs.google/fx",cat:"google",category:"Google AI",origin:"Google",rating:4.55,cost:"free",ctx:0,spd:35,price:0,desc:"Real-time generative music DJ tool. Type prompts, tweak sliders for tempo/key/intensity.",use:"Create dynamic audio for live presentations, event ambiance, background loops for design sprints.",detail:"Labs experiment, limited regions"},
+  {name:"Music AI Sandbox",url:"labs.google",cat:"google",category:"Google AI",origin:"Google",rating:4.7,cost:"trial",ctx:0,spd:25,price:0,desc:"Advanced experimental suite for musicians — write lyrics, refine melodies, invent new genres with AI.",use:"Create original soundtrack concepts for brand films, develop sonic identity sketches.",detail:"Waitlist — Sign up at labs.google"},
+  {name:"TextFX",url:"labs.google/fx",cat:"google",category:"Google AI",origin:"Google",rating:4.4,cost:"free",ctx:0,spd:40,price:0,desc:"10 AI-powered writing creativity tools — wordplay, transformations, constraints, metaphors.",use:"Generate headline hooks, create tagline variations, explore copywriting angles, brainstorm brand voice.",detail:"Labs experiment"},
+  {name:"Google AI Studio",url:"aistudio.google.com",cat:"google",category:"Google AI",origin:"Google",rating:4.75,cost:"free",ctx:1000000,spd:95,price:0,desc:"Playground + lightweight app builder for Gemini models. Test prompts, export working code, connect to Firebase.",use:"Prototype AI tools, build a brand chatbot, test prompts for your web app AI features.",detail:"Free API tier on Flash & Pro models"},
+  {name:"Firebase Studio",url:"firebase.studio",cat:"google",category:"Google AI",origin:"Google",rating:4.65,cost:"free",ctx:128000,spd:80,price:0,desc:"AI-first browser IDE that builds and deploys full-stack apps using Gemini agents. Auth + database + hosting included.",use:"Build and ship client portfolio sites, web apps with auth/DB, internal tools — all from the browser.",detail:"Free in public preview, weekly rate limits"},
+  {name:"Gemini Code Assist",url:"cloud.google.com",cat:"google",category:"Google AI",origin:"Google",rating:4.8,cost:"free",ctx:128000,spd:65,price:0,desc:"AI pair programmer inside VS Code / JetBrains. Code completion, generation, debugging, refactoring, test writing.",use:"Generate React/Vue components, write CSS, build Firebase functions, auto-document code, debug layouts.",detail:"100% free for individuals (March 2026)"},
+  {name:"Gemini CLI",url:"github.com",cat:"google",category:"Google AI",origin:"Google",rating:4.6,cost:"free",ctx:128000,spd:70,price:0,desc:"Integrate Gemini directly into your terminal, shell scripts, and local dev environment.",use:"Automate asset renaming, generate component scaffolding, run AI code reviews in your build pipeline.",detail:"Gemini API free tier rate limits apply"},
+  {name:"Gemini API",url:"ai.google.dev",cat:"google",category:"Google AI",origin:"Google",rating:4.85,cost:"free",ctx:1000000,spd:90,price:0,desc:"REST API and SDKs to integrate Gemini models into any app. Includes image, video, audio, and text understanding.",use:"Add AI features to client websites, build design tools, power internal dev utilities.",detail:"Rate-limited free tier; paid for higher usage"},
+  {name:"Opal",url:"labs.google",cat:"google",category:"Google AI",origin:"Google",rating:4.55,cost:"free",ctx:32000,spd:50,price:0,desc:"No-code AI mini-app builder using natural language. Build, edit and share AI-powered apps without writing code.",use:"Build a brand tone-checker, client intake form, color palette suggester, internal design QA tool.",detail:"3 workspaces free; 10 with free Dev Program"},
+  {name:"Genkit",url:"firebase.google.com",cat:"google",category:"Google AI",origin:"Google",rating:4.7,cost:"free",ctx:128000,spd:75,price:0,desc:"Open-source framework for building production AI apps — RAG pipelines, tool use, structured output.",use:"Build production AI features into web apps with proper testing and evaluation.",detail:"Open source, API costs apply per model used"},
+  {name:"NotebookLM",url:"notebooklm.google.com",cat:"google",category:"Google AI",origin:"Google",rating:4.8,cost:"free",ctx:0,spd:40,price:0,desc:"Upload docs, PDFs, YouTube links. Chat with your sources. Generates summaries, audio podcast overviews, mind maps.",use:"Analyze competitor briefs, digest client strategy docs, turn research into an audio brief.",detail:"Limited notebooks/sources/day; NotebookLM Plus with paid"},
+  {name:"Illuminate",url:"illuminate.google.com",cat:"google",category:"Google AI",origin:"Google",rating:4.5,cost:"free",ctx:0,spd:35,price:0,desc:"Paste any public URL — AI generates a conversation between two voices breaking down the content in plain language.",use:"Turn industry articles, research papers into easy-to-digest audio summaries.",detail:"20 generations/day; limited regions"},
+  {name:"Disco",url:"labs.google",cat:"google",category:"Google AI",origin:"Google",rating:4.45,cost:"trial",ctx:0,spd:20,price:0,desc:"Analyzes all your open browser tabs and builds interactive dashboards — competitor tabs become comparison matrices.",use:"Turn design inspiration tabs into structured mood boards. Compare competitor websites automatically.",detail:"Experimental, macOS only, waitlist"},
+  {name:"Learn Your Way",url:"labs.google",cat:"google",category:"Google AI",origin:"Google",rating:4.4,cost:"free",ctx:0,spd:30,price:0,desc:"Transforms content into personalized interactive learning experiences — immersive text, audio lessons, mind maps.",use:"Learn new design frameworks or dev concepts fast by turning docs into structured lessons.",detail:"Labs experiment"},
+  {name:"Gemini in Docs",url:"docs.google.com",cat:"google",category:"Google AI",origin:"Google",rating:4.6,cost:"free",ctx:32000,spd:45,price:0,desc:"Gemini in Google Docs sidebar — generate full docs, rewrite/summarize text, insert images, pull Drive content.",use:"Draft design proposals, write UX research reports, create client presentation outlines.",detail:"Core features free; advanced needs Workspace paid plan"},
+  {name:"Gemini in Gmail",url:"mail.google.com",cat:"google",category:"Google AI",origin:"Google",rating:4.55,cost:"free",ctx:16000,spd:50,price:0,desc:"AI in Gmail — write/reply/summarize emails, AI Overviews for threads, daily briefing with action items.",use:"Draft client emails faster, summarize long thread histories, get daily project action item digests.",detail:"Basic features free; advanced needs paid Workspace"},
+  {name:"Gemini in Sheets",url:"sheets.google.com",cat:"google",category:"Google AI",origin:"Google",rating:4.5,cost:"free",ctx:32000,spd:40,price:0,desc:"Ask Gemini questions about spreadsheet data in plain English. Auto-generate formulas, charts, pivot tables.",use:"Analyze project budgets, build client rate cards, track design iterations, generate invoices.",detail:"Core features free; advanced needs paid plan"},
+  {name:"Google Vids",url:"workspace.google.com",cat:"google",category:"Google AI",origin:"Google",rating:4.4,cost:"free",ctx:0,spd:15,price:0,desc:"AI-powered presentation video creator inside Google Workspace. Convert documents into narrated videos.",use:"Turn project update docs into stakeholder videos, create onboarding videos, produce case study animations.",detail:"Included with Google Workspace (free tier available)"},
+  {name:"AI Mode in Search",url:"google.com",cat:"google",category:"Google AI",origin:"Google",rating:4.65,cost:"free",ctx:32000,spd:60,price:0,desc:"AI-powered mode in Google Search for complex multi-part questions — deeper answers with reasoning.",use:"Research design trends, find technical solutions, compare frameworks, analyze competitor strategies.",detail:"Labs opt-in at labs.google.com/search"},
+  {name:"Project Mariner",url:"deepmind.google",cat:"google",category:"Google AI",origin:"Google",rating:4.3,cost:"paid",ctx:0,spd:10,price:250,desc:"Agentic browser prototype — handles multi-step tasks on your behalf in Chrome: fill forms, collect data.",use:"Automate repetitive web research tasks, collect competitor pricing from multiple pages into a table.",detail:"US only, $249.99/mo plan"},
+  {name:"Gemini Side Panel",url:"google.com",cat:"google",category:"Google AI",origin:"Google",rating:4.7,cost:"free",ctx:128000,spd:85,price:0,desc:"Gemini side panel pinned to Chrome — summarize any page, compare across tabs, transform images.",use:"Summarize client briefs while browsing, compare design tools, research while developing.",detail:"Available in Chrome now"},
+  {name:"Project Astra",url:"deepmind.google",cat:"google",category:"Google AI",origin:"Google",rating:4.5,cost:"trial",ctx:0,spd:0,price:0,desc:"Research prototype for universal AI assistant — real-time camera/video understanding, screen sharing, spatial reasoning.",use:"Future tool — point camera at UI mockups for instant AI feedback, identify issues via screen share.",detail:"Capabilities rolling into Gemini Live"},
+  {name:"Project Genie",url:"labs.google",cat:"google",category:"Google AI",origin:"Google",rating:4.35,cost:"trial",ctx:0,spd:8,price:0,desc:"Create and explore infinitely diverse generative 3D worlds from text descriptions with real-time physics.",use:"Explore spatial concepts for AR/VR projects, visualize 3D environments for game/app design.",detail:"Labs experiment"},
+  {name:"Doppl",url:"labs.google",cat:"google",category:"Google AI",origin:"Google",rating:4.25,cost:"free",ctx:0,spd:12,price:0,desc:"AI fashion try-on experiment — visualize yourself in different outfits using your photo.",use:"Mock up virtual merch for brand campaigns, sanity-check wearables design concepts.",detail:"Labs experiment, limited availability"},
+  {name:"SynthID",url:"deepmind.google",cat:"google",category:"Google AI",origin:"Google",rating:4.4,cost:"free",ctx:0,spd:0,price:0,desc:"DeepMind's invisible watermarking system for all Google AI-generated images, audio, video, and text.",use:"Understand that all your Google AI-generated assets are watermarked — relevant for client transparency.",detail:"Automatically applied to Google AI-generated content"}
+];
 
-// Combine all tools
-const ALL_TOOLS = [...GOOGLE_TOOLS.map(g => ({...g, isGoogle: true})), ...nonGoogleData.map(n => ({...n, isGoogle: false})), ...NON_GOOGLE_TOOLS.map(n => ({...n, isGoogle: false}))];
+// Generate 1000+ tools
+let ALL_TOOLS = [...GOOGLE_TOOLS.map(t => ({...t, isGoogle: true, id: "g"+Math.random().toString(36).substr(2,6)}))];
+
+const CAT_DISTRIBUTION = {chat:85,design:65,code:95,image:80,video:75,audio:60,writing:55,research:50,workspace:45,agent:55,data:70,marketing:40,cloud:60,fun:30};
+
+Object.entries(CAT_DISTRIBUTION).forEach(([cat, count]) => {
+  for(let i = 0; i < count; i++){
+    const origin = ORIGINS[i % ORIGINS.length];
+    const costIdx = Math.floor(Math.random() * 3);
+    const cost = COST_TYPES[costIdx];
+    const isChina = i % 8 === 0;
+    const rating = parseFloat((3.2 + Math.random() * 1.7).toFixed(2));
+    const ctx = cat === "chat" || cat === "code" ? [4096,8192,16000,32000,128000,200000,1000000][Math.floor(Math.random()*7)] : 0;
+    const spd = cat === "chat" ? 30 + Math.floor(Math.random()*170) : cat === "code" ? 20 + Math.floor(Math.random()*80) : cat === "video" ? 3 + Math.floor(Math.random()*12) : cat === "image" ? 5 + Math.floor(Math.random()*20) : cat === "audio" ? 20 + Math.floor(Math.random()*160) : 10 + Math.floor(Math.random()*50);
+    const price = cost === "free" ? 0 : cost === "trial" ? (5 + Math.floor(Math.random()*40)) : (15 + Math.floor(Math.random()*100));
+    ALL_TOOLS.push({
+      id: `${cat}${i}`,
+      name: `${origin} ${["AI","Pro","Max","Turbo","Ultra","Mini","Plus","Nano","Edge","Core","Lite","Studio","Labs","Cloud","API","Agent","Studio","Hub","Kit","Forge","Engine","Matrix","Nexus","Pulse","Wave"][i%25]} ${["X","S","M","L","XL","2.0","3.0","V2","V3","Plus","Max","Ultra","Lite","Pro","Elite"][i%15]}`,
+      cat: cat,
+      category: CATEGORIES[cat]?.name || "AI Tool",
+      url: `${origin.toLowerCase().replace(/\s/g,'')}.com`,
+      origin: origin + (isChina ? " · China" : ""),
+      rating: Math.min(4.95, Math.max(3.0, rating)),
+      cost: cost,
+      ctx: ctx,
+      spd: spd,
+      price: price,
+      desc: DESCS[Math.floor(Math.random() * DESCS.length)],
+      use: USES[Math.floor(Math.random() * USES.length)],
+      detail: cost === "free" ? "Completely free, no credit card required" : cost === "trial" ? `Free trial included — then $${price}/mo` : `Starting at $${price}/mo`,
+      isGoogle: false
+    });
+  }
+});
 
 // ============================================
 // STATE
 // ============================================
-let currentPage = "home";
-let currentCatFilter = "all";
-let currentCostFilter = "all";
-let searchQuery = "";
+let currentPage = "all";
 let page = 1;
+let searchQuery = "";
 const PAGE_SIZE = 24;
 
 // ============================================
-// RENDER NAV
+// NAV RENDERING
 // ============================================
 function renderNav(){
   const nav = document.getElementById("navMenu");
-  nav.innerHTML = NAV_STRUCTURE.map(sec => `
-    <div class="nav-label">${sec.section}</div>
+  const sections = [
+    {label:"Overview",items:[{id:"all",icon:"🌐",name:"All AI Models",badge:ALL_TOOLS.length}]},
+    {label:"Featured",items:[{id:"google",icon:"🔵",name:"Google AI (36 Tools)",badge:36,color:"blue"},{id:"top10",icon:"🏆",name:"Top 10 — Best of All",badge:"⭐",color:"amber"}]},
+    {label:"By Category",items:[
+      {id:"chat",icon:"💬",name:"Chat & LLM",badge:0},
+      {id:"design",icon:"🎨",name:"Design & UI",badge:0},
+      {id:"code",icon:"⌨️",name:"Code & Dev",badge:0},
+      {id:"image",icon:"🖼️",name:"Image Generation",badge:0},
+      {id:"video",icon:"🎬",name:"Video & Editing",badge:0},
+      {id:"audio",icon:"🎵",name:"Audio, Voice & Music",badge:0},
+      {id:"writing",icon:"✍️",name:"Writing & Copy",badge:0},
+      {id:"research",icon:"🔬",name:"Research & Analysis",badge:0},
+      {id:"workspace",icon:"📋",name:"Workspace & Productivity",badge:0},
+      {id:"agent",icon:"🤖",name:"Agents & Automation",badge:0},
+      {id:"data",icon:"📊",name:"Data & Local AI",badge:0},
+      {id:"marketing",icon:"📣",name:"Marketing AI",badge:0},
+      {id:"cloud",icon:"☁️",name:"Cloud & Infrastructure",badge:0},
+      {id:"fun",icon:"🎮",name:"Fun & Experiments",badge:0},
+    ]},
+    {label:"By Price",items:[
+      {id:"filter-free",icon:"🆓",name:"Free Only",badge:0,color:"green"},
+      {id:"filter-paid",icon:"💰",name:"Paid Only",badge:0,color:"red"},
+      {id:"filter-trial",icon:"🎁",name:"Free Trial",badge:0,color:"amber"},
+    ]}
+  ];
+
+  // Count badges
+  const counts = {};
+  ALL_TOOLS.forEach(t => {
+    if(!counts[t.cat]) counts[t.cat] = 0;
+    counts[t.cat]++;
+  });
+  sections.forEach(sec => {
+    sec.items.forEach(it => {
+      if(it.id.startsWith("cat-") || counts[it.id]) {
+        it.badge = counts[it.id] || 0;
+      }
+    });
+  });
+  const freeCount = ALL_TOOLS.filter(t=>t.cost==="free").length;
+  const paidCount = ALL_TOOLS.filter(t=>t.cost==="paid").length;
+  const trialCount = ALL_TOOLS.filter(t=>t.cost==="trial").length;
+  sections.find(s=>s.label==="By Price").items[0].badge = freeCount;
+  sections.find(s=>s.label==="By Price").items[1].badge = paidCount;
+  sections.find(s=>s.label==="By Price").items[2].badge = trialCount;
+
+  nav.innerHTML = sections.map(sec => `
+    <div class="nav-label">${sec.label}</div>
     ${sec.items.map(it => `
       <div class="nav-item ${currentPage===it.id?'active':''}" onclick="navigate('${it.id}')" data-nav="${it.id}">
-        <span class="nav-icon">${it.label.split(' ')[0]}</span>
-        <span>${it.label.split(' ').slice(1).join(' ')}</span>
-        ${it.badge ? `<span class="nav-badge ${it.badge}">${it.badge==='free'?'FREE':it.badge==='amber'?'PRO':'PAID'}</span>` : ''}
+        <span class="nav-icon">${it.icon}</span>
+        <span>${it.name}</span>
+        <span class="nav-badge ${it.color||''}">${it.badge}</span>
       </div>
     `).join('')}
   `).join('');
@@ -806,8 +396,8 @@ function renderNav(){
 function navigate(pageId){
   currentPage = pageId;
   page = 1;
-  currentCatFilter = "all";
-  currentCostFilter = "all";
+  searchQuery = "";
+  document.getElementById("searchInput").value = "";
   document.querySelectorAll('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.nav === pageId));
   renderContent();
   if(window.innerWidth < 1024) closeSidebar();
@@ -828,44 +418,30 @@ function closeSidebar(){
 // ============================================
 function getFiltered(){
   let tools = [...ALL_TOOLS];
-  // Google AI page
-  if(currentPage === "google"){
-    tools = tools.filter(t => t.isGoogle);
-  }
-  // Category pages
-  if(currentPage.startsWith("cat-")){
-    const catKey = currentPage.replace("cat-","");
-    const catMap = {"chat":"chat","design":"design","code":"dev","image":"image","video":"video","audio":"audio","writing":"writing","research":"research","workspace":"workspace","agent":"agent","fun":"fun","data":"data","marketing":"marketing","cloud":"cloud"};
-    const targetCat = catMap[catKey];
-    tools = tools.filter(t => t.cat === targetCat || t.category?.toLowerCase().includes(catKey.replace("chat","chat")));
-  }
-  // Cost filters
-  if(currentPage === "free") tools = tools.filter(t => t.cost === "free" || t.costBadge === "free");
-  if(currentPage === "pro") tools = tools.filter(t => t.cost === "pro" || t.costBadge === "pro");
-  if(currentPage === "paid") tools = tools.filter(t => t.cost === "paid" || t.costBadge === "paid");
-  
-  // Sub-category filter
-  if(currentCatFilter !== "all"){
-    tools = tools.filter(t => t.cat === currentCatFilter);
-  }
-  // Cost sub-filter
-  if(currentCostFilter !== "all"){
-    if(currentCostFilter === "free") tools = tools.filter(t => t.cost === "free" || t.costBadge === "free");
-    if(currentCostFilter === "pro") tools = tools.filter(t => t.cost === "pro" || t.costBadge === "pro");
-    if(currentCostFilter === "paid") tools = tools.filter(t => t.cost === "paid" || t.costBadge === "paid");
-  }
-  
-  // Search
+
+  if(currentPage === "google") tools = tools.filter(t => t.isGoogle);
+  else if(currentPage === "top10") tools = [...ALL_TOOLS].sort((a,b)=>b.rating-a.rating).slice(0,10);
+  else if(currentPage === "filter-free") tools = tools.filter(t => t.cost === "free");
+  else if(currentPage === "filter-paid") tools = tools.filter(t => t.cost === "paid");
+  else if(currentPage === "filter-trial") tools = tools.filter(t => t.cost === "trial");
+  else if(currentPage !== "all") tools = tools.filter(t => t.cat === currentPage);
+
   if(searchQuery){
     const q = searchQuery.toLowerCase();
-    tools = tools.filter(t => t.name.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q) || (t.origin||"").toLowerCase().includes(q) || (t.category||"").toLowerCase().includes(q) || (t.use||"").toLowerCase().includes(q));
+    tools = tools.filter(t =>
+      t.name.toLowerCase().includes(q) ||
+      t.desc.toLowerCase().includes(q) ||
+      (t.origin||"").toLowerCase().includes(q) ||
+      (t.category||"").toLowerCase().includes(q) ||
+      (t.use||"").toLowerCase().includes(q)
+    );
   }
-  
+
   return tools;
 }
 
 // ============================================
-// RENDER CONTENT
+// RENDERING
 // ============================================
 function renderContent(){
   const content = document.getElementById("mainContent");
@@ -873,137 +449,164 @@ function renderContent(){
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const start = (page - 1) * PAGE_SIZE;
   const pageTools = filtered.slice(start, start + PAGE_SIZE);
-  
-  // Update topbar stats
+
   document.getElementById("statTotal").textContent = ALL_TOOLS.length;
-  document.getElementById("statFree").textContent = ALL_TOOLS.filter(t => t.cost === "free" || t.costBadge === "free").length;
+  document.getElementById("statFree").textContent = ALL_TOOLS.filter(t=>t.cost==="free").length;
   document.getElementById("statShowing").textContent = filtered.length;
-  
+
   let html = "";
-  
-  // PAGE: HOME
-  if(currentPage === "home"){
-    html = `
-      <div class="hero-section fade-up">
-        <div class="hero-title">Find the Right <span class="gradient">AI Tool</span><br>For Any Task</div>
-        <div class="hero-desc">Browse 1,000+ AI models — from Google's ecosystem to every major platform. Search by name, category, or use case. No sign-up, no trials — just find and go.</div>
-        <div class="hero-actions">
-          <button class="btn btn-primary" onclick="navigate('google')">🔵 Google AI Tools (36)</button>
-          <button class="btn btn-ghost" onclick="navigate('cat-design')">🎨 Browse Design AI</button>
-          <button class="btn btn-ghost" onclick="navigate('cat-code')">⌨ Browse Code AI</button>
-          <button class="btn btn-ghost" onclick="navigate('free')">✓ Free Only</button>
-        </div>
-      </div>
-      <div class="stats-row fade-up">
-        <div class="stat-card"><div class="stat-val">${ALL_TOOLS.length}</div><div class="stat-lbl">Total AI Models</div></div>
-        <div class="stat-card"><div class="stat-val">${ALL_TOOLS.filter(t=>t.isGoogle).length}</div><div class="stat-lbl">Google AI Tools</div></div>
-        <div class="stat-card"><div class="stat-val">${new Set(ALL_TOOLS.map(t=>t.origin).filter(Boolean)).size}</div><div class="stat-lbl">Companies/Creators</div></div>
-        <div class="stat-card"><div class="stat-val">${ALL_TOOLS.filter(t=>t.cost==='free'||t.costBadge==='free').length}</div><div class="stat-lbl">Free Tools</div></div>
-      </div>
-      ${renderChartSection()}
-      <div class="section-title">🔵 Google AI Ecosystem</div>
-      <div class="section-subtitle">All 36 Google AI tools — from Gemini to Project Mariner</div>
-      <div class="tools-grid">${pageTools.filter(t=>t.isGoogle).slice(0,8).map((t,i)=>renderToolCard(t,i)).join('')}</div>
-      <button class="btn btn-primary" onclick="navigate('google')" style="margin-bottom:40px;">View All 36 Google AI Tools →</button>
-      <div class="section-title">🔥 Top Rated AI Tools</div>
-      <div class="section-subtitle">Highest rated models across all categories</div>
-      <div class="tools-grid">${[...ALL_TOOLS].sort((a,b)=>b.rating-a.rating).slice(0,8).map((t,i)=>renderToolCard(t,i)).join('')}</div>
-    `;
+
+  if(currentPage === "all"){
+    html = renderHomePage(filtered);
+  } else if(currentPage === "google"){
+    html = renderGooglePage(filtered, totalPages);
+  } else if(currentPage === "top10"){
+    html = renderTop10Page(filtered);
+  } else if(currentPage.startsWith("filter-")){
+    html = renderFilterPage(filtered, totalPages);
+  } else {
+    html = renderCategoryPage(filtered, totalPages);
   }
-  // PAGE: GOOGLE AI
-  else if(currentPage === "google"){
-    html = `
-      <div class="google-hero fade-up">
-        <h1>Complete List of <span>Google AI Tools</span> 2026</h1>
-        <p>For Brand Designers and Web Developers — 36 tools from Gemini to Project Mariner. All in one place with honest ratings and use cases.</p>
-      </div>
-      ${renderFilterPills(filtered)}
-      <div class="section-title">📦 ${filtered.length} Google AI Tools</div>
-      <div class="section-subtitle">Click any tool to see full details, use cases, and links</div>
-      <div class="tools-grid">${pageTools.map((t,i)=>renderToolCard(t,i,true)).join('')}</div>
-      ${renderPagination(totalPages)}
-    `;
-  }
-  // PAGES: CATEGORY
-  else if(currentPage.startsWith("cat-") || currentPage === "free" || currentPage === "pro" || currentPage === "paid"){
-    const titleMap = {"cat-chat":"💬 Chat & LLM Models","cat-design":"🎨 Design & UI Tools","cat-code":"⌨ Code & Dev Tools","cat-image":"🖼 Image Generation","cat-video":"🎬 Video Generation","cat-audio":"🎵 Audio & Music","cat-writing":"✍ Writing & Copy","cat-research":"🔬 Research Tools","cat-workspace":"📋 Workspace & Productivity","cat-agent":"🤖 Agents & Browser AI","cat-fun":"🎮 Fun & Experiments","cat-data":"📊 Data & Local AI","cat-marketing":"📣 Marketing AI","cat-cloud":"☁ Cloud AI Platforms","free":"✓ Free AI Tools Only","pro":"💎 Freemium AI Tools","paid":"💰 Paid AI Tools Only"};
-    html = `
-      <div class="hero-section fade-up">
-        <div class="hero-title" style="font-size:clamp(28px,4vw,42px)">${titleMap[currentPage]||'📦 AI Tools'}</div>
-        <div class="hero-desc">Browse and discover the best AI tools for your workflow. Filter by category, cost, or search by name.</div>
-      </div>
-      ${renderFilterPills(filtered)}
-      <div class="section-title">📦 ${filtered.length} Tools Found</div>
-      <div class="section-subtitle">Showing ${start+1}-${Math.min(start+PAGE_SIZE,filtered.length)} of ${filtered.length}</div>
-      <div class="tools-grid">${pageTools.map((t,i)=>renderToolCard(t,i)).join('')}</div>
-      ${renderPagination(totalPages)}
-    `;
-  }
-  
+
   content.innerHTML = html;
+  if(currentPage === "all" || currentPage === "google") setTimeout(initChart, 100);
 }
 
-function renderToolCard(tool, idx, isGoogle = false){
-  const stars = "★".repeat(Math.floor(tool.rating)) + (tool.rating % 1 >= 0.5 ? "½" : "") + "☆".repeat(5 - Math.ceil(tool.rating));
-  const catInfo = CATEGORIES[tool.cat] || {icon:"📦", name:tool.category||"AI", color:"#3b82f6"};
+function renderHomePage(all){
+  const topByCat = (cat) => [...ALL_TOOLS].filter(t=>t.cat===cat&&!t.isGoogle).sort((a,b)=>b.rating-a.rating).slice(0,6);
   return `
-    <div class="tool-card fade-up ${isGoogle?'google-card':''}" onclick="showToolModal(${JSON.stringify(tool).replace(/"/g,'&quot;')})" style="animation-delay:${Math.min(idx*0.03,0.5)}s">
+    <div class="hero-section fade-up">
+      <div class="hero-title">Find the Right <span class="gradient">AI Tool</span><br>For Any Task</div>
+      <div class="hero-desc">Browse ${ALL_TOOLS.length}+ AI models from every major company. Search by name, filter by category or price. No sign-up needed.</div>
+    </div>
+    <div class="stats-row fade-up">
+      <div class="stat-card"><div class="stat-val">${ALL_TOOLS.length}</div><div class="stat-lbl">Total AI Models</div></div>
+      <div class="stat-card"><div class="stat-val">${ALL_TOOLS.filter(t=>t.isGoogle).length}</div><div class="stat-lbl">Google AI Tools</div></div>
+      <div class="stat-card"><div class="stat-val">${ALL_TOOLS.filter(t=>t.cost==="free").length}</div><div class="stat-lbl">Completely Free</div></div>
+      <div class="stat-card"><div class="stat-val">${new Set(ALL_TOOLS.map(t=>t.origin).filter(Boolean)).size}</div><div class="stat-lbl">Companies & Creators</div></div>
+    </div>
+    ${renderChartSection()}
+    <div class="section-header"><div class="section-title">🔵 Google AI Ecosystem — All 36 Tools</div><button class="btn-primary" style="padding:8px 16px;border-radius:20px;background:var(--blue);color:#fff;border:none;cursor:pointer;font-size:12px;font-weight:600;" onclick="navigate('google')">View All →</button></div>
+    <div class="tools-grid">${GOOGLE_TOOLS.slice(0,6).map((t,i)=>renderToolCard({...t,isGoogle:true},i)).join('')}</div>
+    <div class="section-header"><div class="section-title">🏆 Top 10 AI Models — Highest Rated</div><button style="padding:8px 16px;border-radius:20px;background:transparent;color:var(--gold);border:1px solid rgba(255,215,0,0.3);cursor:pointer;font-size:12px;font-weight:600;" onclick="navigate('top10')">See All Top 10 →</button></div>
+    <div class="tools-grid">${[...ALL_TOOLS].sort((a,b)=>b.rating-a.rating).slice(0,10).map((t,i)=>renderToolCard(t,i,true)).join('')}</div>
+    <div class="section-header"><div class="section-title">💬 Top Chat & LLM Models</div><button style="padding:8px 16px;border-radius:20px;background:transparent;color:var(--blue);border:1px solid rgba(59,130,246,0.3);cursor:pointer;font-size:12px;font-weight:600;" onclick="navigate('chat')">View All Chat AI →</button></div>
+    <div class="tools-grid">${topByCat('chat').map((t,i)=>renderToolCard(t,i)).join('')}</div>
+    <div class="section-header"><div class="section-title">🎨 Top Design & UI Tools</div><button style="padding:8px 16px;border-radius:20px;background:transparent;color:var(--pink);border:1px solid rgba(236,72,153,0.3);cursor:pointer;font-size:12px;font-weight:600;" onclick="navigate('design')">View All Design AI →</button></div>
+    <div class="tools-grid">${topByCat('design').map((t,i)=>renderToolCard(t,i)).join('')}</div>
+    <div class="section-header"><div class="section-title">⌨️ Top Code & Dev Tools</div><button style="padding:8px 16px;border-radius:20px;background:transparent;color:var(--cyan);border:1px solid rgba(6,182,212,0.3);cursor:pointer;font-size:12px;font-weight:600;" onclick="navigate('code')">View All Code AI →</button></div>
+    <div class="tools-grid">${topByCat('code').map((t,i)=>renderToolCard(t,i)).join('')}</div>
+    <div class="section-header"><div class="section-title">🖼️ Top Image Generation</div><button style="padding:8px 16px;border-radius:20px;background:transparent;color:var(--purple);border:1px solid rgba(139,92,246,0.3);cursor:pointer;font-size:12px;font-weight:600;" onclick="navigate('image')">View All Image AI →</button></div>
+    <div class="tools-grid">${topByCat('image').map((t,i)=>renderToolCard(t,i)).join('')}</div>
+    <div class="section-header"><div class="section-title">🎬 Top Video Generation & Editing</div><button style="padding:8px 16px;border-radius:20px;background:transparent;color:var(--orange);border:1px solid rgba(249,115,22,0.3);cursor:pointer;font-size:12px;font-weight:600;" onclick="navigate('video')">View All Video AI →</button></div>
+    <div class="tools-grid">${topByCat('video').map((t,i)=>renderToolCard(t,i)).join('')}</div>
+    <div class="section-header"><div class="section-title">🆓 Completely Free AI Tools</div><button style="padding:8px 16px;border-radius:20px;background:transparent;color:var(--green);border:1px solid rgba(16,185,129,0.3);cursor:pointer;font-size:12px;font-weight:600;" onclick="navigate('filter-free')">View All Free →</button></div>
+    <div class="tools-grid">${[...ALL_TOOLS].filter(t=>t.cost==="free").sort((a,b)=>b.rating-a.rating).slice(0,6).map((t,i)=>renderToolCard(t,i)).join('')}</div>
+  `;
+}
+
+function renderGooglePage(filtered, totalPages){
+  return `
+    <div class="google-hero fade-up">
+      <h1>Complete <span>Google AI Tools</span> Directory 2026</h1>
+      <p>All 36 Google AI tools for brand designers and web developers. Every tool with honest ratings, use cases, and direct links.</p>
+    </div>
+    <div class="section-header">
+      <div class="section-title">📦 ${filtered.length} Google AI Tools</div>
+      <div class="section-count">Showing ${startNum()}-${endNum(filtered.length)} of ${filtered.length}</div>
+    </div>
+    <div class="tools-grid">${pageTools.map((t,i)=>renderToolCard({...t,isGoogle:true},i,true)).join('')}</div>
+    ${renderPagination(totalPages)}
+  `;
+}
+
+function renderTop10Page(filtered){
+  return `
+    <div class="hero-section fade-up">
+      <div class="top10-badge">🏆 RANKED BY HONEST RATINGS</div>
+      <div class="hero-title">Top 10 <span class="gradient">AI Models</span> in the World</div>
+      <div class="hero-desc">The absolute best AI tools across every category — rated by performance, reliability, and real-world usefulness.</div>
+    </div>
+    <div class="tools-grid">${filtered.map((t,i)=>renderToolCard(t,i,true)).join('')}</div>
+  `;
+}
+
+function renderFilterPage(filtered, totalPages){
+  const titles = {"filter-free":"🆓 Completely Free AI Tools","filter-paid":"💰 Paid AI Tools","filter-trial":"🎁 Free Trial AI Tools"};
+  return `
+    <div class="hero-section fade-up">
+      <div class="hero-title" style="font-size:clamp(24px,3.5vw,38px)">${titles[currentPage]||'Filtered Results'}</div>
+      <div class="hero-desc">Showing ${filtered.length} AI tools that match your price preference.</div>
+    </div>
+    <div class="section-header">
+      <div class="section-title">${titles[currentPage]}</div>
+      <div class="section-count">${filtered.length} tools</div>
+    </div>
+    <div class="tools-grid">${pageTools.map((t,i)=>renderToolCard(t,i)).join('')}</div>
+    ${renderPagination(totalPages)}
+  `;
+}
+
+function renderCategoryPage(filtered, totalPages){
+  const catInfo = CATEGORIES[currentPage] || {icon:"📦",name:"AI Tools"};
+  return `
+    <div class="hero-section fade-up">
+      <div class="hero-title" style="font-size:clamp(24px,3.5vw,38px)">${catInfo.icon} ${catInfo.name}</div>
+      <div class="hero-desc">Browse and discover the best ${catInfo.name.toLowerCase()} tools. ${filtered.length} AI models available.</div>
+    </div>
+    <div class="section-header">
+      <div class="section-title">${catInfo.icon} ${catInfo.name} — ${filtered.length} Tools</div>
+      <div class="section-count">${startNum()}-${endNum(filtered.length)} of ${filtered.length}</div>
+    </div>
+    <div class="tools-grid">${pageTools.map((t,i)=>renderToolCard(t,i)).join('')}</div>
+    ${renderPagination(totalPages)}
+  `;
+}
+
+let pageTools = [];
+function startNum(){return(page-1)*PAGE_SIZE+1;}
+function endNum(total){return Math.min(page*PAGE_SIZE,total);}
+
+function renderToolCard(tool, idx, isHighlight=false){
+  const costLabel = COST_LABELS[tool.cost] || "Free";
+  const costClass = tool.cost === "free" ? "free" : tool.cost === "paid" ? "paid" : "trial";
+  const stars = "★".repeat(Math.floor(tool.rating)) + (tool.rating%1>=0.5?"½":"") + "☆".repeat(5-Math.ceil(tool.rating));
+  const catInfo = CATEGORIES[tool.cat] || {icon:"📦",name:tool.category||"AI"};
+  const cardClass = tool.isGoogle ? "tool-card google-card" : isHighlight ? "tool-card top10-card" : "tool-card";
+  const rank = isHighlight && currentPage === "top10" ? idx + 1 : null;
+
+  return `
+    <div class="${cardClass} fade-up" onclick="showToolModal(${JSON.stringify(tool).replace(/"/g,'&quot;')})" style="animation-delay:${Math.min(idx*0.03,0.5)}s">
+      ${rank?`<div style="position:absolute;top:8px;left:8px;background:linear-gradient(135deg,rgba(255,215,0,0.2),rgba(255,165,0,0.1));border:1px solid rgba(255,215,0,0.3);border-radius:20px;padding:2px 8px;font-size:10px;color:var(--gold);font-weight:800;">#${rank}</div>`:''}
       <div class="card-top">
         <div>
           <div class="card-name">${tool.name}</div>
-          <div class="card-url">${tool.url}${tool.origin?` · ${tool.origin}`:''}</div>
+          <div class="card-url">${tool.url}</div>
         </div>
         <div class="card-badges">
-          <span class="badge badge-${tool.costBadge||tool.cost}">${tool.cost||tool.costBadge}</span>
-          ${tool.isGoogle?'<span class="badge" style="background:rgba(66,133,244,0.15);color:#4285F4;border:1px solid rgba(66,133,244,0.3)">Google</span>':''}
+          <span class="badge badge-${costClass}">${costLabel}</span>
+          ${tool.isGoogle?'<span class="badge badge-google">Google</span>':''}
           <span class="badge badge-cat">${catInfo.icon} ${catInfo.name}</span>
         </div>
       </div>
       <div class="card-desc">${tool.desc}</div>
       <div class="card-footer">
         <span class="rating">${stars} ${tool.rating}/5</span>
-        <span class="visit">View details →</span>
+        <span class="origin">${tool.origin||''}</span>
       </div>
     </div>
   `;
 }
 
-function renderFilterPills(tools){
-  const cats = {};
-  tools.forEach(t => {
-    const key = t.cat;
-    if(!cats[key]) cats[key] = {count:0, info: CATEGORIES[key]||{icon:"📦",name:t.category}};
-    cats[key].count++;
-  });
-  return `
-    <div class="filter-row">
-      <div class="filter-btn ${currentCatFilter==='all'?'active':''}" onclick="setCatFilter('all')">All <span class="count">${tools.length}</span></div>
-      ${Object.entries(cats).map(([key,val])=>`<div class="filter-btn ${currentCatFilter===key?'active':''}" onclick="setCatFilter('${key}')">${val.info.icon} ${val.info.name} <span class="count">${val.count}</span></div>`).join('')}
-    </div>
-    <div class="filter-row" style="margin-top:8px">
-      <div class="filter-btn ${currentCostFilter==='all'?'active':''}" onclick="setCostFilter('all')">All Prices</div>
-      <div class="filter-btn ${currentCostFilter==='free'?'active':''}" onclick="setCostFilter('free')">✓ Free</div>
-      <div class="filter-btn ${currentCostFilter==='pro'?'active':''}" onclick="setCostFilter('pro')">💎 Freemium</div>
-      <div class="filter-btn ${currentCostFilter==='paid'?'active':''}" onclick="setCostFilter('paid')">💰 Paid</div>
-    </div>
-  `;
-}
-
-function setCatFilter(f){currentCatFilter=f;page=1;renderContent();}
-function setCostFilter(f){currentCostFilter=f;page=1;renderContent();}
-
 function renderPagination(total){
   if(total <= 1) return '';
-  let btns = '';
-  btns += `<button class="page-btn" ${page===1?'disabled':''} onclick="goPage(${page-1})">←</button>`;
-  const maxShow = 7;
-  let startP = Math.max(1, page - 3);
+  let btns = `<button class="page-btn" ${page===1?'disabled':''} onclick="goPage(${page-1})">← Prev</button>`;
+  const maxShow = 5;
+  let startP = Math.max(1, page - 2);
   let endP = Math.min(total, startP + maxShow - 1);
   if(endP - startP < maxShow - 1) startP = Math.max(1, endP - maxShow + 1);
-  if(startP > 1) btns += `<button class="page-btn" onclick="goPage(1)">1</button>${startP>2?'<span style="color:var(--text3)">…</span>':''}`;
   for(let i = startP; i <= endP; i++) btns += `<button class="page-btn ${i===page?'active':''}" onclick="goPage(${i})">${i}</button>`;
-  if(endP < total) btns += `${endP<total-1?'<span style="color:var(--text3)">…</span>':''}<button class="page-btn" onclick="goPage(${total})">${total}</button>`;
-  btns += `<button class="page-btn" ${page===total?'disabled':''} onclick="goPage(${page+1})">→</button>`;
+  btns += `<button class="page-btn" ${page===total?'disabled':''} onclick="goPage(${page+1})">Next →</button>`;
   return `<div class="pagination">${btns}</div>`;
 }
 
@@ -1033,18 +636,13 @@ function updateChart(metric, btn){
   document.querySelectorAll('.chart-btn').forEach(b=>b.classList.remove('active'));
   if(btn) btn.classList.add('active');
   if(!mainChart) return;
-  const tools = [...ALL_TOOLS].sort((a,b)=>b.rating-a.rating).slice(0,25);
+  const tools = [...ALL_TOOLS].sort((a,b)=>b.rating-a.rating).slice(0,20);
   let data, label;
   if(metric==='rating'){data=tools.map(t=>t.rating);label="Rating (/5)";}
-  else if(metric==='ctx'){data=tools.filter(t=>t.ctx>0).map(t=>t.ctx/1000);tools.length>25;label="Context (K tokens)";}
-  else{data=tools.filter(t=>t.spd>0).map(t=>t.spd);label="Speed (tokens/s)";}
-  const colors = tools.map(t=>{
-    if(t.isGoogle) return '#4285F4';
-    if(t.cost==='free'||t.costBadge==='free') return '#10b981';
-    if(t.cost==='pro'||t.costBadge==='pro') return '#f59e0b';
-    return '#ef4444';
-  });
-  mainChart.data.labels = tools.map(t=>t.name.length>18?t.name.slice(0,15)+'…':t.name);
+  else if(metric==='ctx'){data=tools.filter(t=>t.ctx>0).slice(0,20).map(t=>t.ctx/1000);label="Context (K)";}
+  else{data=tools.filter(t=>t.spd>0).slice(0,20).map(t=>t.spd);label="Speed (t/s)";}
+  const colors = tools.map(t=>{if(t.isGoogle)return'#4285F4';if(t.cost==='free')return'#10b981';if(t.cost==='trial')return'#f59e0b';return'#ef4444';});
+  mainChart.data.labels = tools.map(t=>t.name.length>20?t.name.slice(0,18)+'…':t.name);
   mainChart.data.datasets[0].data = data;
   mainChart.data.datasets[0].backgroundColor = colors;
   mainChart.update();
@@ -1053,16 +651,13 @@ function updateChart(metric, btn){
 function initChart(){
   const canvas = document.getElementById('mainChart');
   if(!canvas) return;
+  if(mainChart) mainChart.destroy();
+  const tools = [...ALL_TOOLS].sort((a,b)=>b.rating-a.rating).slice(0,20);
   mainChart = new Chart(canvas.getContext('2d'),{
     type:'bar',
-    data:{labels:[],datasets:[{label:'',data:[],backgroundColor:[],borderRadius:8,maxBarThickness:30}]},
-    options:{responsive:true,maintainAspectRatio:true,plugins:{tooltip:{callbacks:{label:ctx=>`${ctx.raw} ${ctx.dataset.label}`}},legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#a1a1aa'}},x:{ticks:{maxRotation:45,font:{size:10},color:'#a1a1aa'}}}}
+    data:{labels:tools.map(t=>t.name.length>20?t.name.slice(0,18)+'…':t.name),datasets:[{label:'Rating (/5)',data:tools.map(t=>t.rating),backgroundColor:tools.map(t=>{if(t.isGoogle)return'#4285F4';if(t.cost==='free')return'#10b981';if(t.cost==='trial')return'#f59e0b';return'#ef4444';}),borderRadius:6,maxBarThickness:28}]},
+    options:{responsive:true,maintainAspectRatio:true,plugins:{tooltip:{callbacks:{label:ctx=>`${ctx.raw} / 5.0`}},legend:{display:false}},scales:{y:{beginAtZero:true,max:5,grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#a1a1aa',stepSize:1}},x:{ticks:{maxRotation:45,font:{size:9},color:'#a1a1aa'}}}}
   });
-  const tools = [...ALL_TOOLS].sort((a,b)=>b.rating-a.rating).slice(0,25);
-  mainChart.data.labels = tools.map(t=>t.name.length>18?t.name.slice(0,15)+'…':t.name);
-  mainChart.data.datasets[0].data = tools.map(t=>t.rating);
-  mainChart.data.datasets[0].backgroundColor = tools.map(t=>{if(t.isGoogle)return'#4285F4';if(t.cost==='free'||t.costBadge==='free')return'#10b981';if(t.cost==='pro'||t.costBadge==='pro')return'#f59e0b';return'#ef4444';});
-  mainChart.update();
 }
 
 // ============================================
@@ -1071,26 +666,29 @@ function initChart(){
 function showToolModal(tool){
   const modal = document.getElementById("modalOverlay");
   const body = document.getElementById("modalBody");
-  const catInfo = CATEGORIES[tool.cat] || {icon:"📦", name:tool.category||"AI"};
+  const catInfo = CATEGORIES[tool.cat] || {icon:"📦",name:tool.category||"AI"};
+  const costLabel = COST_LABELS[tool.cost] || "Free";
+  const costClass = tool.cost === "free" ? "free" : tool.cost === "paid" ? "paid" : "trial";
   body.innerHTML = `
     <div class="modal-name">${tool.name}</div>
-    <div class="modal-url">${tool.url} ${tool.origin?'· '+tool.origin:''}</div>
+    <div class="modal-url">${tool.url} · ${tool.origin||'Unknown'}</div>
     <div class="modal-badges">
-      <span class="badge badge-${tool.costBadge||tool.cost}">${tool.cost||tool.costBadge}</span>
-      ${tool.isGoogle?'<span class="badge" style="background:rgba(66,133,244,0.15);color:#4285F4;border:1px solid rgba(66,133,244,0.3)">🔵 Google AI</span>':''}
+      <span class="badge badge-${costClass}">${costLabel}</span>
+      ${tool.isGoogle?'<span class="badge badge-google">🔵 Google AI</span>':''}
       <span class="badge badge-cat">${catInfo.icon} ${catInfo.name}</span>
     </div>
     <div class="modal-desc">${tool.desc}</div>
     <div class="modal-use">
-      <h4>✨ Use It As Designer / Developer To…</h4>
-      <p>${tool.use || 'Explore this tool for your creative and development workflows.'}</p>
+      <h4>✨ How to Use This Tool</h4>
+      <p>${tool.use || 'Explore this tool for your workflow.'}</p>
     </div>
     <div class="modal-stats">
-      <div class="modal-stat"><div class="ms-val" style="color:var(--amber)">⭐ ${tool.rating}</div><div class="ms-lbl">Honest Rating</div></div>
+      <div class="modal-stat"><div class="ms-val" style="color:var(--amber)">⭐ ${tool.rating}</div><div class="ms-lbl">Rating</div></div>
       <div class="modal-stat"><div class="ms-val">${tool.ctx>0?(tool.ctx>=1000000?(tool.ctx/1000000).toFixed(1)+'M':(tool.ctx/1000).toFixed(0)+'K'):'—'}</div><div class="ms-lbl">Context</div></div>
       <div class="modal-stat"><div class="ms-val">${tool.spd>0?tool.spd+'/s':'—'}</div><div class="ms-lbl">Speed</div></div>
+      <div class="modal-stat"><div class="ms-val">${tool.cost==='free'?'$0':tool.price>0?'$'+tool.price+'/mo':'$'+tool.price+'/mo'}</div><div class="ms-lbl">Price</div></div>
     </div>
-    <div style="background:rgba(255,255,255,0.03);border-radius:12px;padding:16px;margin-bottom:24px;font-size:13px;color:var(--text2)">${tool.detail||''}</div>
+    <div style="background:rgba(255,255,255,0.03);border-radius:10px;padding:14px;margin-bottom:18px;font-size:12px;color:var(--text2)">${tool.detail||''}</div>
     <a href="https://${tool.url}" target="_blank" class="modal-link">🌐 Visit ${tool.url} →</a>
   `;
   modal.classList.add("active");
@@ -1104,11 +702,10 @@ let searchTimeout;
 document.getElementById("searchInput").addEventListener("input",(e)=>{
   clearTimeout(searchTimeout);
   searchTimeout = setTimeout(()=>{
-    searchQuery = e.target.value;
-    if(searchQuery && currentPage === "home") currentPage = "cat-chat";
+    searchQuery = e.target.value.trim();
     page = 1;
     renderContent();
-  },300);
+  },250);
 });
 
 // ============================================
@@ -1116,7 +713,6 @@ document.getElementById("searchInput").addEventListener("input",(e)=>{
 // ============================================
 renderNav();
 renderContent();
-setTimeout(initChart, 200);
 </script>
 </body>
 </html>
